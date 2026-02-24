@@ -84,7 +84,7 @@
                     <div class="nav-item" onclick="loadEditor('handbook', 'bridge_engine', this)"><span class="material-icons">engineering</span> Bridge & Engine</div>
                 </div>
                 <div class="nav-group">
-                    <div class="nav-title">Quizzes</div>
+                    <div class="nav-title">Clearance Quizzes</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'universal', this)"><span class="material-icons">quiz</span> Universal</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'Deck', this)"><span class="material-icons">anchor</span> Deck Ops</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'Engine', this)"><span class="material-icons">settings</span> Engine Room</div>
@@ -137,7 +137,6 @@
     // ==========================================
     auth.onAuthStateChanged(user => {
         if (user) {
-            // Logged in! Hide login screen, show app, load data
             document.getElementById('login-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('login-screen').style.display = 'none';
@@ -145,7 +144,6 @@
                 fetchDatabase();
             }, 500);
         } else {
-            // Not logged in. Show login screen
             document.getElementById('admin-app').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('login-screen').style.opacity = '1';
