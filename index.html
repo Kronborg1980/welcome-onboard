@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Norröna Onboard & Training</title>
+    <title>M/F Norröna - Crew Onboarding</title>
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     
     <style>
         :root {
@@ -15,726 +14,636 @@
             --accent-gold: #FCB900;   
             --accent-gold-hover: #e5a800;
             --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.65);
+            --text-muted: rgba(255, 255, 255, 0.7);
             --glass-bg: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --card-radius: 20px;
-            --nav-height: 75px;
             --danger: #e74c3c;
             --success: #27ae60;
+            --header-height: 65px;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--primary-dark); 
             color: var(--text-main); 
-            background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 70%); 
+            background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 80%); 
             background-attachment: fixed; 
             min-height: 100vh; 
             -webkit-font-smoothing: antialiased; 
-            padding-bottom: env(safe-area-inset-bottom);
+            overflow-x: hidden;
         }
 
-        #app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: calc(var(--nav-height) + 30px); position: relative; overflow-x: hidden; }
+        #app-shell { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            background: rgba(0, 40, 54, 0.3);
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
         
-        /* --- HEADER --- */
-        .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding-top: env(safe-area-inset-top); }
-        .navbar { display: flex; align-items: center; height: 60px; padding: 0 16px; gap: 10px; }
-        .navbar .logo { flex-shrink: 0; display: flex; align-items: center; font-weight: 800; color: #fff; text-decoration: none; font-size: 1.2rem; }
-        .onboard-time { flex-shrink: 0; font-weight: 600; font-size: 0.8rem; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; text-align: center; }
-        .voyage-status { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(252, 185, 0, 0.25); padding: 6px 10px; border-radius: 50px; height: 36px; }
-        .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
-        #header-dest-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* --- HEADER & HAMBURGER MENU --- */
+        header { 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            height: var(--header-height);
+            background: rgba(0, 40, 54, 0.95); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--glass-border); 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; gap: 10px;}
+        .logo .status-dot { width: 8px; height: 8px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 10px var(--accent-gold); animation: pulse 2s infinite; }
+        
+        .menu-toggle { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .menu-toggle .material-icons { font-size: 32px; transition: 0.3s; }
+
+        /* Full Screen Menu Overlay */
+        #nav-overlay {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 40, 54, 0.98);
+            backdrop-filter: blur(25px);
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            overflow-y: auto;
+        }
+        #nav-overlay.active { transform: translateX(0); }
+        
+        .nav-link {
+            display: flex; align-items: center; gap: 15px; padding: 18px 20px;
+            color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 600;
+            border-bottom: 1px solid var(--glass-border); transition: 0.2s;
+        }
+        .nav-link:hover, .nav-link:active { background: var(--glass-bg); color: var(--accent-gold); padding-left: 25px; }
+        .nav-link .material-icons { color: var(--accent-gold); }
+
+        /* --- CONTENT AREAS --- */
+        main { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        .view { display: none; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-        
-        @media (max-width: 380px) {
-            .navbar { padding: 0 10px; gap: 8px; }
-            .onboard-time { font-size: 0.7rem; padding: 5px 8px; }
-            .voyage-status { padding: 5px 8px; }
-            #header-dest-text { font-size: 0.65rem; }
+
+        /* Cards & Typography */
+        h1, h2, h3 { font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
+        h1 { font-size: 2rem; color: #fff; }
+        h2 { font-size: 1.5rem; color: var(--accent-gold); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;}
+        h3 { font-size: 1.2rem; color: #fff; margin-top: 20px; }
+        p, li { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; }
+        ul { padding-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+
+        .card { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 16px; 
+            padding: 24px; 
+            margin-bottom: 20px; 
+            box-shadow: var(--glass-shadow); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
         }
 
-        /* --- PAGES --- */
-        .page { padding: 24px; display: none; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .callout { background: rgba(252, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+        .callout h4 { color: var(--accent-gold); margin-bottom: 8px; font-size: 1.1rem; }
+        .callout p { color: #fff; margin-bottom: 0; font-size: 0.95rem; }
         
-        /* --- FRAMED VOYAGE MAP --- */
-        .voyage-page.active { padding: 0; display: flex; flex-direction: column; }
-        .voyage-map-container { position: relative; width: 100%; height: 40vh; z-index: 1; padding: 12px 12px 0 12px; }
-        #map { width: 100%; height: 100%; background: #001e29; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8); overflow: hidden; }
-        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.6)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
-        .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--primary-dark); border-radius: 24px 24px 0 0; border-top: 1px solid var(--glass-border); padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; }
-        
-        /* Grid & Components */
-        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; }
-        .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); opacity: 0.9; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-weight: 700; }
-        .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; }
-        .grid-item .value .unit { font-size: 0.7rem; opacity: 0.6; font-weight: 400; margin-left: 3px; text-transform: lowercase; }
-        .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: rgba(255,255,255,0.2); margin: 0 8px; }
-        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .alert-danger { background: rgba(231, 76, 60, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
+        .alert-danger h4 { color: var(--danger); margin-bottom: 8px; }
+        .alert-danger p { color: #fff; margin-bottom: 0; }
 
-        .home-hero { height: 60vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px; position: relative; border-radius: 0 0 40px 40px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .home-hero-bg { position: absolute; inset: 0; z-index: 1; background-size: cover; background-position: center; animation: slowZoom 24s infinite alternate ease-in-out; }
-        .home-hero::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(to top, var(--primary-dark) 10%, rgba(0,40,54,0.8) 35%, rgba(0,40,54,0) 70%); }
-        .home-hero-content { position: relative; z-index: 3; text-align: center; margin-bottom: 20px; }
-        .home-hero h1 { font-size: 3rem; line-height: 1.1; font-weight: 700; margin-bottom: 16px; text-shadow: 0 10px 30px rgba(0,0,0,0.8); letter-spacing: -1px; }
-        .home-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin: 0 auto; max-width: 90%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.5; }
-        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.15); } }
+        .hero-img { width: calc(100% + 48px); height: 220px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
 
-        .bottom-nav { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 432px; margin: 0 auto; height: var(--nav-height); background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; display: flex; justify-content: space-evenly; align-items: center; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: all 0.3s ease; width: 60px; height: 100%; cursor: pointer;}
-        .nav-item .material-icons { font-size: 24px; margin-bottom: 4px; transition: 0.3s; }
-        .nav-item.active { color: #fff; }
-        .nav-item.active .material-icons { color: var(--accent-gold); transform: translateY(-4px); filter: drop-shadow(0 0 8px rgba(252, 185, 0, 0.4)); }
-        .nav-item.active::after { content: ''; width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%; position: absolute; bottom: 12px; }
+        /* Buttons */
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
+        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); box-shadow: 0 4px 15px rgba(252, 185, 0, 0.3); }
+        .btn-primary:active { background: var(--accent-gold-hover); transform: translateY(2px); }
+        .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: #fff; }
+        .btn-outline:active { background: var(--glass-bg); }
+        .btn-dept { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; justify-content: flex-start; padding: 20px; }
+        .btn-dept .material-icons { color: var(--accent-gold); font-size: 28px;}
+        .btn-dept:hover { background: rgba(252, 185, 0, 0.1); border-color: var(--accent-gold); }
 
-        /* --- NEW: ONBOARDING / TRAINING MODULE STYLES --- */
-        .onboarding-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: var(--glass-shadow); backdrop-filter: blur(10px); }
-        .onboarding-header { text-align: center; margin-bottom: 25px; }
-        .onboarding-header h2 { color: var(--accent-gold); font-size: 1.8rem; margin-bottom: 10px; }
-        
-        .dept-btn { display: block; width: 100%; padding: 16px; margin-bottom: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; text-align: left; display: flex; align-items: center; gap: 15px; }
-        .dept-btn:hover { background: rgba(252, 185, 0, 0.1); border-color: var(--accent-gold); }
-        .dept-btn .material-icons { color: var(--accent-gold); }
+        /* Accordion */
+        .accordion { border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: rgba(0,0,0,0.2); }
+        .accordion-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; color: #fff; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 20px; }
+        .accordion.open .accordion-content { max-height: 2000px; padding: 15px 20px; border-top: 1px solid var(--glass-border); }
+        .accordion.open .accordion-header .material-icons { transform: rotate(180deg); color: var(--accent-gold); }
 
-        .slide-container { display: none; }
-        .slide-container.active { display: block; animation: fadeIn 0.4s; }
-        
-        .training-img { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .training-text h3 { color: var(--accent-gold); margin-bottom: 10px; font-size: 1.4rem; }
-        .training-text p, .training-text ul { color: rgba(255,255,255,0.9); margin-bottom: 15px; line-height: 1.6; }
-        .training-text ul { padding-left: 20px; }
-        .training-text li { margin-bottom: 8px; }
-
-        .callout { background: rgba(252, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
-
-        /* FAQ Accordion inside Onboarding */
-        .faq-item { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); margin-bottom: 8px; border-radius: 8px; overflow: hidden; }
-        .faq-q { padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #fff; }
-        .faq-a { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; color: var(--text-muted); font-size: 0.95rem; }
-        .faq-item.open .faq-a { padding: 15px; max-height: 500px; border-top: 1px solid rgba(255,255,255,0.05); }
+        /* Module Navigation */
+        .module-nav { display: flex; gap: 10px; margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;}
+        .module-nav .btn { margin-bottom: 0; }
+        .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
+        .progress-step { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; transition: 0.3s;}
+        .progress-step.active { background: var(--accent-gold); box-shadow: 0 0 8px var(--accent-gold); }
+        .progress-step.completed { background: var(--success); }
 
         /* Quiz UI */
-        .quiz-option { display: block; width: 100%; text-align: left; padding: 15px; margin-bottom: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: rgba(0,0,0,0.4); border: 2px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 1rem; cursor: pointer; transition: 0.2s; line-height: 1.4; }
         .quiz-option.selected { border-color: var(--accent-gold); background: rgba(252, 185, 0, 0.15); font-weight: bold; }
-        .quiz-feedback { margin-top: 15px; font-weight: bold; text-align: center; padding: 10px; border-radius: 8px; display: none; }
+        .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
         .feedback-success { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid #27ae60; display: block; }
         .feedback-error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; display: block; }
-
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
-        .btn { padding: 14px 20px; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; flex: 1; transition: 0.2s; text-align: center;}
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); }
-        .btn-primary:active { background: var(--accent-gold-hover); }
-
-        /* Quiz Progress Bar */
-        .train-progress { display: flex; gap: 4px; margin-bottom: 20px; }
-        .train-step { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
-        .train-step.active { background: var(--accent-gold); box-shadow: 0 0 5px var(--accent-gold); }
 
     </style>
 </head>
 <body>
-    <div id="app-shell">
-        <header class="main-header">
-            <nav class="navbar">
-                <a href="#" class="logo">SMYRIL LINE</a>
-                <div class="voyage-status">
-                    <span class="status-dot"></span>
-                    <span id="header-dest-text">LOADING...</span>
-                </div>
-                <div class="onboard-time" id="onboard-time-header">--:--</div>
-            </nav>
-        </header>
-        
-        <main id="content-container"></main>
+
+<div id="app-shell">
+    <header>
+        <div class="logo">
+            <span class="status-dot"></span>
+            Norröna Crew
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()">
+            <span class="material-icons" id="menu-icon">menu</span>
+        </button>
+    </header>
+
+    <div id="nav-overlay">
+        <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Home / Department</a>
+        <a href="#" class="nav-link" onclick="startModuleDirect(0)"><span class="material-icons">info</span> The Ship & Conditions</a>
+        <a href="#" class="nav-link" onclick="startModuleDirect(1)"><span class="material-icons">health_and_safety</span> Safety & SAFIR</a>
+        <a href="#" class="nav-link" onclick="startModuleDirect(2)"><span class="material-icons">checkroom</span> Uniforms & Rules</a>
+        <a href="#" class="nav-link" onclick="startModuleDirect(3)"><span class="material-icons">school</span> Dictionary & Details</a>
+        <a href="#" class="nav-link" onclick="startModuleDirect(4)"><span class="material-icons">quiz</span> Clearance Assessment</a>
     </div>
-    <nav class="bottom-nav" id="bottom-nav"></nav>
-    
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        // --- EMBEDDED DATA STRUCTURE (Replaces external data.json) ---
-        const embeddedData = {
-            "settings": {
-                "logoUrl": "https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg"
-            },
-            "categories": [
-                {
-                    "id": "home",
-                    "title": "Welcome",
-                    "icon": "home",
-                    "type": "home",
-                    "items": [
-                        {
-                            "name": "M/F Norröna",
-                            "description": "Connecting the North Atlantic. Welcome aboard our flagship.",
-                            "images": ["https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp"]
-                        }
-                    ]
-                },
-                {
-                    "id": "voyage",
-                    "title": "Voyage",
-                    "icon": "explore",
-                    "type": "voyage",
-                    "items": []
-                },
-                {
-                    "id": "onboarding",
-                    "title": "Training",
-                    "icon": "school",
-                    "type": "training",
-                    "items": []
-                }
-            ]
-        };
 
-        // --- TRAINING/ONBOARDING DATA ---
-        const trainingContent = {
-            all: [
-                {
-                    title: "The Norröna Story",
-                    img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp",
-                    html: `
-                        <h3>The Pride of the North Atlantic</h3>
-                        <p>Welcome to the M/F Norröna. You are joining a crew that operates the largest passenger ship in the North Atlantic.</p>
-                        <ul>
-                            <li><strong>Capacity:</strong> 1,482 Passengers & up to 120 Crew.</li>
-                            <li><strong>Dimensions:</strong> 165 meters long, 30 meters wide.</li>
-                            <li><strong>Cargo:</strong> 1,830 lane meters (up to 800 cars or 130 trailers).</li>
-                        </ul>
-                    `
-                },
-                {
-                    title: "Safety & Culture",
-                    img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Engine_Room-56_1920x1325-1600x1104.jpg.webp",
-                    html: `
-                        <h3>"If you see it, you own it."</h3>
-                        <p>Our safety vision is zero accidents. If you see a hazard, fix it or report it immediately via the <strong>SAFIR</strong> system found on deck iPads.</p>
-                        <div class="callout">
-                            <strong>Zero Tolerance:</strong> We have a strict 0-tolerance policy for alcohol and drugs. Violation means immediate dismissal.
+    <main>
+        <div id="view-home" class="view active">
+            <div class="card" style="padding:0; overflow:hidden;">
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" style="width:100%; height:250px; object-fit:cover; display:block;" alt="Norrona">
+                <div style="padding: 24px;">
+                    <h1>Welcome to Our Team</h1>
+                    <p style="font-size: 1.1rem; color: #fff;">We are happy to welcome you to Smyril Line. You are joining the crew of M/F Norröna, the largest passenger ship in the North Atlantic Ocean.</p>
+                    <p>Before you embark on your first trip, you are required to familiarize yourself with the guidelines, safety culture, and rules of your new workplace.</p>
+                    
+                    <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--accent-gold);">Select Your Department to Begin:</h3>
+                    
+                    <button class="btn btn-dept" onclick="initDepartment('hotel')">
+                        <span class="material-icons">room_service</span> 
+                        <div>
+                            <div style="font-size:1.2rem; margin-bottom:4px;">Hotel & Commercial</div>
+                            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Restaurants, Bars, Housekeeping, Tax-Free</div>
                         </div>
-                    `
-                },
-                {
-                    title: "Frequently Asked Questions",
-                    img: "",
-                    html: `
-                        <h3>Passenger FAQ</h3>
-                        <p>Passengers will ask you these things constantly. Tap to learn the answers:</p>
-                        <div class="faq-item" onclick="toggleFaq(this)">
-                            <div class="faq-q">Where do we sail? <span class="material-icons">expand_more</span></div>
-                            <div class="faq-a">We run from Hirtshals (DK) ➔ Tórshavn (FO) ➔ Seyðisfjörður (IS).</div>
+                    </button>
+                    
+                    <button class="btn btn-dept" onclick="initDepartment('bridge_engine')">
+                        <span class="material-icons">engineering</span> 
+                        <div>
+                            <div style="font-size:1.2rem; margin-bottom:4px;">Bridge, Deck & Engine</div>
+                            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Officers, Deckhands, Engineers, Mechanics</div>
                         </div>
-                        <div class="faq-item" onclick="toggleFaq(this)">
-                            <div class="faq-q">How long is the crossing? <span class="material-icons">expand_more</span></div>
-                            <div class="faq-a">Denmark to Faroes takes ~30-38 hours. Faroes to Iceland is an extra 15 hours.</div>
-                        </div>
-                        <div class="faq-item" onclick="toggleFaq(this)">
-                            <div class="faq-q">What's the crew schedule? <span class="material-icons">expand_more</span></div>
-                            <div class="faq-a">We work a 1:1 schedule. e.g., 4 weeks onboard, followed by 4 weeks paid leave at home.</div>
-                        </div>
-                    `
-                }
-            ],
-            hotel: [
-                {
-                    title: "Hotel & Commercial",
-                    img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp",
-                    html: `
-                        <h3>The Guest Experience</h3>
-                        <p>We turn a ferry ride into a cruise experience.</p>
-                        <div class="callout">
-                            <strong>The 60-Second Rule:</strong> Always acknowledge and greet guests within 60 seconds of their arrival.
-                        </div>
-                        <ul>
-                            <li><strong>Shoes:</strong> Bring your own all-black, closed-toe, non-slip shoes (no logos).</li>
-                            <li><strong>Tax-Free:</strong> Crew can only use the shop during designated "Crew Sale" hours.</li>
-                        </ul>
-                    `
-                }
-            ],
-            deck: [
-                {
-                    title: "Deck Operations",
-                    img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp",
-                    html: `
-                        <h3>Cargo & Exterior</h3>
-                        <p>We handle the lifeblood of the ship: vehicles and cargo.</p>
-                        <ul>
-                            <li><strong>High Risk:</strong> Hazards are highest during loading/unloading. A task supervisor must always be present.</li>
-                            <li><strong>Certificates:</strong> Smyril Line pays for STCW renewals, but it is <em>your</em> responsibility to book them before they expire.</li>
-                        </ul>
-                    `
-                }
-            ],
-            engine: [
-                {
-                    title: "Engine Department",
-                    img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Engine_Room-56_1920x1325-1600x1104.jpg.webp",
-                    html: `
-                        <h3>The Heartbeat</h3>
-                        <p>We power the beast with 4 Wärtsilä NSD ZA40S engines pushing 30,000 HP.</p>
-                        <ul>
-                            <li><strong>Safety:</strong> Hearing protection and PPE are non-negotiable in the engine room.</li>
-                            <li><strong>Efficiency:</strong> Surplus engine heat is used to warm the passenger hot tubs on deck!</li>
-                        </ul>
-                    `
-                }
-            ]
-        };
+                    </button>
+                </div>
+            </div>
+        </div>
 
-        const quizBank = {
-            general: [
-                { q: "What does the SAFIR system handle?", options: ["Food orders", "Passenger tickets", "Reporting accidents & near misses"], ans: 2 },
-                { q: "What is our policy on alcohol?", options: ["1 drink allowed off-duty", "Zero-tolerance", "Allowed in cabins"], ans: 1 },
-                { q: "What is the core rule of our safety culture?", options: ["If you see it, you own it", "The captain fixes it", "Ignore small issues"], ans: 0 }
-            ],
-            hotel: [
-                { q: "What is the '60-Second Rule'?", options: ["Clean tables in 60s", "Acknowledge guests within 60s", "Serve drinks in 60s"], ans: 1 },
-                { q: "What type of shoes MUST you bring?", options: ["White sneakers", "All-black, non-slip, closed-toe", "Sandals"], ans: 1 }
-            ],
-            deck: [
-                { q: "When are hazards highest for the Deck department?", options: ["Open ocean sailing", "During safety drills", "During loading/unloading"], ans: 2 },
-                { q: "Who is responsible for renewing your STCW certificates?", options: ["The Captain", "You are", "The port authority"], ans: 1 }
-            ],
-            engine: [
-                { q: "What is absolutely non-negotiable in the engine room?", options: ["Wearing a tie", "Hearing protection and PPE", "Running to save time"], ans: 1 },
-                { q: "What is surplus engine heat used for?", options: ["Heating passenger hot tubs", "Cooking in the galley", "Melting deck ice"], ans: 0 }
-            ]
-        };
+        <div id="view-module" class="view">
+            <div class="progress-bar" id="module-progress"></div>
+            <div class="card" id="module-content" style="padding: 0; overflow: hidden;">
+                </div>
+            <div class="module-nav">
+                <button class="btn btn-outline" id="btn-mod-back" onclick="prevModule()">Back</button>
+                <button class="btn btn-primary" id="btn-mod-next" onclick="nextModule()">Continue</button>
+            </div>
+        </div>
 
-        // --- APP STATE ---
-        let map;
-        let liveRouteLine = null;
-        let appData = embeddedData; // Use embedded data directly
-        
-        // Training State
-        let currentDept = '';
-        let trainingSlides = [];
-        let currentTrainIdx = 0;
-        let activeQuizQuestions = [];
-        let currentQuizIdx = 0;
-        let selectedQuizAns = null;
-
-        document.addEventListener("DOMContentLoaded", () => {
-            initApp();
-            setInterval(updateShipData, 60000); 
-            setInterval(updateHeaderTime, 1000);
-        });
-
-        function initApp() {
-            // Setup Bottom Nav
-            const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
-            document.getElementById("bottom-nav").innerHTML = navHtml;
-            
-            document.querySelectorAll('.nav-item').forEach(link => { 
-                link.addEventListener('click', (e) => { 
-                    e.preventDefault(); 
-                    renderPage(e.currentTarget.dataset.id); 
-                }); 
-            });
-            
-            // Check hash or load home
-            const initialPageId = window.location.hash.substring(1);
-            if (initialPageId && appData.categories.some(c => c.id === initialPageId)) {
-                renderPage(initialPageId);
-            } else {
-                renderPage('home'); 
-            }
-        }
-
-        // --- RENDER PAGES ---
-        function renderPage(pageId) {
-            const contentContainer = document.getElementById("content-container");
-            const page = appData.categories.find(cat => cat.id === pageId);
-            
-            // Update Active Nav Icon
-            document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
-            
-            if (page.type === 'home') {
-                renderHome(contentContainer, page);
-                updateShipData(true);
-            } else if (page.type === 'voyage') {
-                renderVoyage(contentContainer);
-                initializeVoyagePage();
-            } else if (page.type === 'training') {
-                renderTraining(contentContainer);
-            }
-            
-            window.location.hash = pageId;
-        }
-
-        function renderHome(container, page) {
-            const heroItem = page.items[0];
-            container.innerHTML = `
-                <div class="page active" style="padding:0;">
-                    <div class="home-hero">
-                        <div class="home-hero-bg" style="background-image: url(${heroItem.images[0]})"></div>
-                        <div class="home-hero-content">
-                            <h1>${heroItem.name}</h1>
-                            <p>${heroItem.description}</p>
-                        </div>
-                    </div>
-                    <div style="padding:24px;">
-                        <div class="voyage-grid">
-                            <div class="grid-item">
-                                <div id="home-dest-label" class="label">Next Stop</div>
-                                <div class="value" id="destination-home" style="font-size:1.6rem">--</div>
-                                <div class="sub-value" id="eta-home">--</div>
-                            </div>
-                            <div class="grid-item">
-                                <div class="label">Speed & Course</div>
-                                <div class="value" style="font-size: 1.2rem;">
-                                    <span id="speed-knots-home">--</span> <span class="unit">kn</span>
-                                </div>
-                                <div class="sub-value" id="course-home">Course: --°</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        function renderVoyage(container) {
-            container.innerHTML = `
-                <div class="page active voyage-page" style="padding:0">
-                    <div class="voyage-map-container">
-                        <div id="map"></div>
-                        <div class="map-gradient"></div>
-                    </div>
-                    <div class="voyage-sheet">
-                        <div class="weather-strip">
-                            <div class="weather-left">
-                                <img id="weather-icon" src="" alt="">
-                                <div class="weather-details">
-                                    <div class="weather-temp" id="weather-temp">--°C</div>
-                                    <div class="weather-desc" id="weather-description">--</div>
-                                </div>
-                            </div>
-                            <div class="weather-label">Destination<br>Weather</div>
-                        </div>
-                        <div class="voyage-grid">
-                            <div class="grid-item">
-                                <div class="label">Speed</div>
-                                <div class="value"><span id="speed-knots">--</span> <span class="unit">kn</span></div>
-                                <div class="sub-value" id="course-voyage">Course: --°</div>
-                            </div>
-                            <div class="grid-item">
-                                <div class="label">Time (Tórshavn)</div>
-                                <div class="value" id="onboard-time" style="font-size:1.5rem">--:--</div>
-                                <div class="sub-value">GMT</div>
-                            </div>
-                            <div class="grid-item">
-                                <div class="label">Distance Left</div>
-                                <div class="value" id="distance" style="font-size:1.5rem">--</div>
-                                <div class="sub-value" id="distance-unit">Km</div>
-                            </div>
-                            <div class="grid-item">
-                                <div class="label" id="destination-label">Destination</div>
-                                <div class="value" id="destination-voyage" style="font-size:1.2rem">--</div>
-                                <div class="sub-value" id="eta-voyage">--</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        // --- NEW TRAINING MODULE LOGIC ---
-        function renderTraining(container) {
-            container.innerHTML = `
-                <div class="page active" style="padding-bottom: 80px;">
-                    <div class="onboarding-card" id="train-selector">
-                        <div class="onboarding-header">
-                            <h2>Welcome Onboard</h2>
-                            <p style="color:var(--text-muted)">Select your department to begin your mandatory familiarization training.</p>
-                        </div>
-                        <button class="dept-btn" onclick="startTraining('hotel')"><span class="material-icons">room_service</span> Hotel & Commercial</button>
-                        <button class="dept-btn" onclick="startTraining('deck')"><span class="material-icons">anchor</span> Deck Department</button>
-                        <button class="dept-btn" onclick="startTraining('engine')"><span class="material-icons">engineering</span> Engine Department</button>
-                    </div>
-
-                    <div class="onboarding-card slide-container" id="train-viewer">
-                        <div class="train-progress" id="train-progress"></div>
-                        <div id="train-content"></div>
-                        <div class="nav-buttons" id="train-nav">
-                            <button class="btn btn-secondary" id="train-back" onclick="prevTrainSlide()">Back</button>
-                            <button class="btn btn-primary" id="train-next" onclick="nextTrainSlide()">Next</button>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        window.startTraining = function(dept) {
-            currentDept = dept;
-            document.getElementById('train-selector').style.display = 'none';
-            document.getElementById('train-viewer').classList.add('active');
-            
-            // Build slides
-            trainingSlides = [...trainingContent.all, ...trainingContent[dept]];
-            
-            // Build Quiz (General + Dept)
-            activeQuizQuestions = [...quizBank.general, ...quizBank[dept]].sort(() => Math.random() - 0.5);
-            
-            // Add a final 'Quiz Intro' slide
-            trainingSlides.push({ isQuizIntro: true });
-            
-            currentTrainIdx = 0;
-            renderTrainSlide();
-        }
-
-        function renderTrainSlide() {
-            const slide = trainingSlides[currentTrainIdx];
-            const contentDiv = document.getElementById('train-content');
-            
-            // Update Progress Bar
-            const progDiv = document.getElementById('train-progress');
-            progDiv.innerHTML = trainingSlides.map((_, i) => `<div class="train-step ${i <= currentTrainIdx ? 'active' : ''}"></div>`).join('');
-
-            // Nav buttons state
-            document.getElementById('train-back').style.display = currentTrainIdx === 0 ? 'none' : 'block';
-            const btnNext = document.getElementById('train-next');
-            btnNext.innerText = "Next";
-            btnNext.onclick = nextTrainSlide;
-
-            if (slide.isQuizIntro) {
-                contentDiv.innerHTML = `
-                    <div class="training-text" style="text-align:center; padding: 20px 0;">
-                        <h3 style="font-size:2rem; margin-bottom:15px;">Clearance Test</h3>
-                        <p>You have reviewed the material. Now you must pass the assessment to complete onboarding.</p>
-                        <span class="material-icons" style="font-size: 60px; color: var(--accent-gold); margin: 20px 0;">assignment</span>
-                    </div>
-                `;
-                btnNext.innerText = "Start Quiz";
-                btnNext.onclick = startQuiz;
-            } else {
-                contentDiv.innerHTML = `
-                    ${slide.img ? `<img src="${slide.img}" class="training-img">` : ''}
-                    <div class="training-text">
-                        ${slide.html}
-                    </div>
-                `;
-            }
-        }
-
-        window.nextTrainSlide = function() {
-            if (currentTrainIdx < trainingSlides.length - 1) {
-                currentTrainIdx++;
-                renderTrainSlide();
-            }
-        }
-
-        window.prevTrainSlide = function() {
-            if (currentTrainIdx > 0) {
-                currentTrainIdx--;
-                renderTrainSlide();
-            }
-        }
-
-        window.toggleFaq = function(el) {
-            el.classList.toggle('open');
-            const icon = el.querySelector('.material-icons');
-            icon.innerText = el.classList.contains('open') ? 'expand_less' : 'expand_more';
-        }
-
-        // -- QUIZ LOGIC --
-        function startQuiz() {
-            currentQuizIdx = 0;
-            renderQuizQuestion();
-        }
-
-        function renderQuizQuestion() {
-            const q = activeQuizQuestions[currentQuizIdx];
-            const contentDiv = document.getElementById('train-content');
-            
-            // Hide progress dots during quiz
-            document.getElementById('train-progress').innerHTML = '';
-            document.getElementById('train-back').style.display = 'none';
-            
-            let optionsHtml = q.options.map((opt, idx) => 
-                `<button class="quiz-option" onclick="selectQuizOption(this, ${idx})">${opt}</button>`
-            ).join('');
-
-            contentDiv.innerHTML = `
-                <div class="training-text">
-                    <div style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px; text-transform:uppercase;">Question ${currentQuizIdx + 1} of ${activeQuizQuestions.length}</div>
-                    <h3 style="color:#fff;">${q.q}</h3>
-                    <div style="margin-top:20px;">${optionsHtml}</div>
+        <div id="view-quiz" class="view">
+            <div class="card">
+                <h2>Captain's Clearance</h2>
+                <p>Pass this assessment to complete your onboarding and receive your digital boarding pass. Questions are tailored to your department.</p>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                    <div style="color:var(--accent-gold); font-size:0.9rem; font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Question <span id="quiz-curr">1</span> of <span id="quiz-total">5</span></div>
+                    <h3 id="quiz-q" style="margin-bottom: 20px; font-size: 1.3rem;"></h3>
+                    <div id="quiz-options"></div>
                     <div id="quiz-feedback" class="quiz-feedback"></div>
                 </div>
-            `;
+            </div>
+            <div class="module-nav">
+                <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
+            </div>
+        </div>
 
-            selectedQuizAns = null;
-            const btnNext = document.getElementById('train-next');
-            btnNext.innerText = "Submit Answer";
-            btnNext.style.display = 'block';
-            btnNext.onclick = checkQuizAnswer;
-        }
-
-        window.selectQuizOption = function(btn, idx) {
-            document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedQuizAns = idx;
-            document.getElementById('quiz-feedback').style.display = 'none';
-        }
-
-        function checkQuizAnswer() {
-            const feedback = document.getElementById('quiz-feedback');
-            if (selectedQuizAns === null) {
-                feedback.innerText = "Please select an answer.";
-                feedback.className = "quiz-feedback feedback-error";
-                return;
-            }
-
-            const q = activeQuizQuestions[currentQuizIdx];
-            if (selectedQuizAns === q.ans) {
-                feedback.innerText = "Correct! ✅";
-                feedback.className = "quiz-feedback feedback-success";
-                document.getElementById('train-next').style.display = 'none';
+        <div id="view-success" class="view">
+            <div class="card" style="text-align: center; padding: 40px 20px;">
+                <span class="material-icons" style="font-size: 80px; color: var(--success); margin-bottom: 20px;">check_circle</span>
+                <h1 style="color: var(--success); margin-bottom: 10px;">Clearance Granted</h1>
+                <p style="color: #fff; font-size: 1.1rem; margin-bottom: 30px;">You have successfully completed the mandatory onboarding familiarization.</p>
                 
-                setTimeout(() => {
-                    currentQuizIdx++;
-                    if (currentQuizIdx >= activeQuizQuestions.length) {
-                        showTrainingSuccess();
-                    } else {
-                        renderQuizQuestion();
-                    }
-                }, 1000);
-            } else {
-                feedback.innerText = "Incorrect. Try again!";
-                feedback.className = "quiz-feedback feedback-error";
-            }
-        }
-
-        function showTrainingSuccess() {
-            const contentDiv = document.getElementById('train-content');
-            document.getElementById('train-nav').style.display = 'none';
-            
-            const deptNames = { hotel: "Hotel & Commercial", deck: "Deck Ops", engine: "Engine & Tech" };
-
-            contentDiv.innerHTML = `
-                <div style="text-align:center; padding: 20px 0;">
-                    <h2 style="color:var(--success); margin-bottom:10px;">Clearance Granted!</h2>
-                    <div style="background:rgba(39, 174, 96, 0.1); border: 1px solid var(--success); padding: 20px; border-radius: 12px; margin-top:20px;">
-                        <p style="color:var(--text-muted); font-size:0.8rem; text-transform:uppercase;">Digital Boarding Pass</p>
-                        <div style="font-size:3rem; margin:10px 0;">🎫</div>
-                        <h3 style="color:#fff;">M/F Norröna</h3>
-                        <p style="color:var(--accent-gold); font-weight:bold;">${deptNames[currentDept]}</p>
-                        <p style="color:var(--success); margin-top:10px; font-weight:bold;">CLEARED TO EMBARK</p>
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:15px; margin-bottom:15px;">
+                        <span style="color:var(--text-muted); text-transform:uppercase; font-size:0.8rem; font-weight:bold;">Digital Boarding Pass</span>
+                        <span class="material-icons" style="color:var(--accent-gold);">directions_boat</span>
+                    </div>
+                    <h2 style="border:none; padding:0; margin-bottom:5px; color:#fff;">M/F Norröna</h2>
+                    <p style="color:var(--accent-gold); font-size:1.1rem; font-weight:bold; margin-bottom:20px;" id="pass-dept">Department</p>
+                    
+                    <div style="display:flex; gap:20px;">
+                        <div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">Status</div>
+                            <div style="font-weight:bold; color:var(--success);">CLEARED</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">Date</div>
+                            <div style="font-weight:bold; color:#fff;" id="pass-date"></div>
+                        </div>
                     </div>
                 </div>
-            `;
-        }
+                
+                <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">Return to Home</button>
+            </div>
+        </div>
+    </main>
+</div>
 
-        // --- GLOBAL HELPERS & MAP LOGIC ---
-        function updateHeaderTime() { 
-            const el = document.getElementById('onboard-time-header');
-            if(el) el.textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); 
+<script>
+    // --- MASSIVE DATA STORE CONTAINING ALL TEXT FROM URLS ---
+    const DB = {
+        general: {
+            welcome: `
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Job-1920x1325-1.jpg.webp" class="hero-img">
+                <div style="padding: 24px;">
+                    <h2>Your New Home at Sea</h2>
+                    <p>Welcome on board the Smyril Line ferry, M/F Norröna. Depending on the season, you will be working alongside 30 to 120 colleagues.</p>
+                    <p>With around 110,000 passengers annually, we are firmly in the service industry. Our top priority is delivering excellent service. Cleanliness, politeness, and high-quality products are the cornerstones of our work.</p>
+                    <p><strong>Capacity:</strong> 1,482 passengers.<br>We don't just sell journeys – we create memorable experiences.</p>
+                </div>
+            `,
+            conditions: `
+                <div style="padding: 24px;">
+                    <h2>Conditions of Employment</h2>
+                    
+                    <div class="accordion" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Salary & 1:1 Schedule <span class="material-icons">expand_more</span></div>
+                        <div class="accordion-content">
+                            <p>You will sail 1:1 which means, that if you are onboard for 4 weeks, you also get paid the following 4 weeks at home.</p>
+                            <p>Smyril Line is a member of The House of Industry "Vinnuhúsið" and we follow collective agreements. Smyril Line is part of FAS (Faroese Association for Shipowners).</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Maternity/Paternity & Insurance <span class="material-icons">expand_more</span></div>
+                        <div class="accordion-content">
+                            <p>Citizens outside the Faroe Islands do not pay to the Faroese Maternity System. As a Nordic citizen you can take out an insurance with the Faroese system. If you are not a Nordic citizen, you must have personal insurance in your own country.</p>
+                            <p>You are covered by Smyril Line's insurance if a work-related injury occurs whilst onboard. The insurance also covers your personal belongings if damaged whilst onboard.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion" onclick="toggleAccordion(this)">
+                        <div class="accordion-header">Food, Accommodation & Hygiene <span class="material-icons">expand_more</span></div>
+                        <div class="accordion-content">
+                            <p>You have free food and accommodation onboard. The mess is open 24h a day. Bed linen and towels are available onboard. You must clean the cabin before you go home. You have access to a washing machine, a dryer, and an iron.</p>
+                            <p>Regular showering and daily use of deodorant is highly recommended. Hair longer than shoulder length must be tied back.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            safety: `
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Engine_Room-56_1920x1325-1600x1104.jpg.webp" class="hero-img">
+                <div style="padding: 24px;">
+                    <h2>Our Safety Culture</h2>
+                    <p>Our safety vision is to have zero accidents. To succeed, each one of us must prioritize safety in our daily work.</p>
+                    
+                    <div class="callout">
+                        <h4>"If you see it, you own it."</h4>
+                        <p>We aspire to have a proactive safety culture. If you see a safety issue, you have the responsibility to correct it immediately, reprimand unsafe behavior, and report it.</p>
+                    </div>
+
+                    <div class="alert-danger">
+                        <h4>Alcohol & Drug Policy</h4>
+                        <p>We have a 0-tolerance policy onboard Norröna relating to alcohol and drugs. Violation of the drugs and alcohol policy on board will cause immediate dismissal.</p>
+                    </div>
+
+                    <h3>SAFIR Reporting System</h3>
+                    <p>All incidents must be reported using the SAFIR document (found on deck iPads or via management). We report:</p>
+                    <ul>
+                        <li><strong>Accident:</strong> Person injured or material broken. Focus on what we can learn, not who is to blame.</li>
+                        <li><strong>Non-Conformity:</strong> A situation where a rule is broken.</li>
+                        <li><strong>Near Miss:</strong> A situation that could have turned into an accident.</li>
+                        <li><strong>Observation:</strong> Unsafe conditions, or positive safety actions!</li>
+                    </ul>
+                </div>
+            `,
+            dictionary: `
+                <div style="padding: 24px;">
+                    <h2>Maritime Mini-Dictionary</h2>
+                    <p>Get familiar with the terminology used onboard M/F Norröna.</p>
+                    <ul>
+                        <li><strong>Pax:</strong> Passengers</li>
+                        <li><strong>Slob:</strong> Tax-free shop for employees</li>
+                        <li><strong>Drill:</strong> Weekly fire and safety exercise</li>
+                        <li><strong>Blue Book:</strong> Health certificate</li>
+                        <li><strong>Fire Card:</strong> Shows your safety responsibility</li>
+                        <li><strong>The Mess:</strong> The canteen where employees eat</li>
+                        <li><strong>E-Center / Info:</strong> The reception on deck 5</li>
+                        <li><strong>Galley:</strong> The kitchen</li>
+                        <li><strong>Blue Bag:</strong> Bag for money when passing to the depository on deck 5</li>
+                        <li><strong>Turn:</strong> Working period</li>
+                    </ul>
+                </div>
+            `
+        },
+        hotel: {
+            rules: `
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp" class="hero-img">
+                <div style="padding: 24px;">
+                    <h2>Hotel Department Rules</h2>
+                    
+                    <h3>Uniform & Personal Appearance</h3>
+                    <p>Jewelry and watches should be discreet. There are restrictions when working with food (no rings/nail polish). Tattoos must be hidden from view. Piercings (except regular earrings) must be taken out while on duty.</p>
+                    <p><strong>Footwear:</strong> Black, comfortable, non-slippery shoes closed at the toes. MUST be all black (no logos/colored soles). Worn with black socks.</p>
+
+                    <h3>On Duty</h3>
+                    <ul>
+                        <li>We do not use or carry personal mobile phones whilst working.</li>
+                        <li>iPods/headphones are strictly prohibited (safety risk).</li>
+                        <li>Chewing gum or tobacco (snuff) is prohibited while on duty.</li>
+                        <li>Smoking is only allowed off-duty outside beside the mess.</li>
+                    </ul>
+
+                    <h3>Off Duty</h3>
+                    <p>We are only in public areas while working. For hygiene and modesty reasons, do not go to the crew mess in minimal clothing (shorts/tank tops). Keep voice levels down in the mess.</p>
+                    <p><strong>Crew Sale:</strong> The Shop Manager sets time slots for crew. Do not skip lines; passengers always have top priority.</p>
+                </div>
+            `,
+            guests: `
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8508-1920x1325-1-1600x1104.jpg.webp" class="hero-img">
+                <div style="padding: 24px;">
+                    <h2>How to Treat Guests</h2>
+                    <p>The guests are of outmost value. Our goal is to retain every guest and make sure they recommend us. Sale is service, and service is sale.</p>
+                    
+                    <div class="callout">
+                        <h4>The 60-Second Rule</h4>
+                        <p>Acknowledge and greet guests within 60 seconds. Minimum acknowledge guests with eye contact. If busy, say: "Please take a seat and I will be with you in a minute."</p>
+                    </div>
+
+                    <h3>Interaction Guidelines</h3>
+                    <ul>
+                        <li>Place coasters in front of guests, logo facing them.</li>
+                        <li>Check back after 2 minutes ("Is everything alright for you?").</li>
+                        <li><strong>Body Language:</strong> Stand tall, open posture, do not fold arms.</li>
+                        <li><strong>Positive Words:</strong> Never say "no" or "I don't know" – offer solutions and alternatives.</li>
+                    </ul>
+
+                    <h3>Handling Complaints</h3>
+                    <p>Listen and paraphrase. Show interest. Be sorry they are upset. Thank them for telling you. Explain what you will do. Notify your supervisor.</p>
+                </div>
+            `
+        },
+        bridge_engine: {
+            rules: `
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp" class="hero-img">
+                <div style="padding: 24px;">
+                    <h2>Bridge & Engine Operations</h2>
+                    
+                    <h3>Maintenance of Certificates</h3>
+                    <p>Smyril Line pays for the maintenance of required certificates in your position. The certificate must be STCW approved.</p>
+                    <p>You will receive a reminder 3-6 months before expiration. <strong>It is your own responsibility to sign up for a course.</strong> You pay first, and we refund you with your monthly salary. Send receipts to fc@norrona.fo and hr@smyrilline.fo.</p>
+                    <p>Remember to bring the original certificate with you when signing on.</p>
+
+                    <h3>Safety Planning</h3>
+                    <p>We think about safety when we plan our work. Before every working day:</p>
+                    <ul>
+                        <li>Be familiar with the task at hand.</li>
+                        <li>Make a risk assessment of the task.</li>
+                        <li>Be well rested.</li>
+                    </ul>
+                    <div class="callout">
+                        <h4>Loading & Unloading</h4>
+                        <p>The work must be planned so that the task supervisor (chief officer, bosun etc.) is present and ready during loading and unloading, because the hazards are greatest during these operations.</p>
+                    </div>
+                </div>
+            `
+        }
+    };
+
+    const QUIZZES = {
+        hotel: [
+            { q: "What is the policy on alcohol and drugs onboard?", options: ["Allowed off-duty in cabins", "Zero-tolerance (Immediate Dismissal)", "Allowed during port stays"], ans: 1 },
+            { q: "What is the '60-Second Rule'?", options: ["Clean tables in 60s", "Acknowledge and greet guests within 60s", "Deliver food in 60s"], ans: 1 },
+            { q: "What type of footwear is required?", options: ["Dark blue sneakers", "All black, closed-toe, non-slip shoes", "Sandals in summer"], ans: 1 },
+            { q: "If you witness a safety hazard, what is our motto?", options: ["If you see it, you own it", "Tell the captain later", "Only report major accidents"], ans: 0 },
+            { q: "How should you respond if a guest asks for something we don't have?", options: ["Say 'No' politely", "Say 'I don't know'", "Never say no/I don't know; offer alternatives/solutions"], ans: 2 }
+        ],
+        bridge_engine: [
+            { q: "What is the policy on alcohol and drugs onboard?", options: ["Allowed off-duty in cabins", "Zero-tolerance (Immediate Dismissal)", "Allowed during port stays"], ans: 1 },
+            { q: "What does the SAFIR system handle?", options: ["Ordering parts", "Reporting Accidents, Near Misses & Observations", "Booking annual leave"], ans: 1 },
+            { q: "Who is responsible for ensuring your STCW certificates are renewed before they expire?", options: ["The Captain", "The HR Department", "You are (though the company pays)"], ans: 2 },
+            { q: "When are hazards considered the greatest for the deck team?", options: ["During open ocean sailing", "During safety drills", "During loading and unloading operations"], ans: 2 },
+            { q: "If you witness a safety hazard, what is our motto?", options: ["If you see it, you own it", "Fix it if you have time", "Leave it for the next shift"], ans: 0 }
+        ]
+    };
+
+    // --- APP STATE ---
+    let currentDept = null;
+    let moduleFlow = [];
+    let currentModuleIdx = 0;
+    
+    let activeQuiz = [];
+    let currentQuizIdx = 0;
+    let selectedQuizAns = null;
+
+    // --- UI FUNCTIONS ---
+    function toggleMenu() {
+        const overlay = document.getElementById('nav-overlay');
+        const icon = document.getElementById('menu-icon');
+        overlay.classList.toggle('active');
+        icon.innerText = overlay.classList.contains('active') ? 'close' : 'menu';
+    }
+
+    function toggleAccordion(el) {
+        el.classList.toggle('open');
+    }
+
+    function goToView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        
+        // Close menu if open
+        const overlay = document.getElementById('nav-overlay');
+        if(overlay.classList.contains('active')) toggleMenu();
+    }
+
+    // --- DEPARTMENT & MODULE LOGIC ---
+    function initDepartment(dept) {
+        currentDept = dept;
+        
+        // Build the flow based on department
+        if (dept === 'hotel') {
+            moduleFlow = [
+                DB.general.welcome,
+                DB.general.conditions,
+                DB.hotel.rules,
+                DB.hotel.guests,
+                DB.general.safety,
+                DB.general.dictionary
+            ];
+            activeQuiz = QUIZZES.hotel;
+        } else {
+            moduleFlow = [
+                DB.general.welcome,
+                DB.general.conditions,
+                DB.bridge_engine.rules,
+                DB.general.safety,
+                DB.general.dictionary
+            ];
+            activeQuiz = QUIZZES.bridge_engine;
         }
         
-        function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
-        function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-        function formatETA(e) { if (!e) return null; try { const t = new Date(e); if (isNaN(t.getTime())) return null; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }); const a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a }; } catch (e) { return null; } }
+        startModuleDirect(0);
+    }
+
+    function startModuleDirect(index) {
+        if (!currentDept) {
+            alert("Please select a department first from the Home screen.");
+            goToView('view-home');
+            return;
+        }
         
-        const destinationMap = { 
-            torshavn: { name: "Tórshavn", lat: 62.0080, lon: -6.7705 }, 
-            hirtshals: { name: "Hirtshals", lat: 57.5915, lon: 9.9620 }, 
-            seydisfjord: { name: "Seyðisfjörður", lat: 65.2595, lon: -14.0090 } 
-        };
+        if (index >= moduleFlow.length) {
+            // Go to Quiz
+            startQuiz();
+            return;
+        }
 
-        const createShipIcon = (course) => {
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>`;
-            return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
-        };
-        const pinIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41] });
+        currentModuleIdx = index;
+        renderModule();
+        goToView('view-module');
+    }
 
-        async function updateShipData(isHomePage = false) {
-            try {
-                const response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
-                const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
-                if (!norrona) return;
+    function renderModule() {
+        // Render Progress Bar
+        const progContainer = document.getElementById('module-progress');
+        progContainer.innerHTML = moduleFlow.map((_, i) => 
+            `<div class="progress-step ${i === currentModuleIdx ? 'active' : (i < currentModuleIdx ? 'completed' : '')}"></div>`
+        ).join('');
+        
+        // Render Content
+        document.getElementById('module-content').innerHTML = moduleFlow[currentModuleIdx];
+        
+        // Update Buttons
+        document.getElementById('btn-mod-back').style.display = currentModuleIdx === 0 ? 'none' : 'block';
+        document.getElementById('btn-mod-next').innerText = currentModuleIdx === moduleFlow.length - 1 ? 'Start Clearance Quiz' : 'Continue';
+        
+        // Scroll to top
+        window.scrollTo(0,0);
+    }
 
-                const speedKnots = norrona.position?.speed || 0;
-                const course = Math.round(norrona.position?.course || 0);
-                const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
-                const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
-                const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
-                const isInPort = speedKnots < 1.0 && dist < 2.0;
+    function nextModule() {
+        currentModuleIdx++;
+        if (currentModuleIdx >= moduleFlow.length) {
+            startQuiz();
+        } else {
+            renderModule();
+        }
+    }
 
-                const headerTextEl = document.getElementById('header-dest-text');
-                const arrivalTime = formatETA(norrona.etaFromAIS);
+    function prevModule() {
+        if (currentModuleIdx > 0) {
+            currentModuleIdx--;
+            renderModule();
+        }
+    }
 
-                if (isInPort) headerTextEl.innerHTML = `In ${currentDestInfo.name}`;
-                else headerTextEl.innerHTML = arrivalTime ? `To ${currentDestInfo.name} &bull; ${arrivalTime.day}` : `To ${currentDestInfo.name}`;
+    // --- QUIZ LOGIC ---
+    function startQuiz() {
+        currentQuizIdx = 0;
+        document.getElementById('quiz-total').innerText = activeQuiz.length;
+        renderQuizQuestion();
+        goToView('view-quiz');
+        window.scrollTo(0,0);
+    }
 
-                if (isHomePage) {
-                    const elDest = document.getElementById('destination-home');
-                    if(elDest) {
-                        document.getElementById('home-dest-label').textContent = isInPort ? "Current Status" : "Next Stop";
-                        elDest.textContent = isInPort ? "In Harbor" : currentDestInfo.name;
-                        document.getElementById('eta-home').textContent = arrivalTime ? `${arrivalTime.day}, ${arrivalTime.time}` : '--';
-                        document.getElementById('speed-knots-home').textContent = speedKnots.toFixed(1);
-                        document.getElementById('course-home').textContent = `Course: ${course}°`;
-                    }
+    function renderQuizQuestion() {
+        const q = activeQuiz[currentQuizIdx];
+        document.getElementById('quiz-curr').innerText = currentQuizIdx + 1;
+        document.getElementById('quiz-q').innerText = q.q;
+        
+        const optionsDiv = document.getElementById('quiz-options');
+        optionsDiv.innerHTML = q.options.map((opt, idx) => 
+            `<button class="quiz-option" onclick="selectQuizOption(this, ${idx})">${opt}</button>`
+        ).join('');
+        
+        document.getElementById('quiz-feedback').style.display = 'none';
+        selectedQuizAns = null;
+        
+        const btnSubmit = document.getElementById('btn-quiz-submit');
+        btnSubmit.style.display = 'flex';
+    }
+
+    function selectQuizOption(btn, idx) {
+        document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedQuizAns = idx;
+        document.getElementById('quiz-feedback').style.display = 'none';
+    }
+
+    function submitQuizAnswer() {
+        const feedback = document.getElementById('quiz-feedback');
+        if (selectedQuizAns === null) {
+            feedback.innerText = "Please select an answer.";
+            feedback.className = "quiz-feedback feedback-error";
+            return;
+        }
+
+        const q = activeQuiz[currentQuizIdx];
+        if (selectedQuizAns === q.ans) {
+            feedback.innerText = "Correct! ✅";
+            feedback.className = "quiz-feedback feedback-success";
+            document.getElementById('btn-quiz-submit').style.display = 'none';
+            
+            setTimeout(() => {
+                currentQuizIdx++;
+                if (currentQuizIdx >= activeQuiz.length) {
+                    showSuccess();
                 } else {
-                    const page = document.querySelector('.voyage-page'); 
-                    if(page) {
-                        document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
-                        document.getElementById("course-voyage").textContent = `Course: ${course}°`;
-                        
-                        if (isInPort) {
-                            document.getElementById("distance").textContent = "Docked"; 
-                            document.getElementById("distance-unit").textContent = "";
-                            document.getElementById("destination-label").textContent = "Location";
-                            document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            document.getElementById("eta-voyage").textContent = "Arrived";
-                        } else {
-                            document.getElementById("distance").textContent = Math.round(dist); 
-                            document.getElementById("distance-unit").textContent = "Km";
-                            document.getElementById("destination-label").textContent = "Destination";
-                            document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            document.getElementById("eta-voyage").textContent = arrivalTime ? `${arrivalTime.day} ${arrivalTime.time}` : '--';
-                        }
-
-                        if (map) {
-                            const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
-                            const destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                            
-                            if (!map.shipMarker) map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); 
-                            else { map.shipMarker.setLatLng(shipPos); map.shipMarker.setIcon(createShipIcon(course)); }
-
-                            if (!isInPort) {
-                                if (!map.destMarker) map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); 
-                                else map.destMarker.setLatLng(destPos);
-                                
-                                if (liveRouteLine) map.removeLayer(liveRouteLine); 
-                                liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
-                                map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
-                            } else {
-                                if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
-                                if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; }
-                                map.setView(shipPos, 15);
-                            }
-                        }
-                    }
+                    renderQuizQuestion();
                 }
-            } catch(e) { console.log("Ship data error", e); }
+            }, 1000);
+        } else {
+            feedback.innerText = "Incorrect. Remember the safety rules and try again!";
+            feedback.className = "quiz-feedback feedback-error";
         }
+    }
 
-        function initializeVoyagePage() {
-            if (map) { map.remove(); map = null; }
-            map = L.map("map", { zoomControl: false, attributionControl: false, renderer: L.canvas() }).setView([60.0, -2.0], 5);
-            L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
-            
-            // Draw general route line
-            const detailedRoute = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
-            L.polyline(detailedRoute, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map);
-            
-            updateShipData();
-        }
-    </script>
+    function showSuccess() {
+        const deptNames = {
+            hotel: "Hotel & Commercial",
+            bridge_engine: "Bridge, Deck & Engine"
+        };
+        
+        document.getElementById('pass-dept').innerText = deptNames[currentDept];
+        
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        document.getElementById('pass-date').innerText = dateStr;
+        
+        goToView('view-success');
+        window.scrollTo(0,0);
+    }
+</script>
+
 </body>
 </html>
