@@ -113,9 +113,7 @@
     <div class="toast" id="toast">Live App Updated Successfully!</div>
 
 <script>
-    // ==========================================
     // EXACT FIREBASE CONFIGURATION
-    // ==========================================
     const firebaseConfig = {
         apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",
         authDomain: "norrona-app.firebaseapp.com",
@@ -136,9 +134,7 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // ==========================================
     // AUTHENTICATION LOGIC
-    // ==========================================
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('login-screen').style.opacity = '0';
@@ -168,9 +164,7 @@
 
     function logoutAdmin() { auth.signOut(); }
 
-    // ==========================================
     // DATA MANAGEMENT
-    // ==========================================
     let appData = { handbook: {}, quizzes: {} };
     let currentEditorType = 'handbook'; 
     let currentEditorKey = 'general';
@@ -217,9 +211,7 @@
         db.ref('appData').set(appData).then(() => showToast()).catch(err => alert("Save failed: " + err.message));
     }
 
-    // ==========================================
     // UI EDITOR LOGIC
-    // ==========================================
     function loadEditor(type, key, navElement) {
         if (currentEditorType !== 'system' && document.getElementById('editor-container').innerHTML !== '') extractFormData(); 
         currentEditorType = type; currentEditorKey = key;
