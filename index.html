@@ -9,6 +9,7 @@
 
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -235,10 +236,10 @@
 
 <script>
     // ==========================================
-    // YOUR EXACT FIREBASE CONFIGURATION
+    // EXACT FIREBASE CONFIGURATION
     // ==========================================
     const firebaseConfig = {
-        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13idqc",  
+        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -247,20 +248,26 @@
         appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
     
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.database();
-
+    // ERROR HANDLING: Ensure App runs even if Firebase fails
     let LIVE_DATA = { handbook: {}, quizzes: {} };
+    let firebaseActive = false;
 
-    // Fetch data on app load
-    db.ref('appData').once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-            LIVE_DATA = snapshot.val();
-        }
-        goToView('view-home');
-    }).catch(error => {
-        alert("Could not connect to Database. Please make sure your Firebase Rules are set to true! Error: " + error.message);
-    });
+    try {
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.database();
+        
+        db.ref('appData').once('value').then((snapshot) => {
+            if (snapshot.exists()) { LIVE_DATA = snapshot.val(); }
+            firebaseActive = true;
+            goToView('view-home');
+        }).catch(error => {
+            console.error("Firebase Database blocked or failed:", error);
+            goToView('view-home'); // Force app to open anyway
+        });
+    } catch(e) {
+        console.error("Firebase SDK init failed.");
+        goToView('view-home'); // Force app to open anyway
+    }
 
     // ==========================================
     // UI NAVIGATION CONTROLS
@@ -282,12 +289,14 @@
     let currentHbIdx = 0;
 
     function openHandbook(dept) {
+        if(!firebaseActive || !LIVE_DATA.handbook) { alert("Error: Could not connect to Database. Please check admin panel."); return; }
+        
         handbookFlow = [...(LIVE_DATA.handbook.general || [])];
         if (LIVE_DATA.handbook[dept]) {
             handbookFlow = handbookFlow.concat(LIVE_DATA.handbook[dept]);
         }
         
-        if(handbookFlow.length === 0) { alert("No handbook data found. Ask admin to upload data!"); return; }
+        if(handbookFlow.length === 0) { alert("No handbook data found."); return; }
         
         currentHbIdx = 0;
         renderHandbookPage();
@@ -334,6 +343,7 @@
     let selectedDeptName = "";
 
     function openQuestionnaire() {
+        if(!firebaseActive) { alert("Error: Could not connect to Database to load quiz."); return; }
         if (localStorage.getItem('norrona_quiz_completed')) {
             document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
             goToView('view-success');
@@ -349,7 +359,7 @@
             activeQuiz = activeQuiz.concat(LIVE_DATA.quizzes[dept]);
         }
         
-        if(activeQuiz.length === 0) { alert("No quiz questions loaded for this department in database."); return; }
+        if(activeQuiz.length === 0) { alert("No quiz questions loaded."); return; }
 
         activeQuiz.sort(() => Math.random() - 0.5);
         document.getElementById('quiz-title').innerText = `${dept.replace('_', ' ')} Assessment`;
@@ -407,7 +417,7 @@
     }
 
     // ==========================================
-    // VOYAGE API LOGIC
+    // VOYAGE API LOGIC & LEAFLET MAP FIX
     // ==========================================
     let map, liveRouteLine;
     let mapInitialized = false;
@@ -421,11 +431,13 @@
                 if(typeof L !== 'undefined') { 
                     initializeVoyagePage(); 
                     mapInitialized = true; 
+                } else {
+                    console.error("Leaflet Map engine failed to load.");
                 }
             } else {
                 map.invalidateSize(); 
             }
-        }, 400); 
+        }, 300); 
     }
 
     function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
@@ -463,13 +475,11 @@
 
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentDestInfo.lat}&longitude=${currentDestInfo.lon}&current=temperature_2m,weathercode`).then(r=>r.json()).then(d => {
                 document.getElementById("weather-temp").textContent = `${Math.round(d.current.temperature_2m)}°C`;
-                
-                // Set weather icon
                 const codeMap = { 0:'01d', 1:'02d', 2:'03d', 3:'04d', 45:'50d', 51:'09d', 61:'10d', 71:'13d', 80:'09d', 95:'11d' };
                 const icon = codeMap[d.current.weathercode] || '01d';
                 const iconImg = document.getElementById("weather-icon");
                 iconImg.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-                iconImg.style.display = "block"; // Show it once loaded
+                iconImg.style.display = "block"; 
             }).catch(e=>{});
 
             if (map) {
@@ -499,6 +509,7 @@
         const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
         L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map);
         updateShipData();
+        setInterval(updateShipData, 60000); // Check every minute
     }
 </script>
 
