@@ -3,495 +3,534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Onboard - Smyril Line</title>
+    <title>Welcome Onboard M/F Norröna - Smyril Line</title>
     <style>
         :root {
             --primary-blue: #003366;
             --light-blue: #e6f0fa;
             --accent-gold: #d4af37;
-            --text-dark: #333333;
+            --text-dark: #2c3e50;
             --text-light: #ffffff;
-            --bg-color: #f4f7f6;
+            --bg-color: #f8f9fa;
+            --danger: #e74c3c;
+            --success: #27ae60;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
         body {
-            background-color: #333;
+            background-color: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* Mobile Container */
         #app-container {
             width: 100%;
-            max-width: 414px; /* iPhone Max width */
+            max-width: 480px;
             height: 100vh;
-            max-height: 896px;
+            max-height: 900px;
             background-color: var(--bg-color);
             position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* Progress Bar */
-        #progress-container {
-            display: flex;
-            gap: 5px;
-            padding: 20px 15px 10px;
-            background-color: var(--primary-blue);
-            z-index: 10;
-        }
-
-        .progress-segment {
-            flex: 1;
-            height: 4px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
             overflow: hidden;
         }
 
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background-color: var(--text-light);
-            transition: width 0.3s ease;
-        }
-
-        /* Header */
+        /* Header & Progress */
         header {
             background-color: var(--primary-blue);
             color: var(--text-light);
-            padding: 10px 20px 20px;
+            padding: 15px 20px;
             text-align: center;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        header h1 { font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase; }
         
-        header h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        #progress-container {
+            display: flex;
+            gap: 4px;
+            padding: 10px 15px;
+            background-color: var(--primary-blue);
+        }
+        .progress-segment {
+            flex: 1; height: 5px; background-color: rgba(255, 255, 255, 0.2); border-radius: 3px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; width: 0%; background-color: var(--accent-gold); transition: width 0.4s ease;
         }
 
-        /* Slides */
+        /* Slides Area */
         #slides-container {
             flex: 1;
             position: relative;
             overflow-y: auto;
-            padding: 20px;
+            overflow-x: hidden;
+            background: var(--bg-color);
         }
 
         .slide {
             display: none;
-            animation: fadeIn 0.4s ease;
+            padding: 20px;
+            animation: slideIn 0.4s ease forwards;
+            padding-bottom: 40px;
+        }
+        .slide.active { display: block; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .slide.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Content Styling */
-        h2 {
-            color: var(--primary-blue);
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        p, ul {
-            color: var(--text-dark);
-            line-height: 1.6;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-
-        ul {
-            padding-left: 20px;
+        /* Typography & Components */
+        h2 { color: var(--primary-blue); margin-bottom: 15px; font-size: 1.6rem; border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px; }
+        h3 { color: var(--text-dark); margin-top: 15px; margin-bottom: 10px; font-size: 1.2rem; }
+        p, li { color: var(--text-dark); line-height: 1.6; margin-bottom: 12px; font-size: 1rem; }
+        ul { padding-left: 20px; margin-bottom: 15px; }
+        
+        .hero-img {
+            width: calc(100% + 40px);
+            margin: -20px -20px 20px -20px;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 4px solid var(--accent-gold);
         }
 
         .card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
+            background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid var(--primary-blue);
+        }
+        .card.alert { border-left-color: var(--danger); background: #fdf3f2; }
+        .card.stat { border-left-color: var(--accent-gold); display: flex; align-items: center; gap: 15px;}
+        .stat-num { font-size: 2rem; font-weight: bold; color: var(--primary-blue); }
+
+        /* Department Selector */
+        .dept-btn {
+            display: block; width: 100%; padding: 20px; margin-bottom: 15px;
+            background: #fff; border: 2px solid #ddd; border-radius: 10px;
+            font-size: 1.2rem; font-weight: bold; color: var(--primary-blue);
+            cursor: pointer; transition: all 0.2s; text-align: left;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            border-left: 4px solid var(--accent-gold);
         }
+        .dept-btn:hover, .dept-btn:active { border-color: var(--primary-blue); background: var(--light-blue); transform: translateY(-2px); }
 
-        /* Navigation Buttons */
+        /* FAQ Accordion */
+        .faq-item { background: #fff; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+        .faq-q { padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; color: var(--primary-blue); }
+        .faq-a { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .faq-item.open .faq-a { padding: 15px; max-height: 500px; border-top: 1px solid #eee; }
+
+        /* Navigation Bottom Bar */
         #nav-controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background: #fff;
-            border-top: 1px solid #ddd;
+            display: flex; justify-content: space-between; padding: 15px 20px; background: #fff; border-top: 1px solid #ddd; z-index: 10;
         }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
+        .nav-btn {
+            padding: 12px 25px; border: none; border-radius: 25px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s;
         }
+        .btn-back { background: #e0e0e0; color: #555; }
+        .btn-next { background: var(--primary-blue); color: #fff; width: 100%; text-align: center; }
+        .btn-next:active { background: #001a33; }
 
-        .btn-secondary {
-            background-color: #ddd;
-            color: #555;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-blue);
-            color: #fff;
-        }
-
-        .btn-primary:active {
-            background-color: #002244;
-        }
-
-        /* Quiz Styling */
+        /* Quiz UI */
         .quiz-option {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: var(--light-blue);
-            border: 2px solid transparent;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            color: var(--primary-blue);
-            transition: all 0.2s;
+            display: block; width: 100%; text-align: left; padding: 16px; margin-bottom: 12px;
+            background: #fff; border: 2px solid #ddd; border-radius: 8px;
+            font-size: 1rem; cursor: pointer; transition: all 0.2s; color: var(--text-dark);
         }
+        .quiz-option.selected { border-color: var(--primary-blue); background: var(--light-blue); font-weight: bold; }
+        .quiz-feedback { margin-top: 15px; font-weight: bold; text-align: center; padding: 10px; border-radius: 5px; display: none; }
+        .feedback-success { background: #d4edda; color: #155724; display: block; }
+        .feedback-error { background: #f8d7da; color: #721c24; display: block; }
 
-        .quiz-option:hover {
-            background: #d0e4f7;
-        }
-
-        .quiz-option.selected {
-            border-color: var(--primary-blue);
-            background: #c0d8f0;
-            font-weight: bold;
-        }
-
-        #quiz-feedback {
-            margin-top: 15px;
-            font-weight: bold;
-            text-align: center;
-            min-height: 24px;
-        }
-
-        .success { color: green; }
-        .error { color: red; }
-
-        /* Media query for desktop viewing */
-        @media (min-width: 415px) {
-            #app-container {
-                border-radius: 15px;
-                height: 90vh;
-            }
-        }
+        /* Desktop Polish */
+        @media (min-width: 481px) { #app-container { border-radius: 12px; height: 90vh; } }
     </style>
 </head>
 <body>
 
 <div id="app-container">
-    <div id="progress-container">
-        </div>
     <header>
         <h1>Norröna Navigator</h1>
     </header>
+    <div id="progress-container"></div>
 
     <div id="slides-container">
         
-        <div class="slide active">
+        <div class="slide active" data-type="all">
+            <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Job-1920x1325-1.jpg.webp" class="hero-img" alt="Norröna Crew">
             <h2>Welcome to the Team! ⚓</h2>
-            <div class="card">
-                <p>Welcome on board the Smyril Line ferry, <strong>M/F Norröna</strong> – your new workplace and home at sea.</p>
-            </div>
-            <p>Life on board is more than just a job; it is a unique experience. We are excited to have you join our crew of 30 to 120 colleagues.</p>
-            <p>Swipe through this quick guide to learn the ropes before you embark. At the end, you'll take the <strong>Captain's Clearance Quiz</strong>!</p>
+            <p>You're joining the crew of the largest passenger ship in the North Atlantic. Before you step aboard, we need to get you up to speed.</p>
+            <h3>Select your department to begin:</h3>
+            <button class="dept-btn" onclick="setDepartment('hotel')">🏨 Hotel & Commercial</button>
+            <button class="dept-btn" onclick="setDepartment('deck')">🚢 Deck Department</button>
+            <button class="dept-btn" onclick="setDepartment('engine')">⚙️ Engine Department</button>
         </div>
 
-        <div class="slide">
-            <h2>Living & Working 🚢</h2>
-            <div class="card">
-                <p><strong>The 1:1 Lifestyle:</strong> If you work on board for 4 weeks, you get paid for the following 4 weeks at home.</p>
-            </div>
-            <ul>
-                <li><strong>Food & Cabin:</strong> Free food and accommodation. The mess hall is open 24/7. Keep noise to a minimum!</li>
-                <li><strong>Zero Tolerance:</strong> Strict 0-tolerance policy for alcohol and drugs on duty and off duty.</li>
-                <li><strong>Crew Sale:</strong> Only visit the Tax-Free shop during designated "Crew Sale" times.</li>
-            </ul>
-        </div>
-
-        <div class="slide">
-            <h2>Looking the Part 👔</h2>
-            <p>We provide the uniforms, but here is what <strong>YOU</strong> need to bring:</p>
-            <div class="card">
-                <p><strong>Footwear Rule:</strong></p>
-                <ul>
-                    <li>Black, comfortable, non-slippery shoes.</li>
-                    <li>Closed at the toes.</li>
-                    <li><strong>All black</strong> (No colored logos or white soles).</li>
-                    <li>Black socks.</li>
-                </ul>
-            </div>
-            <p>Maintain excellent hygiene. Hair longer than shoulder length must be tied back.</p>
-        </div>
-
-        <div class="slide">
-            <h2>The Guest Experience 🤝</h2>
-            <p>With 110,000 passengers annually, excellent service is our priority.</p>
-            <div class="card">
-                <p><strong>The 60-Second Rule:</strong></p>
-                <p>Acknowledge and greet guests within 60 seconds of their arrival.</p>
-            </div>
-            <ul>
-                <li>Stand tall, make eye contact, and smile.</li>
-                <li>Never say "No" or "I don't know" without offering a creative solution or alternative.</li>
-                <li>When handling complaints: Listen, show interest, apologize, and explain what you will do to fix it.</li>
-            </ul>
-        </div>
-
-        <div class="slide">
-            <h2>Safety Culture 🦺</h2>
-            <div class="card">
-                <p><strong>"If you see it, you own it."</strong></p>
-                <p>Report hazards using the <strong>SAFIR</strong> document. Our goal is zero accidents.</p>
-            </div>
-            <h3>Mini-Dictionary:</h3>
-            <ul>
-                <li><strong>Pax:</strong> Passengers</li>
-                <li><strong>Slob:</strong> Tax-free for employees</li>
-                <li><strong>Drill:</strong> Weekly fire/safety exercise</li>
-                <li><strong>Blue Bag:</strong> Bag for money transfers</li>
-            </ul>
-        </div>
-
-        <div class="slide" id="quiz-slide">
-            <h2>Captain's Clearance 📝</h2>
-            <p>Let's see what you've learned. Answer correctly to get your digital boarding pass!</p>
+        <div class="slide" data-type="all">
+            <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" class="hero-img" alt="Captain on Bridge">
+            <h2>The Beast of the Atlantic</h2>
+            <p>The M/F Norröna isn't just a ferry; she's an absolute powerhouse designed to conquer the North Atlantic.</p>
             
-            <div id="quiz-container">
-                <h3 id="question-text" style="margin-bottom: 15px; font-size: 1.1rem;"></h3>
-                <div id="options-container"></div>
-                <div id="quiz-feedback"></div>
+            <div class="card stat">
+                <div class="stat-num">1,482</div>
+                <div><strong>Passengers</strong><br>Plus up to 120 crew members.</div>
+            </div>
+            <div class="card stat">
+                <div class="stat-num">165m</div>
+                <div><strong>Length</strong><br>With a beam (width) of 30 meters.</div>
+            </div>
+            <div class="card stat">
+                <div class="stat-num">800</div>
+                <div><strong>Vehicles</strong><br>Or 130 large cargo trailers.</div>
+            </div>
+            <p>You're part of a massive operation. No matter your rank, your role is critical to keeping this floating city moving.</p>
+        </div>
+
+        <div class="slide" data-type="all">
+            <h2>F.A.Q & Operations 🗺️</h2>
+            <p>Passengers will ask you these questions constantly. Memorize the answers!</p>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Where do we sail? <span>+</span></div>
+                <div class="faq-a">We connect Europe to the North Atlantic. Our route runs from <strong>Hirtshals (Denmark)</strong> ➔ <strong>Tórshavn (Faroe Islands)</strong> ➔ <strong>Seyðisfjörður (Iceland)</strong>.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">How long is the crossing? <span>+</span></div>
+                <div class="faq-a">Hirtshals to Tórshavn takes roughly 38 hours in winter, and 30 hours in summer. Tórshavn to Iceland takes an additional 15 hours. Top speed is 21 knots!</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">What facilities do we have? <span>+</span></div>
+                <div class="faq-a">We have 3 restaurants (like Skansagarður Buffet), a cinema, a fitness center, a gaming room, and 3 outdoor hot tubs (cleverly heated by surplus heat from the engine room!). We even have a football pitch on Deck 9!</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">What is my schedule & pay? <span>+</span></div>
+                <div class="faq-a">We work on a <strong>1:1 schedule</strong>. If you are onboard for 4 weeks, you get paid for the following 4 weeks while you are at home resting.</div>
             </div>
         </div>
 
-        <div class="slide" id="success-slide">
-            <h2 style="color: green; text-align: center; margin-top: 20px;">🎉 Clearance Granted!</h2>
-            <div class="card" style="text-align: center; margin-top: 20px;">
-                <h3>Digital Boarding Pass</h3>
-                <p style="margin-top: 10px; font-size: 2rem;">⚓</p>
-                <p style="margin-top: 10px;"><strong>M/F Norröna</strong></p>
-                <p style="color: gray; font-size: 0.9rem;">Status: Ready to Embark</p>
+        <div class="slide" data-type="all">
+            <h2>Safety & Culture 🦺</h2>
+            <p>Our safety vision is zero accidents. To succeed, we live by one rule:</p>
+            <div class="card">
+                <h3 style="color: var(--primary-blue); margin-top: 0;">"If you see it, you own it."</h3>
+                <p>If you see a hazard, fix it or report it immediately. Do not walk past a problem.</p>
             </div>
-            <p style="text-align: center;">You are fully prepared. We look forward to seeing you on board!</p>
+            
+            <h3>The SAFIR System</h3>
+            <p>All incidents must be reported via the SAFIR document on the deck iPads. We report:</p>
+            <ul>
+                <li><strong>Accidents:</strong> Injury or broken material.</li>
+                <li><strong>Near Miss:</strong> A situation that <em>almost</em> caused an accident.</li>
+                <li><strong>Observation:</strong> Unsafe behavior or positive actions!</li>
+            </ul>
+
+            <div class="card alert">
+                <strong>Zero Tolerance:</strong> Absolute 0-tolerance for alcohol and drugs on board. Violation means immediate dismissal.
+            </div>
+        </div>
+
+        <div class="slide dept-slide" data-type="hotel">
+            <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp" class="hero-img" alt="Hotel Staff">
+            <h2>Hotel & Commercial 🏨</h2>
+            <p>As part of the Commercial team, you are the face of Smyril Line. We turn a ferry crossing into a cruise experience.</p>
+            
+            <div class="card">
+                <h3>The 60-Second Rule ⏱️</h3>
+                <p>Acknowledge and greet guests within 60 seconds of arrival. Even if you are busy, make eye contact and say: <em>"I will be with you in a minute."</em></p>
+            </div>
+
+            <h3>Uniform Standards</h3>
+            <ul>
+                <li><strong>Shoes:</strong> Must bring your own! Black, non-slip, closed-toe, <strong>no logos or colored soles</strong>.</li>
+                <li><strong>Socks:</strong> Solid black.</li>
+                <li><strong>Hygiene:</strong> Hair past shoulders tied back. Minimal, discreet jewelry. No nail polish when handling food.</li>
+            </ul>
+        </div>
+
+        <div class="slide dept-slide" data-type="deck">
+            <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp" class="hero-img" alt="Deck Operations">
+            <h2>Deck Operations 🚢</h2>
+            <p>The deck team handles the lifeblood of our operation: vehicles, cargo, and external ship maintenance.</p>
+            
+            <div class="card">
+                <h3>1,830 Lane Meters</h3>
+                <p>During loading and unloading at Hirtshals, Tórshavn, and Seyðisfjörður, the hazards are highest. A task supervisor must always be present.</p>
+            </div>
+
+            <ul>
+                <li><strong>Blue Book:</strong> Ensure your health certificates and STCWs are valid. Smyril Line pays for renewals, but <em>you</em> must book them.</li>
+                <li><strong>Blue Bag:</strong> Secure transfer bag for money dropped to the Deck 5 depository.</li>
+            </ul>
+        </div>
+
+        <div class="slide dept-slide" data-type="engine">
+            <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Engine_Room-56_1920x1325-1600x1104.jpg.webp" class="hero-img" alt="Engine Room">
+            <h2>Engine Department ⚙️</h2>
+            <p>Welcome to the belly of the beast. You are responsible for the heartbeat of the Norröna.</p>
+            
+            <div class="card">
+                <h3>30,000 Horsepower</h3>
+                <p>Norröna is powered by 4 mighty Wärtsilä NSD ZA40S engines. They run on heavy fuel, atomized at 470 bar pressure!</p>
+            </div>
+
+            <ul>
+                <li><strong>Safety First:</strong> Hearing protection and PPE are non-negotiable.</li>
+                <li><strong>Sustainability:</strong> The engines don't just move us. The shaft generators provide electricity, and surplus heat warms the passenger hot tubs!</li>
+                <li><strong>Reporting:</strong> A "Near Miss" in the engine room can save lives. Report everything via SAFIR.</li>
+            </ul>
+        </div>
+
+        <div class="slide" data-type="all" id="quiz-intro">
+            <h2>Captain's Clearance 📝</h2>
+            <p>You've read the brief. Now it's time to prove you're ready to board.</p>
+            <p>You must pass this dynamic quiz to receive your digital boarding pass. The questions will cover general ship knowledge and your specific department.</p>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="dept-btn" style="text-align: center; background: var(--accent-gold); color: #fff; border: none;" onclick="startQuiz()">Start the Assessment</button>
+            </div>
+        </div>
+
+        <div class="slide" data-type="all" id="quiz-active">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--primary-blue); font-weight: bold;">
+                <span>Question <span id="q-current">1</span>/<span id="q-total">10</span></span>
+            </div>
+            <h3 id="question-text" style="font-size: 1.2rem; margin-bottom: 20px;"></h3>
+            <div id="options-container"></div>
+            <div id="quiz-feedback" class="quiz-feedback"></div>
+        </div>
+
+        <div class="slide" data-type="all" id="success-slide">
+            <h2 style="color: var(--success); text-align: center; border-bottom: none;">🎉 Clearance Granted!</h2>
+            <div class="card" style="text-align: center; margin-top: 10px; border-left: none; border-top: 5px solid var(--success);">
+                <p style="text-transform: uppercase; letter-spacing: 2px; color: gray; font-size: 0.8rem;">Official Smyril Line</p>
+                <h3 style="margin-top: 5px;">Digital Boarding Pass</h3>
+                <p style="font-size: 3rem; margin: 10px 0;">🎫</p>
+                <p><strong>M/F Norröna</strong></p>
+                <p id="pass-dept" style="color: var(--primary-blue); font-weight: bold; font-size: 1.2rem;"></p>
+                <p style="color: var(--success); font-weight: bold; margin-top: 10px;">Status: CLEARED TO EMBARK</p>
+            </div>
+            <p style="text-align: center;">Welcome to the family. See you on board!</p>
         </div>
 
     </div>
 
-    <div id="nav-controls">
-        <button id="btn-prev" class="btn-secondary" style="visibility: hidden;" onclick="prevSlide()">Back</button>
-        <button id="btn-next" class="btn-primary" onclick="nextSlide()">Next</button>
+    <div id="nav-controls" style="display: none;">
+        <button id="btn-back" class="nav-btn btn-back" onclick="prevSlide()">Back</button>
+        <button id="btn-next" class="nav-btn btn-next" onclick="nextSlide()">Continue</button>
     </div>
 </div>
 
 <script>
-    // App State
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const totalSlides = slides.length;
-    const btnPrev = document.getElementById('btn-prev');
+    // Data & State
+    let userDept = '';
+    let flowSlides = []; // The slides the user will actually see
+    let currentSlideIdx = 0;
+    
+    // Quiz State
+    let quizQuestions = [];
+    let currentQIdx = 0;
+    let selectedAnswer = null;
+
+    // Database of questions
+    const allQuestions = {
+        general: [
+            { q: "What is the standard work schedule onboard?", options: ["2 weeks on, 1 week off", "1:1 (e.g., 4 weeks on, 4 weeks paid off)", "Monday to Friday"], ans: 1 },
+            { q: "What does the SAFIR system handle?", options: ["Ordering food supplies", "Booking passenger tickets", "Reporting accidents, near misses, and observations"], ans: 2 },
+            { q: "What is our policy on alcohol and drugs?", options: ["Allowed off-duty in cabins", "Zero-tolerance at all times", "One drink allowed at dinner"], ans: 1 },
+            { q: "How many passengers can the M/F Norröna carry?", options: ["800", "1,482", "3,250"], ans: 1 },
+            { q: "Which 3 countries does the Norröna route connect?", options: ["Denmark, Norway, Iceland", "Denmark, Faroe Islands, Iceland", "UK, Faroe Islands, Iceland"], ans: 1 },
+            { q: "Who is responsible for renewing your STCW certificates on time?", options: ["The Captain", "You are (though the company pays)", "The port authority"], ans: 1 },
+            { q: "What is the core rule of our safety culture?", options: ["If you see it, you own it", "The captain handles everything", "Only report major accidents"], ans: 0 }
+        ],
+        hotel: [
+            { q: "What is the '60-Second Rule'?", options: ["Clean tables within 60 seconds", "Acknowledge and greet guests within 60 seconds", "Serve drinks in under a minute"], ans: 1 },
+            { q: "What type of shoes MUST you bring?", options: ["White sneakers", "All-black, non-slip, closed-toe", "Blue deck shoes"], ans: 1 },
+            { q: "When can you visit the onboard Tax-Free shop?", options: ["Anytime you want", "Only during designated 'Crew Sale' times", "Crew cannot buy tax-free"], ans: 1 }
+        ],
+        deck: [
+            { q: "How many lane meters of cargo space does Norröna have?", options: ["800m", "1,830m", "3,000m"], ans: 1 },
+            { q: "What is the 'Blue Bag'?", options: ["A bag for lifejackets", "A secure bag for dropping money to Deck 5", "A laundry bag"], ans: 1 },
+            { q: "When are the hazards highest for the Deck department?", options: ["Sailing in the open ocean", "During passenger safety drills", "During loading and unloading operations"], ans: 2 }
+        ],
+        engine: [
+            { q: "How much horsepower do the 4 main engines produce?", options: ["10,000 HP", "20,000 HP", "30,000 HP"], ans: 2 },
+            { q: "What is the surplus engine heat used for?", options: ["Heating the outdoor passenger hot tubs", "Cooking in the galley", "Melting ice on the deck"], ans: 0 },
+            { q: "What is absolutely non-negotiable in the engine room?", options: ["Wearing a tie", "Hearing protection and PPE", "Running to save time"], ans: 1 }
+        ]
+    };
+
+    // UI Elements
+    const domSlides = document.querySelectorAll('.slide');
+    const navControls = document.getElementById('nav-controls');
+    const btnBack = document.getElementById('btn-back');
     const btnNext = document.getElementById('btn-next');
     const progressContainer = document.getElementById('progress-container');
 
-    // Quiz State
-    let currentQuestion = 0;
-    let quizPassed = false;
-    
-    const questions = [
-        {
-            q: "What type of footwear MUST you bring to work?",
-            options: [
-                "Blue sneakers",
-                "All-black, non-slip, closed-toe shoes",
-                "Comfortable sandals"
-            ],
-            answer: 1
-        },
-        {
-            q: "What is the rule for greeting guests in public areas?",
-            options: [
-                "Wait for them to ask for help",
-                "Acknowledge them within 60 seconds",
-                "Greet them within 5 minutes"
-            ],
-            answer: 1
-        },
-        {
-            q: "What does our '0-tolerance' policy refer to?",
-            options: [
-                "Being late to shifts",
-                "Using phones on duty",
-                "Alcohol and drugs"
-            ],
-            answer: 2
-        },
-        {
-            q: "What is a 'SAFIR' report used for?",
-            options: [
-                "Reporting safety issues and accidents",
-                "Ordering new uniforms",
-                "Requesting time off"
-            ],
-            answer: 0
-        }
-    ];
-
-    // Initialize Progress Bar
-    function initProgress() {
-        for (let i = 0; i < totalSlides; i++) {
-            const segment = document.createElement('div');
-            segment.className = 'progress-segment';
-            segment.innerHTML = `<div class="progress-fill" id="fill-${i}"></div>`;
-            progressContainer.appendChild(segment);
-        }
-        updateProgress();
-    }
-
-    // Navigation Logic
-    function updateProgress() {
-        for (let i = 0; i < totalSlides; i++) {
-            const fill = document.getElementById(`fill-${i}`);
-            if (i < currentSlide) {
-                fill.style.width = '100%';
-            } else if (i === currentSlide) {
-                fill.style.width = '50%'; // Active state indicator
-            } else {
-                fill.style.width = '0%';
+    // 1. Initialize Flow based on Department
+    function setDepartment(dept) {
+        userDept = dept;
+        
+        // Build the flow: all general slides + specific dept slides
+        flowSlides = [];
+        domSlides.forEach((slide, index) => {
+            const type = slide.getAttribute('data-type');
+            if (type === 'all' || type === dept) {
+                flowSlides.push(slide);
             }
+        });
+
+        // Build Quiz
+        quizQuestions = [...allQuestions.general];
+        quizQuestions = quizQuestions.concat(allQuestions[dept]);
+        // Shuffle questions for fun
+        quizQuestions = quizQuestions.sort(() => Math.random() - 0.5);
+
+        // Update Boarding Pass Text
+        const deptNames = { hotel: "Hotel & Commercial Dept.", deck: "Deck Operations", engine: "Engine & Technical" };
+        document.getElementById('pass-dept').innerText = deptNames[dept];
+
+        // Init Progress Bar
+        progressContainer.innerHTML = '';
+        // -2 because the last two slides are Quiz Active and Success (handled differently)
+        const progressSteps = flowSlides.length - 2; 
+        for (let i = 0; i < progressSteps; i++) {
+            progressContainer.innerHTML += `<div class="progress-segment"><div class="progress-fill" id="fill-${i}"></div></div>`;
         }
+
+        navControls.style.display = 'flex';
+        nextSlide(); // Move to slide 1
     }
 
-    function showSlide(index) {
-        slides.forEach(s => s.classList.remove('active'));
-        slides[index].classList.add('active');
-        
-        // Button visibility logic
-        btnPrev.style.visibility = index === 0 || index === totalSlides - 1 ? 'hidden' : 'visible';
-        
-        if (index === totalSlides - 2) {
-            // It's the Quiz slide
-            btnNext.innerText = 'Submit Answer';
-            btnNext.style.display = 'block';
-            loadQuestion();
-        } else if (index === totalSlides - 1) {
-            // Success Slide
-            btnNext.style.display = 'none';
-            btnPrev.style.display = 'none';
-            document.getElementById(`fill-${index}`).style.width = '100%'; // max out progress
+    // 2. Navigation Logic
+    function renderSlide() {
+        // Hide all
+        domSlides.forEach(s => s.classList.remove('active'));
+        // Show current
+        const activeDomSlide = flowSlides[currentSlideIdx];
+        activeDomSlide.classList.add('active');
+
+        // Update Progress Bar
+        const fills = document.querySelectorAll('.progress-fill');
+        fills.forEach((fill, i) => {
+            if (i < currentSlideIdx - 1) fill.style.width = '100%';
+            else if (i === currentSlideIdx - 1) fill.style.width = '50%';
+            else fill.style.width = '0%';
+        });
+
+        // Button states
+        if (currentSlideIdx === 1) {
+            btnBack.style.display = 'none';
         } else {
-            btnNext.innerText = 'Next';
-            btnNext.style.display = 'block';
-            btnPrev.style.display = 'block';
+            btnBack.style.display = 'block';
         }
-        
-        updateProgress();
+
+        // Check if we hit the Quiz Intro
+        if (activeDomSlide.id === 'quiz-intro') {
+            navControls.style.display = 'none'; // Hide bottom nav, use the big start button
+        } else {
+            navControls.style.display = 'flex';
+            btnNext.innerText = "Continue";
+            btnNext.onclick = nextSlide;
+        }
     }
 
     function nextSlide() {
-        if (currentSlide === totalSlides - 2) {
-            checkAnswer();
-            return;
-        }
-        if (currentSlide < totalSlides - 1) {
-            currentSlide++;
-            showSlide(currentSlide);
+        if (currentSlideIdx < flowSlides.length - 1) {
+            currentSlideIdx++;
+            renderSlide();
         }
     }
 
     function prevSlide() {
-        if (currentSlide > 0) {
-            currentSlide--;
-            showSlide(currentSlide);
+        if (currentSlideIdx > 1) { // 0 is dept selector, 1 is first content
+            currentSlideIdx--;
+            renderSlide();
         }
     }
 
-    // Quiz Logic
-    let selectedOption = null;
+    // FAQ Accordion
+    function toggleFaq(element) {
+        element.classList.toggle('open');
+        const icon = element.querySelector('span');
+        icon.innerText = element.classList.contains('open') ? '-' : '+';
+    }
+
+    // 3. Quiz Logic
+    function startQuiz() {
+        currentSlideIdx++; // Move to active quiz slide
+        renderSlide();
+        navControls.style.display = 'flex';
+        btnBack.style.display = 'none'; // No going back during quiz
+        btnNext.innerText = "Submit Answer";
+        btnNext.onclick = submitAnswer;
+        
+        document.getElementById('q-total').innerText = quizQuestions.length;
+        loadQuestion();
+    }
 
     function loadQuestion() {
-        const q = questions[currentQuestion];
-        document.getElementById('question-text').innerText = `Q${currentQuestion + 1}: ${q.q}`;
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
-        selectedOption = null;
-        document.getElementById('quiz-feedback').innerText = '';
+        const q = quizQuestions[currentQIdx];
+        document.getElementById('q-current').innerText = currentQIdx + 1;
+        document.getElementById('question-text').innerText = q.q;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        selectedAnswer = null;
+        
+        const feedback = document.getElementById('quiz-feedback');
+        feedback.className = 'quiz-feedback'; // reset
+        
+        btnNext.style.display = 'block'; // Ensure next is visible
 
-        q.options.forEach((opt, index) => {
+        q.options.forEach((opt, idx) => {
             const btn = document.createElement('button');
             btn.className = 'quiz-option';
             btn.innerText = opt;
-            btn.onclick = () => selectOption(btn, index);
-            optionsContainer.appendChild(btn);
+            btn.onclick = () => {
+                document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedAnswer = idx;
+                feedback.className = 'quiz-feedback'; // hide error if they select
+            };
+            container.appendChild(btn);
         });
     }
 
-    function selectOption(btn, index) {
-        document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedOption = index;
-        document.getElementById('quiz-feedback').innerText = ''; // clear error
-    }
-
-    function checkAnswer() {
-        if (selectedOption === null) {
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.innerText = "Please select an answer.";
-            feedback.className = "error";
+    function submitAnswer() {
+        const feedback = document.getElementById('quiz-feedback');
+        
+        if (selectedAnswer === null) {
+            feedback.innerText = "Select an answer first, sailor!";
+            feedback.className = 'quiz-feedback feedback-error';
             return;
         }
 
-        if (selectedOption === questions[currentQuestion].answer) {
-            currentQuestion++;
-            if (currentQuestion >= questions.length) {
-                // Passed all questions
-                currentSlide++;
-                showSlide(currentSlide);
-            } else {
-                // Next question
-                loadQuestion();
-            }
+        const q = quizQuestions[currentQIdx];
+        
+        if (selectedAnswer === q.ans) {
+            feedback.innerText = "Correct! ✅";
+            feedback.className = 'quiz-feedback feedback-success';
+            btnNext.style.display = 'none'; // Hide submit temporarily
+            
+            setTimeout(() => {
+                currentQIdx++;
+                if (currentQIdx >= quizQuestions.length) {
+                    // Passed! Go to Success slide
+                    currentSlideIdx++;
+                    renderSlide();
+                    navControls.style.display = 'none';
+                    // Fill all progress bars
+                    document.querySelectorAll('.progress-fill').forEach(f => f.style.width = '100%');
+                } else {
+                    loadQuestion();
+                }
+            }, 1000);
         } else {
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.innerText = "Incorrect. Please review the material and try again!";
-            feedback.className = "error";
+            feedback.innerText = "Incorrect. Remember the brief and try again! ❌";
+            feedback.className = 'quiz-feedback feedback-error';
         }
     }
-
-    // Boot App
-    initProgress();
-    showSlide(currentSlide);
-
 </script>
 </body>
 </html>
