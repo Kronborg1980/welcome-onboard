@@ -134,7 +134,7 @@
             <div class="voyage-map-container"><div id="map"></div></div>
             <div class="weather-strip">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <img id="weather-icon" src="" alt="" style="width:45px; height:45px;">
+                    <img id="weather-icon" src="" alt="" style="width:45px; height:45px; display:none;">
                     <div><div id="weather-temp" style="font-size:1.6rem; font-weight:bold; color:#fff;">--°C</div><div id="weather-description" style="color:var(--accent-gold); font-size:0.85rem; text-transform:uppercase;">--</div></div>
                 </div>
                 <div style="font-size:0.75rem; color:var(--text-muted); text-align:right;">Destination<br>Weather</div>
@@ -238,7 +238,7 @@
     // YOUR EXACT FIREBASE CONFIGURATION
     // ==========================================
     const firebaseConfig = {
-        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13idqc",  // <--- PASTE API KEY HERE!
+        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13idqc",  
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -257,7 +257,6 @@
         if (snapshot.exists()) {
             LIVE_DATA = snapshot.val();
         }
-        // Unlock App & show Home
         goToView('view-home');
     }).catch(error => {
         alert("Could not connect to Database. Please make sure your Firebase Rules are set to true! Error: " + error.message);
@@ -415,11 +414,18 @@
 
     function openVoyage() {
         goToView('view-voyage');
-        if (!mapInitialized) {
-            if(typeof L !== 'undefined') { initializeVoyagePage(); mapInitialized = true; }
-        } else {
-            setTimeout(() => map.invalidateSize(), 200); 
-        }
+        
+        // Timeout ensures the CSS transition finishes before Leaflet calculates its size!
+        setTimeout(() => {
+            if (!mapInitialized) {
+                if(typeof L !== 'undefined') { 
+                    initializeVoyagePage(); 
+                    mapInitialized = true; 
+                }
+            } else {
+                map.invalidateSize(); 
+            }
+        }, 400); 
     }
 
     function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
@@ -457,6 +463,13 @@
 
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentDestInfo.lat}&longitude=${currentDestInfo.lon}&current=temperature_2m,weathercode`).then(r=>r.json()).then(d => {
                 document.getElementById("weather-temp").textContent = `${Math.round(d.current.temperature_2m)}°C`;
+                
+                // Set weather icon
+                const codeMap = { 0:'01d', 1:'02d', 2:'03d', 3:'04d', 45:'50d', 51:'09d', 61:'10d', 71:'13d', 80:'09d', 95:'11d' };
+                const icon = codeMap[d.current.weathercode] || '01d';
+                const iconImg = document.getElementById("weather-icon");
+                iconImg.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+                iconImg.style.display = "block"; // Show it once loaded
             }).catch(e=>{});
 
             if (map) {
