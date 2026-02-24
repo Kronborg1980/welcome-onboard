@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>M/F Norröna - Crew Onboarding</title>
+    <title>M/F Norröna - Crew App</title>
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     
@@ -49,45 +49,22 @@
         
         /* --- HEADER & HAMBURGER MENU --- */
         header { 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            height: var(--header-height);
-            background: rgba(0, 40, 54, 0.95); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border-bottom: 1px solid var(--glass-border); 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
+            position: sticky; top: 0; z-index: 1000; height: var(--header-height);
+            background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
         }
-
         .logo { font-weight: 800; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; gap: 10px;}
         .logo .status-dot { width: 8px; height: 8px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 10px var(--accent-gold); animation: pulse 2s infinite; }
-        
         .menu-toggle { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
         .menu-toggle .material-icons { font-size: 32px; transition: 0.3s; }
 
-        /* Full Screen Menu Overlay */
         #nav-overlay {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 40, 54, 0.98);
-            backdrop-filter: blur(25px);
-            z-index: 999;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 30px 20px;
-            overflow-y: auto;
+            position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0;
+            background: rgba(0, 40, 54, 0.98); backdrop-filter: blur(25px); z-index: 999;
+            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; padding: 30px 20px; overflow-y: auto;
         }
         #nav-overlay.active { transform: translateX(0); }
-        
         .nav-link {
             display: flex; align-items: center; gap: 15px; padding: 18px 20px;
             color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 600;
@@ -96,7 +73,7 @@
         .nav-link:hover, .nav-link:active { background: var(--glass-bg); color: var(--accent-gold); padding-left: 25px; }
         .nav-link .material-icons { color: var(--accent-gold); }
 
-        /* --- CONTENT AREAS --- */
+        /* --- CONTENT VIEWS --- */
         main { flex: 1; padding: 20px; display: flex; flex-direction: column; }
         .view { display: none; animation: fadeIn 0.4s ease; }
         .view.active { display: block; }
@@ -106,24 +83,15 @@
 
         /* Cards & Typography */
         h1, h2, h3 { font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
-        h1 { font-size: 2rem; color: #fff; }
+        h1 { font-size: 1.8rem; color: #fff; }
         h2 { font-size: 1.5rem; color: var(--accent-gold); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;}
         h3 { font-size: 1.2rem; color: #fff; margin-top: 20px; }
         p, li { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; }
         ul { padding-left: 20px; margin-bottom: 20px; }
-        li { margin-bottom: 8px; }
-
-        .card { 
-            background: var(--glass-bg); 
-            border: 1px solid var(--glass-border); 
-            border-radius: 16px; 
-            padding: 24px; 
-            margin-bottom: 20px; 
-            box-shadow: var(--glass-shadow); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
-        }
-
+        
+        .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: var(--glass-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .hero-img { width: calc(100% + 48px); height: 220px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
+        
         .callout { background: rgba(252, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
         .callout h4 { color: var(--accent-gold); margin-bottom: 8px; font-size: 1.1rem; }
         .callout p { color: #fff; margin-bottom: 0; font-size: 0.95rem; }
@@ -132,28 +100,32 @@
         .alert-danger h4 { color: var(--danger); margin-bottom: 8px; }
         .alert-danger p { color: #fff; margin-bottom: 0; }
 
-        .hero-img { width: calc(100% + 48px); height: 220px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
-
-        /* Buttons */
-        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
-        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); box-shadow: 0 4px 15px rgba(252, 185, 0, 0.3); }
-        .btn-primary:active { background: var(--accent-gold-hover); transform: translateY(2px); }
-        .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: #fff; }
-        .btn-outline:active { background: var(--glass-bg); }
-        .btn-dept { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; justify-content: flex-start; padding: 20px; }
-        .btn-dept .material-icons { color: var(--accent-gold); font-size: 28px;}
-        .btn-dept:hover { background: rgba(252, 185, 0, 0.1); border-color: var(--accent-gold); }
-
-        /* Accordion */
+        /* Accordion inside Handbook */
         .accordion { border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: rgba(0,0,0,0.2); }
         .accordion-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; color: #fff; }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 20px; }
         .accordion.open .accordion-content { max-height: 2000px; padding: 15px 20px; border-top: 1px solid var(--glass-border); }
         .accordion.open .accordion-header .material-icons { transform: rotate(180deg); color: var(--accent-gold); }
 
-        /* Module Navigation */
-        .module-nav { display: flex; gap: 10px; margin-top: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;}
-        .module-nav .btn { margin-bottom: 0; }
+        /* Buttons */
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
+        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); box-shadow: 0 4px 15px rgba(252, 185, 0, 0.3); }
+        .btn-primary:active { background: var(--accent-gold-hover); transform: translateY(2px); }
+        .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: #fff; }
+        .btn-outline:active { background: rgba(255,255,255,0.1); }
+        
+        .btn-dept { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; justify-content: flex-start; padding: 20px; }
+        .btn-dept .material-icons { color: var(--accent-gold); font-size: 28px;}
+        .btn-dept:hover { background: rgba(252, 185, 0, 0.1); border-color: var(--accent-gold); }
+
+        .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding-left: 15px; border-left: 2px solid var(--accent-gold); margin-left: 20px; margin-bottom: 10px;}
+        .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
+        .btn-sub { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; margin-bottom: 8px; color: #fff; width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; cursor: pointer;}
+        .btn-sub:active { background: var(--accent-gold); color: var(--primary-dark); }
+
+        /* Module / Handbook Navigation */
+        .module-nav { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border); }
+        .module-nav .btn { margin-bottom: 0; flex: 1; }
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
         .progress-step { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; transition: 0.3s;}
         .progress-step.active { background: var(--accent-gold); box-shadow: 0 0 8px var(--accent-gold); }
@@ -165,6 +137,12 @@
         .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
         .feedback-success { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid #27ae60; display: block; }
         .feedback-error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; display: block; }
+
+        /* Loader */
+        .loader-container { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+        .loader-container.active { display: flex; }
+        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
@@ -182,59 +160,96 @@
     </header>
 
     <div id="nav-overlay">
-        <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Home / Department</a>
-        <a href="#" class="nav-link" onclick="startModuleDirect(0)"><span class="material-icons">info</span> The Ship & Conditions</a>
-        <a href="#" class="nav-link" onclick="startModuleDirect(1)"><span class="material-icons">health_and_safety</span> Safety & SAFIR</a>
-        <a href="#" class="nav-link" onclick="startModuleDirect(2)"><span class="material-icons">checkroom</span> Uniforms & Rules</a>
-        <a href="#" class="nav-link" onclick="startModuleDirect(3)"><span class="material-icons">school</span> Dictionary & Details</a>
-        <a href="#" class="nav-link" onclick="startModuleDirect(4)"><span class="material-icons">quiz</span> Clearance Assessment</a>
+        <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Dashboard / Home</a>
+        <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook (Read)</a>
+        <a href="#" class="nav-link" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Clearance Assessment</a>
     </div>
 
     <main>
         <div id="view-home" class="view active">
             <div class="card" style="padding:0; overflow:hidden;">
-                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" style="width:100%; height:250px; object-fit:cover; display:block;" alt="Norrona">
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" class="hero-img" alt="Norrona">
                 <div style="padding: 24px;">
                     <h1>Welcome to Our Team</h1>
-                    <p style="font-size: 1.1rem; color: #fff;">We are happy to welcome you to Smyril Line. You are joining the crew of M/F Norröna, the largest passenger ship in the North Atlantic Ocean.</p>
-                    <p>Before you embark on your first trip, you are required to familiarize yourself with the guidelines, safety culture, and rules of your new workplace.</p>
+                    <p style="font-size: 1.1rem; color: #fff;">You are joining the crew of M/F Norröna, the largest passenger ship in the North Atlantic Ocean.</p>
+                    <p>The Ship Handbook is your permanent guide to our rules, safety culture, and maritime dictionary. You can access it anytime.</p>
                     
-                    <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--accent-gold);">Select Your Department to Begin:</h3>
-                    
-                    <button class="btn btn-dept" onclick="initDepartment('hotel')">
-                        <span class="material-icons">room_service</span> 
-                        <div>
-                            <div style="font-size:1.2rem; margin-bottom:4px;">Hotel & Commercial</div>
-                            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Restaurants, Bars, Housekeeping, Tax-Free</div>
-                        </div>
+                    <button class="btn btn-outline" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">
+                        <span class="material-icons">menu_book</span> Read the Ship Handbook
                     </button>
                     
-                    <button class="btn btn-dept" onclick="initDepartment('bridge_engine')">
-                        <span class="material-icons">engineering</span> 
-                        <div>
-                            <div style="font-size:1.2rem; margin-bottom:4px;">Bridge, Deck & Engine</div>
-                            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Officers, Deckhands, Engineers, Mechanics</div>
-                        </div>
+                    <button class="btn btn-primary" onclick="openQuestionnaire()">
+                        <span class="material-icons">fact_check</span> Take Clearance Assessment
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="view-module" class="view">
-            <div class="progress-bar" id="module-progress"></div>
-            <div class="card" id="module-content" style="padding: 0; overflow: hidden;">
+        <div id="view-handbook-select" class="view">
+            <div class="card">
+                <h2>The Ship Handbook</h2>
+                <p>Select your department to read the guidelines tailored to your role. This section is always accessible for your reference.</p>
+                
+                <button class="btn btn-dept" onclick="openHandbook('hotel')">
+                    <span class="material-icons">room_service</span> 
+                    <div><div style="font-size:1.2rem; margin-bottom:4px;">Hotel & Commercial</div><div style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Restaurants, Reception, Housekeeping, Shop</div></div>
+                </button>
+                
+                <button class="btn btn-dept" onclick="openHandbook('bridge_engine')">
+                    <span class="material-icons">engineering</span> 
+                    <div><div style="font-size:1.2rem; margin-bottom:4px;">Bridge, Deck & Engine</div><div style="font-size:0.85rem; color:var(--text-muted); font-weight:normal;">Officers, Deckhands, Engineers</div></div>
+                </button>
+            </div>
+        </div>
+
+        <div id="view-handbook-reader" class="view">
+            <div class="progress-bar" id="handbook-progress"></div>
+            <div class="card" id="handbook-content" style="padding: 0; overflow: hidden;">
                 </div>
             <div class="module-nav">
-                <button class="btn btn-outline" id="btn-mod-back" onclick="prevModule()">Back</button>
-                <button class="btn btn-primary" id="btn-mod-next" onclick="nextModule()">Continue</button>
+                <button class="btn btn-outline" id="btn-hb-back" onclick="prevHandbook()">Previous</button>
+                <button class="btn btn-primary" id="btn-hb-next" onclick="nextHandbook()">Next Page</button>
             </div>
         </div>
 
-        <div id="view-quiz" class="view">
+        <div id="view-q-select" class="view">
             <div class="card">
-                <h2>Captain's Clearance</h2>
-                <p>Pass this assessment to complete your onboarding and receive your digital boarding pass. Questions are tailored to your department.</p>
+                <h2>Clearance Assessment</h2>
+                <p>Select your specific role to load your tailored assessment.</p>
+                <div class="alert-danger" style="margin-bottom:20px; border-radius:12px;">
+                    <p><strong>Note:</strong> This questionnaire can only be completed once. Upon passing, your department leader will be notified.</p>
+                </div>
                 
+                <button class="btn btn-dept" onclick="startQuiz('Deck')">
+                    <span class="material-icons">anchor</span> 
+                    <div><div style="font-size:1.2rem;">Deck Operations</div></div>
+                </button>
+                
+                <button class="btn btn-dept" onclick="startQuiz('Engine')">
+                    <span class="material-icons">engineering</span> 
+                    <div><div style="font-size:1.2rem;">Engine Room</div></div>
+                </button>
+
+                <button class="btn btn-dept" onclick="toggleSubMenu('hotel-sub')">
+                    <span class="material-icons">room_service</span> 
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size:1.2rem;">Hotel Department</div>
+                        <span class="material-icons" style="color:#fff;">expand_more</span>
+                    </div>
+                </button>
+                <div id="hotel-sub" class="sub-dept-menu">
+                    <button class="btn-sub" onclick="startQuiz('Galley')">Galley / Kitchen</button>
+                    <button class="btn-sub" onclick="startQuiz('Shop')">Tax-Free Shop</button>
+                    <button class="btn-sub" onclick="startQuiz('Reception')">Reception</button>
+                    <button class="btn-sub" onclick="startQuiz('Restaurant/Bar')">Restaurant & Bar</button>
+                    <button class="btn-sub" onclick="startQuiz('Housekeeping')">Housekeeping</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-quiz-active" class="view">
+            <div class="card">
+                <h2 id="quiz-title">Assessment</h2>
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
                     <div style="color:var(--accent-gold); font-size:0.9rem; font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Question <span id="quiz-curr">1</span> of <span id="quiz-total">5</span></div>
                     <h3 id="quiz-q" style="margin-bottom: 20px; font-size: 1.3rem;"></h3>
@@ -242,8 +257,14 @@
                     <div id="quiz-feedback" class="quiz-feedback"></div>
                 </div>
             </div>
-            <div class="module-nav">
-                <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
+            <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
+        </div>
+
+        <div id="view-sending" class="view">
+            <div class="card loader-container active">
+                <div class="spinner"></div>
+                <h2 style="border:none; padding:0;">Processing...</h2>
+                <p style="color: #fff; margin-top: 10px;">Transmitting your results to the Department Leader.</p>
             </div>
         </div>
 
@@ -251,7 +272,7 @@
             <div class="card" style="text-align: center; padding: 40px 20px;">
                 <span class="material-icons" style="font-size: 80px; color: var(--success); margin-bottom: 20px;">check_circle</span>
                 <h1 style="color: var(--success); margin-bottom: 10px;">Clearance Granted</h1>
-                <p style="color: #fff; font-size: 1.1rem; margin-bottom: 30px;">You have successfully completed the mandatory onboarding familiarization.</p>
+                <p style="color: #fff; font-size: 1rem; margin-bottom: 30px;">Your assessment was successful. You can access the Ship Handbook anytime from the menu.</p>
                 
                 <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; text-align: left;">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:15px; margin-bottom:15px;">
@@ -266,56 +287,43 @@
                             <div style="font-size:0.8rem; color:var(--text-muted);">Status</div>
                             <div style="font-weight:bold; color:var(--success);">CLEARED</div>
                         </div>
-                        <div>
-                            <div style="font-size:0.8rem; color:var(--text-muted);">Date</div>
-                            <div style="font-weight:bold; color:#fff;" id="pass-date"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">Return to Home</button>
+                <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">Return to Dashboard</button>
             </div>
         </div>
     </main>
 </div>
 
 <script>
-    // --- MASSIVE DATA STORE CONTAINING ALL TEXT FROM URLS ---
-    const DB = {
+    // ==========================================
+    // DATA: THE SHIP HANDBOOK (READING MATERIAL)
+    // ==========================================
+    const HANDBOOK_DB = {
         general: {
             welcome: `
                 <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Job-1920x1325-1.jpg.webp" class="hero-img">
                 <div style="padding: 24px;">
                     <h2>Your New Home at Sea</h2>
-                    <p>Welcome on board the Smyril Line ferry, M/F Norröna. Depending on the season, you will be working alongside 30 to 120 colleagues.</p>
-                    <p>With around 110,000 passengers annually, we are firmly in the service industry. Our top priority is delivering excellent service. Cleanliness, politeness, and high-quality products are the cornerstones of our work.</p>
-                    <p><strong>Capacity:</strong> 1,482 passengers.<br>We don't just sell journeys – we create memorable experiences.</p>
+                    <p>Welcome on board the Smyril Line ferry, M/F Norröna. You will be working alongside 30 to 120 colleagues.</p>
+                    <p>With around 110,000 passengers annually, we are firmly in the service industry. Cleanliness, politeness, and high-quality products are the cornerstones of our work.</p>
                 </div>
             `,
             conditions: `
                 <div style="padding: 24px;">
                     <h2>Conditions of Employment</h2>
-                    
                     <div class="accordion" onclick="toggleAccordion(this)">
                         <div class="accordion-header">Salary & 1:1 Schedule <span class="material-icons">expand_more</span></div>
                         <div class="accordion-content">
                             <p>You will sail 1:1 which means, that if you are onboard for 4 weeks, you also get paid the following 4 weeks at home.</p>
-                            <p>Smyril Line is a member of The House of Industry "Vinnuhúsið" and we follow collective agreements. Smyril Line is part of FAS (Faroese Association for Shipowners).</p>
+                            <p>Smyril Line is a member of The House of Industry "Vinnuhúsið" and we follow collective agreements.</p>
                         </div>
                     </div>
-
                     <div class="accordion" onclick="toggleAccordion(this)">
-                        <div class="accordion-header">Maternity/Paternity & Insurance <span class="material-icons">expand_more</span></div>
+                        <div class="accordion-header">Food, Cabin & Hygiene <span class="material-icons">expand_more</span></div>
                         <div class="accordion-content">
-                            <p>Citizens outside the Faroe Islands do not pay to the Faroese Maternity System. As a Nordic citizen you can take out an insurance with the Faroese system. If you are not a Nordic citizen, you must have personal insurance in your own country.</p>
-                            <p>You are covered by Smyril Line's insurance if a work-related injury occurs whilst onboard. The insurance also covers your personal belongings if damaged whilst onboard.</p>
-                        </div>
-                    </div>
-
-                    <div class="accordion" onclick="toggleAccordion(this)">
-                        <div class="accordion-header">Food, Accommodation & Hygiene <span class="material-icons">expand_more</span></div>
-                        <div class="accordion-content">
-                            <p>You have free food and accommodation onboard. The mess is open 24h a day. Bed linen and towels are available onboard. You must clean the cabin before you go home. You have access to a washing machine, a dryer, and an iron.</p>
+                            <p>You have free food and accommodation onboard. The mess is open 24h a day. You must clean the cabin before you go home.</p>
                             <p>Regular showering and daily use of deodorant is highly recommended. Hair longer than shoulder length must be tied back.</p>
                         </div>
                     </div>
@@ -325,43 +333,27 @@
                 <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Engine_Room-56_1920x1325-1600x1104.jpg.webp" class="hero-img">
                 <div style="padding: 24px;">
                     <h2>Our Safety Culture</h2>
-                    <p>Our safety vision is to have zero accidents. To succeed, each one of us must prioritize safety in our daily work.</p>
-                    
                     <div class="callout">
                         <h4>"If you see it, you own it."</h4>
-                        <p>We aspire to have a proactive safety culture. If you see a safety issue, you have the responsibility to correct it immediately, reprimand unsafe behavior, and report it.</p>
+                        <p>We aspire to have a proactive safety culture. If you see a safety issue, you have the responsibility to correct it immediately and report it.</p>
                     </div>
-
                     <div class="alert-danger">
                         <h4>Alcohol & Drug Policy</h4>
-                        <p>We have a 0-tolerance policy onboard Norröna relating to alcohol and drugs. Violation of the drugs and alcohol policy on board will cause immediate dismissal.</p>
+                        <p>We have a 0-tolerance policy onboard relating to alcohol and drugs. Violation causes immediate dismissal.</p>
                     </div>
-
                     <h3>SAFIR Reporting System</h3>
-                    <p>All incidents must be reported using the SAFIR document (found on deck iPads or via management). We report:</p>
-                    <ul>
-                        <li><strong>Accident:</strong> Person injured or material broken. Focus on what we can learn, not who is to blame.</li>
-                        <li><strong>Non-Conformity:</strong> A situation where a rule is broken.</li>
-                        <li><strong>Near Miss:</strong> A situation that could have turned into an accident.</li>
-                        <li><strong>Observation:</strong> Unsafe conditions, or positive safety actions!</li>
-                    </ul>
+                    <p>All incidents must be reported using the SAFIR document found on iPads. We report: Accidents, Non-Conformities, Near Misses, and Observations.</p>
                 </div>
             `,
             dictionary: `
                 <div style="padding: 24px;">
-                    <h2>Maritime Mini-Dictionary</h2>
-                    <p>Get familiar with the terminology used onboard M/F Norröna.</p>
+                    <h2>Mini-Dictionary</h2>
                     <ul>
                         <li><strong>Pax:</strong> Passengers</li>
                         <li><strong>Slob:</strong> Tax-free shop for employees</li>
                         <li><strong>Drill:</strong> Weekly fire and safety exercise</li>
-                        <li><strong>Blue Book:</strong> Health certificate</li>
-                        <li><strong>Fire Card:</strong> Shows your safety responsibility</li>
-                        <li><strong>The Mess:</strong> The canteen where employees eat</li>
-                        <li><strong>E-Center / Info:</strong> The reception on deck 5</li>
-                        <li><strong>Galley:</strong> The kitchen</li>
                         <li><strong>Blue Bag:</strong> Bag for money when passing to the depository on deck 5</li>
-                        <li><strong>Turn:</strong> Working period</li>
+                        <li><strong>The Mess:</strong> The canteen where employees eat</li>
                     </ul>
                 </div>
             `
@@ -371,45 +363,29 @@
                 <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp" class="hero-img">
                 <div style="padding: 24px;">
                     <h2>Hotel Department Rules</h2>
-                    
-                    <h3>Uniform & Personal Appearance</h3>
-                    <p>Jewelry and watches should be discreet. There are restrictions when working with food (no rings/nail polish). Tattoos must be hidden from view. Piercings (except regular earrings) must be taken out while on duty.</p>
+                    <h3>Uniform & Appearance</h3>
                     <p><strong>Footwear:</strong> Black, comfortable, non-slippery shoes closed at the toes. MUST be all black (no logos/colored soles). Worn with black socks.</p>
-
-                    <h3>On Duty</h3>
+                    <p>Jewelry and watches should be discreet. Tattoos must be hidden from view.</p>
+                    <h3>Duty Rules</h3>
                     <ul>
-                        <li>We do not use or carry personal mobile phones whilst working.</li>
-                        <li>iPods/headphones are strictly prohibited (safety risk).</li>
-                        <li>Chewing gum or tobacco (snuff) is prohibited while on duty.</li>
+                        <li>We do not carry personal mobile phones whilst working.</li>
                         <li>Smoking is only allowed off-duty outside beside the mess.</li>
+                        <li>Crew Sale: Shop manager sets time slots. Passengers always have priority.</li>
                     </ul>
-
-                    <h3>Off Duty</h3>
-                    <p>We are only in public areas while working. For hygiene and modesty reasons, do not go to the crew mess in minimal clothing (shorts/tank tops). Keep voice levels down in the mess.</p>
-                    <p><strong>Crew Sale:</strong> The Shop Manager sets time slots for crew. Do not skip lines; passengers always have top priority.</p>
                 </div>
             `,
             guests: `
                 <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8508-1920x1325-1-1600x1104.jpg.webp" class="hero-img">
                 <div style="padding: 24px;">
                     <h2>How to Treat Guests</h2>
-                    <p>The guests are of outmost value. Our goal is to retain every guest and make sure they recommend us. Sale is service, and service is sale.</p>
-                    
                     <div class="callout">
                         <h4>The 60-Second Rule</h4>
-                        <p>Acknowledge and greet guests within 60 seconds. Minimum acknowledge guests with eye contact. If busy, say: "Please take a seat and I will be with you in a minute."</p>
+                        <p>Acknowledge and greet guests within 60 seconds. If busy, say: "Please take a seat and I will be with you in a minute."</p>
                     </div>
-
-                    <h3>Interaction Guidelines</h3>
                     <ul>
                         <li>Place coasters in front of guests, logo facing them.</li>
-                        <li>Check back after 2 minutes ("Is everything alright for you?").</li>
-                        <li><strong>Body Language:</strong> Stand tall, open posture, do not fold arms.</li>
                         <li><strong>Positive Words:</strong> Never say "no" or "I don't know" – offer solutions and alternatives.</li>
                     </ul>
-
-                    <h3>Handling Complaints</h3>
-                    <p>Listen and paraphrase. Show interest. Be sorry they are upset. Thank them for telling you. Explain what you will do. Notify your supervisor.</p>
                 </div>
             `
         },
@@ -418,60 +394,71 @@
                 <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp" class="hero-img">
                 <div style="padding: 24px;">
                     <h2>Bridge & Engine Operations</h2>
-                    
-                    <h3>Maintenance of Certificates</h3>
-                    <p>Smyril Line pays for the maintenance of required certificates in your position. The certificate must be STCW approved.</p>
-                    <p>You will receive a reminder 3-6 months before expiration. <strong>It is your own responsibility to sign up for a course.</strong> You pay first, and we refund you with your monthly salary. Send receipts to fc@norrona.fo and hr@smyrilline.fo.</p>
-                    <p>Remember to bring the original certificate with you when signing on.</p>
-
-                    <h3>Safety Planning</h3>
-                    <p>We think about safety when we plan our work. Before every working day:</p>
-                    <ul>
-                        <li>Be familiar with the task at hand.</li>
-                        <li>Make a risk assessment of the task.</li>
-                        <li>Be well rested.</li>
-                    </ul>
+                    <h3>Certificates</h3>
+                    <p>Smyril Line pays for required certificates. <strong>It is your own responsibility to sign up for a course before expiration.</strong></p>
                     <div class="callout">
                         <h4>Loading & Unloading</h4>
-                        <p>The work must be planned so that the task supervisor (chief officer, bosun etc.) is present and ready during loading and unloading, because the hazards are greatest during these operations.</p>
+                        <p>The work must be planned so that the task supervisor is present during loading and unloading, because the hazards are greatest during these operations.</p>
                     </div>
                 </div>
             `
         }
     };
 
-    const QUIZZES = {
-        hotel: [
-            { q: "What is the policy on alcohol and drugs onboard?", options: ["Allowed off-duty in cabins", "Zero-tolerance (Immediate Dismissal)", "Allowed during port stays"], ans: 1 },
-            { q: "What is the '60-Second Rule'?", options: ["Clean tables in 60s", "Acknowledge and greet guests within 60s", "Deliver food in 60s"], ans: 1 },
-            { q: "What type of footwear is required?", options: ["Dark blue sneakers", "All black, closed-toe, non-slip shoes", "Sandals in summer"], ans: 1 },
-            { q: "If you witness a safety hazard, what is our motto?", options: ["If you see it, you own it", "Tell the captain later", "Only report major accidents"], ans: 0 },
-            { q: "How should you respond if a guest asks for something we don't have?", options: ["Say 'No' politely", "Say 'I don't know'", "Never say no/I don't know; offer alternatives/solutions"], ans: 2 }
+    // ==========================================
+    // DATA: THE CLEARANCE ASSESSMENT (QUIZ)
+    // ==========================================
+    const universalQuestions = [
+        { q: "What does the SAFIR system handle?", options: ["Ordering food supplies", "Passenger tickets", "Reporting accidents, near misses & observations"], ans: 2 },
+        { q: "What is the policy on alcohol and drugs onboard?", options: ["Allowed off-duty in cabins", "Zero-tolerance (Violation causes immediate dismissal)", "One drink allowed at dinner"], ans: 1 },
+        { q: "What is the core rule of our safety culture?", options: ["If you see it, you own it", "The captain handles everything", "Only report major accidents"], ans: 0 }
+    ];
+
+    const specificQuestions = {
+        'Deck': [
+            { q: "When are the hazards considered greatest for the Deck department?", options: ["Sailing in open ocean", "During loading and unloading operations", "During passenger drills"], ans: 1 },
+            { q: "Who is responsible for making sure your STCW certificates are renewed on time?", options: ["You are responsible", "The Captain", "HR Department"], ans: 0 }
         ],
-        bridge_engine: [
-            { q: "What is the policy on alcohol and drugs onboard?", options: ["Allowed off-duty in cabins", "Zero-tolerance (Immediate Dismissal)", "Allowed during port stays"], ans: 1 },
-            { q: "What does the SAFIR system handle?", options: ["Ordering parts", "Reporting Accidents, Near Misses & Observations", "Booking annual leave"], ans: 1 },
-            { q: "Who is responsible for ensuring your STCW certificates are renewed before they expire?", options: ["The Captain", "The HR Department", "You are (though the company pays)"], ans: 2 },
-            { q: "When are hazards considered the greatest for the deck team?", options: ["During open ocean sailing", "During safety drills", "During loading and unloading operations"], ans: 2 },
-            { q: "If you witness a safety hazard, what is our motto?", options: ["If you see it, you own it", "Fix it if you have time", "Leave it for the next shift"], ans: 0 }
+        'Engine': [
+            { q: "What is absolutely non-negotiable when working in the engine room?", options: ["Wearing a tie", "Hearing protection and safety PPE", "Running to save time"], ans: 1 },
+            { q: "What must you do if you notice a 'Near Miss' in the engine room?", options: ["Report it via the SAFIR system immediately", "Ignore it since nobody was hurt", "Tell a friend"], ans: 0 }
+        ],
+        'Galley': [
+            { q: "What is the rule regarding jewelry and watches in the galley?", options: ["Allowed if they are expensive", "They are a hygiene/safety risk and must be restricted", "Only watches are allowed"], ans: 1 },
+            { q: "What type of shoes must chefs and dishwashers bring?", options: ["White sneakers", "All black, closed-toe, non-slip shoes", "Sandals"], ans: 1 }
+        ],
+        'Shop': [
+            { q: "When are crew members allowed to purchase from the Tax-Free shop?", options: ["Anytime they are off duty", "Only during time slots set by the Shop Manager (Crew Sale)", "Crew are not allowed in the shop"], ans: 1 },
+            { q: "What must you wear if you attend the shop during normal passenger opening hours (with permission)?", options: ["Your uniform", "Clean and appropriate personal clothes", "Pajamas"], ans: 1 }
+        ],
+        'Reception': [
+            { q: "What is the '60-Second Rule'?", options: ["Clean the desk in 60s", "Acknowledge and greet guests within 60s", "Answer the phone in 60s"], ans: 1 },
+            { q: "What must you do if a guest asks a question you don't know the answer to?", options: ["Say 'I don't know'", "Ignore the question", "Never say 'I don't know' - offer solutions/alternatives"], ans: 2 }
+        ],
+        'Restaurant/Bar': [
+            { q: "What is the '60-Second Rule'?", options: ["Serve drinks in 60s", "Acknowledge guests within 60s, even if busy", "Clean tables in 60s"], ans: 1 },
+            { q: "How should you place a coaster in front of a guest?", options: ["Upside down", "With the logo facing the guest", "It doesn't matter"], ans: 1 }
+        ],
+        'Housekeeping': [
+            { q: "What type of footwear is required?", options: ["Comfortable running shoes", "Black, comfortable, non-slippery closed-toe shoes", "Slippers"], ans: 1 },
+            { q: "What is our safety motto regarding hazards you might see in corridors or cabins?", options: ["If you see it, you own it", "Leave it for the next shift", "Only report it if asked"], ans: 0 }
         ]
     };
 
-    // --- APP STATE ---
-    let currentDept = null;
-    let moduleFlow = [];
-    let currentModuleIdx = 0;
+    // ==========================================
+    // APP STATE & CONTROLLERS
+    // ==========================================
     
-    let activeQuiz = [];
-    let currentQuizIdx = 0;
-    let selectedQuizAns = null;
-
-    // --- UI FUNCTIONS ---
+    // UI Helpers
     function toggleMenu() {
         const overlay = document.getElementById('nav-overlay');
         const icon = document.getElementById('menu-icon');
         overlay.classList.toggle('active');
         icon.innerText = overlay.classList.contains('active') ? 'close' : 'menu';
+    }
+
+    function toggleSubMenu(id) {
+        document.getElementById(id).classList.toggle('active');
     }
 
     function toggleAccordion(el) {
@@ -481,100 +468,95 @@
     function goToView(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(viewId).classList.add('active');
-        
-        // Close menu if open
         const overlay = document.getElementById('nav-overlay');
         if(overlay.classList.contains('active')) toggleMenu();
+        window.scrollTo(0,0);
     }
 
-    // --- DEPARTMENT & MODULE LOGIC ---
-    function initDepartment(dept) {
-        currentDept = dept;
-        
-        // Build the flow based on department
+    // --- HANDBOOK (READING LOGIC) ---
+    let handbookFlow = [];
+    let currentHbIdx = 0;
+
+    function openHandbook(dept) {
         if (dept === 'hotel') {
-            moduleFlow = [
-                DB.general.welcome,
-                DB.general.conditions,
-                DB.hotel.rules,
-                DB.hotel.guests,
-                DB.general.safety,
-                DB.general.dictionary
+            handbookFlow = [
+                HANDBOOK_DB.general.welcome,
+                HANDBOOK_DB.general.conditions,
+                HANDBOOK_DB.hotel.rules,
+                HANDBOOK_DB.hotel.guests,
+                HANDBOOK_DB.general.safety,
+                HANDBOOK_DB.general.dictionary
             ];
-            activeQuiz = QUIZZES.hotel;
         } else {
-            moduleFlow = [
-                DB.general.welcome,
-                DB.general.conditions,
-                DB.bridge_engine.rules,
-                DB.general.safety,
-                DB.general.dictionary
+            handbookFlow = [
+                HANDBOOK_DB.general.welcome,
+                HANDBOOK_DB.general.conditions,
+                HANDBOOK_DB.bridge_engine.rules,
+                HANDBOOK_DB.general.safety,
+                HANDBOOK_DB.general.dictionary
             ];
-            activeQuiz = QUIZZES.bridge_engine;
         }
-        
-        startModuleDirect(0);
+        currentHbIdx = 0;
+        renderHandbookPage();
+        goToView('view-handbook-reader');
     }
 
-    function startModuleDirect(index) {
-        if (!currentDept) {
-            alert("Please select a department first from the Home screen.");
-            goToView('view-home');
-            return;
-        }
-        
-        if (index >= moduleFlow.length) {
-            // Go to Quiz
-            startQuiz();
-            return;
-        }
-
-        currentModuleIdx = index;
-        renderModule();
-        goToView('view-module');
-    }
-
-    function renderModule() {
+    function renderHandbookPage() {
         // Render Progress Bar
-        const progContainer = document.getElementById('module-progress');
-        progContainer.innerHTML = moduleFlow.map((_, i) => 
-            `<div class="progress-step ${i === currentModuleIdx ? 'active' : (i < currentModuleIdx ? 'completed' : '')}"></div>`
+        const progContainer = document.getElementById('handbook-progress');
+        progContainer.innerHTML = handbookFlow.map((_, i) => 
+            `<div class="progress-step ${i === currentHbIdx ? 'active' : (i < currentHbIdx ? 'completed' : '')}"></div>`
         ).join('');
         
         // Render Content
-        document.getElementById('module-content').innerHTML = moduleFlow[currentModuleIdx];
+        document.getElementById('handbook-content').innerHTML = handbookFlow[currentHbIdx];
         
         // Update Buttons
-        document.getElementById('btn-mod-back').style.display = currentModuleIdx === 0 ? 'none' : 'block';
-        document.getElementById('btn-mod-next').innerText = currentModuleIdx === moduleFlow.length - 1 ? 'Start Clearance Quiz' : 'Continue';
+        document.getElementById('btn-hb-back').style.display = currentHbIdx === 0 ? 'none' : 'block';
         
-        // Scroll to top
-        window.scrollTo(0,0);
-    }
-
-    function nextModule() {
-        currentModuleIdx++;
-        if (currentModuleIdx >= moduleFlow.length) {
-            startQuiz();
+        const nextBtn = document.getElementById('btn-hb-next');
+        if (currentHbIdx === handbookFlow.length - 1) {
+            nextBtn.innerText = 'Finish Reading';
+            nextBtn.onclick = () => goToView('view-handbook-select');
         } else {
-            renderModule();
+            nextBtn.innerText = 'Next Page';
+            nextBtn.onclick = nextHandbook;
         }
-    }
-
-    function prevModule() {
-        if (currentModuleIdx > 0) {
-            currentModuleIdx--;
-            renderModule();
-        }
-    }
-
-    // --- QUIZ LOGIC ---
-    function startQuiz() {
-        currentQuizIdx = 0;
-        document.getElementById('quiz-total').innerText = activeQuiz.length;
-        renderQuizQuestion();
-        goToView('view-quiz');
         window.scrollTo(0,0);
+    }
+
+    function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
+    function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
+
+
+    // --- CLEARANCE QUESTIONNAIRE LOGIC ---
+    let activeQuiz = [];
+    let currentQuizIdx = 0;
+    let selectedQuizAns = null;
+    let selectedDeptName = "";
+
+    function openQuestionnaire() {
+        // ONE-TIME LOCK CHECK
+        const savedPass = localStorage.getItem('norrona_quiz_completed');
+        if (savedPass) {
+            document.getElementById('pass-dept').innerText = savedPass;
+            goToView('view-success');
+        } else {
+            goToView('view-q-select');
+        }
+    }
+
+    function startQuiz(dept) {
+        selectedDeptName = dept;
+        activeQuiz = [...universalQuestions, ...specificQuestions[dept]];
+        activeQuiz.sort(() => Math.random() - 0.5);
+
+        document.getElementById('quiz-title').innerText = `${dept} Assessment`;
+        document.getElementById('quiz-total').innerText = activeQuiz.length;
+        currentQuizIdx = 0;
+        
+        renderQuizQuestion();
+        goToView('view-quiz-active');
     }
 
     function renderQuizQuestion() {
@@ -589,9 +571,7 @@
         
         document.getElementById('quiz-feedback').style.display = 'none';
         selectedQuizAns = null;
-        
-        const btnSubmit = document.getElementById('btn-quiz-submit');
-        btnSubmit.style.display = 'flex';
+        document.getElementById('btn-quiz-submit').style.display = 'flex';
     }
 
     function selectQuizOption(btn, idx) {
@@ -618,30 +598,28 @@
             setTimeout(() => {
                 currentQuizIdx++;
                 if (currentQuizIdx >= activeQuiz.length) {
-                    showSuccess();
+                    processCompletion();
                 } else {
                     renderQuizQuestion();
                 }
             }, 1000);
         } else {
-            feedback.innerText = "Incorrect. Remember the safety rules and try again!";
+            feedback.innerText = "Incorrect. Please check the Ship Handbook and try again!";
             feedback.className = "quiz-feedback feedback-error";
         }
     }
 
-    function showSuccess() {
-        const deptNames = {
-            hotel: "Hotel & Commercial",
-            bridge_engine: "Bridge, Deck & Engine"
-        };
+    function processCompletion() {
+        goToView('view-sending'); // Show simulated loading screen
         
-        document.getElementById('pass-dept').innerText = deptNames[currentDept];
+        // To send a real email, trigger an API call here. Example:
+        // fetch('https://formspree.io/f/your-id', { method: 'POST', body: JSON.stringify({ dept: selectedDeptName }) })
         
-        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-        document.getElementById('pass-date').innerText = dateStr;
-        
-        goToView('view-success');
-        window.scrollTo(0,0);
+        setTimeout(() => {
+            localStorage.setItem('norrona_quiz_completed', selectedDeptName); // Lock the quiz
+            document.getElementById('pass-dept').innerText = selectedDeptName;
+            goToView('view-success');
+        }, 2500);
     }
 </script>
 
