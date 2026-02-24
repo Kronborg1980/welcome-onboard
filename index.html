@@ -238,8 +238,13 @@
     // YOUR EXACT FIREBASE CONFIGURATION
     // ==========================================
     const firebaseConfig = {
+        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13idqc",  // <--- PASTE API KEY HERE!
+        authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "norrona-app"
+        projectId: "norrona-app",
+        storageBucket: "norrona-app.firebasestorage.app",
+        messagingSenderId: "836610543277",
+        appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
     
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
@@ -263,6 +268,7 @@
     // ==========================================
     function toggleMenu() { document.getElementById('nav-overlay').classList.toggle('active'); document.getElementById('menu-icon').innerText = document.getElementById('nav-overlay').classList.contains('active') ? 'close' : 'menu'; }
     function toggleSubMenu(id) { document.getElementById(id).classList.toggle('active'); }
+    function toggleAccordion(el) { el.classList.toggle('open'); }
     function goToView(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(viewId).classList.add('active');
