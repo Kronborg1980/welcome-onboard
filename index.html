@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Onboard - Smyril Line</title>
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --light-blue: #e6f0fa;
+            --accent-gold: #d4af37;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --bg-color: #f4f7f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile Container */
+        #app-container {
+            width: 100%;
+            max-width: 414px; /* iPhone Max width */
+            height: 100vh;
+            max-height: 896px;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            display: flex;
+            gap: 5px;
+            padding: 20px 15px 10px;
+            background-color: var(--primary-blue);
+            z-index: 10;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--text-light);
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+            padding: 10px 20px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Slides */
+        #slides-container {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .slide {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Content Styling */
+        h2 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        p, ul {
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        /* Navigation Buttons */
+        #nav-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-secondary {
+            background-color: #ddd;
+            color: #555;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: #fff;
+        }
+
+        .btn-primary:active {
+            background-color: #002244;
+        }
+
+        /* Quiz Styling */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--light-blue);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: var(--primary-blue);
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: #d0e4f7;
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-blue);
+            background: #c0d8f0;
+            font-weight: bold;
+        }
+
+        #quiz-feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 24px;
+        }
+
+        .success { color: green; }
+        .error { color: red; }
+
+        /* Media query for desktop viewing */
+        @media (min-width: 415px) {
+            #app-container {
+                border-radius: 15px;
+                height: 90vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="progress-container">
+        </div>
+    <header>
+        <h1>Norröna Navigator</h1>
+    </header>
+
+    <div id="slides-container">
+        
+        <div class="slide active">
+            <h2>Welcome to the Team! ⚓</h2>
+            <div class="card">
+                <p>Welcome on board the Smyril Line ferry, <strong>M/F Norröna</strong> – your new workplace and home at sea.</p>
+            </div>
+            <p>Life on board is more than just a job; it is a unique experience. We are excited to have you join our crew of 30 to 120 colleagues.</p>
+            <p>Swipe through this quick guide to learn the ropes before you embark. At the end, you'll take the <strong>Captain's Clearance Quiz</strong>!</p>
+        </div>
+
+        <div class="slide">
+            <h2>Living & Working 🚢</h2>
+            <div class="card">
+                <p><strong>The 1:1 Lifestyle:</strong> If you work on board for 4 weeks, you get paid for the following 4 weeks at home.</p>
+            </div>
+            <ul>
+                <li><strong>Food & Cabin:</strong> Free food and accommodation. The mess hall is open 24/7. Keep noise to a minimum!</li>
+                <li><strong>Zero Tolerance:</strong> Strict 0-tolerance policy for alcohol and drugs on duty and off duty.</li>
+                <li><strong>Crew Sale:</strong> Only visit the Tax-Free shop during designated "Crew Sale" times.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Looking the Part 👔</h2>
+            <p>We provide the uniforms, but here is what <strong>YOU</strong> need to bring:</p>
+            <div class="card">
+                <p><strong>Footwear Rule:</strong></p>
+                <ul>
+                    <li>Black, comfortable, non-slippery shoes.</li>
+                    <li>Closed at the toes.</li>
+                    <li><strong>All black</strong> (No colored logos or white soles).</li>
+                    <li>Black socks.</li>
+                </ul>
+            </div>
+            <p>Maintain excellent hygiene. Hair longer than shoulder length must be tied back.</p>
+        </div>
+
+        <div class="slide">
+            <h2>The Guest Experience 🤝</h2>
+            <p>With 110,000 passengers annually, excellent service is our priority.</p>
+            <div class="card">
+                <p><strong>The 60-Second Rule:</strong></p>
+                <p>Acknowledge and greet guests within 60 seconds of their arrival.</p>
+            </div>
+            <ul>
+                <li>Stand tall, make eye contact, and smile.</li>
+                <li>Never say "No" or "I don't know" without offering a creative solution or alternative.</li>
+                <li>When handling complaints: Listen, show interest, apologize, and explain what you will do to fix it.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Safety Culture 🦺</h2>
+            <div class="card">
+                <p><strong>"If you see it, you own it."</strong></p>
+                <p>Report hazards using the <strong>SAFIR</strong> document. Our goal is zero accidents.</p>
+            </div>
+            <h3>Mini-Dictionary:</h3>
+            <ul>
+                <li><strong>Pax:</strong> Passengers</li>
+                <li><strong>Slob:</strong> Tax-free for employees</li>
+                <li><strong>Drill:</strong> Weekly fire/safety exercise</li>
+                <li><strong>Blue Bag:</strong> Bag for money transfers</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="quiz-slide">
+            <h2>Captain's Clearance 📝</h2>
+            <p>Let's see what you've learned. Answer correctly to get your digital boarding pass!</p>
+            
+            <div id="quiz-container">
+                <h3 id="question-text" style="margin-bottom: 15px; font-size: 1.1rem;"></h3>
+                <div id="options-container"></div>
+                <div id="quiz-feedback"></div>
+            </div>
+        </div>
+
+        <div class="slide" id="success-slide">
+            <h2 style="color: green; text-align: center; margin-top: 20px;">🎉 Clearance Granted!</h2>
+            <div class="card" style="text-align: center; margin-top: 20px;">
+                <h3>Digital Boarding Pass</h3>
+                <p style="margin-top: 10px; font-size: 2rem;">⚓</p>
+                <p style="margin-top: 10px;"><strong>M/F Norröna</strong></p>
+                <p style="color: gray; font-size: 0.9rem;">Status: Ready to Embark</p>
+            </div>
+            <p style="text-align: center;">You are fully prepared. We look forward to seeing you on board!</p>
+        </div>
+
+    </div>
+
+    <div id="nav-controls">
+        <button id="btn-prev" class="btn-secondary" style="visibility: hidden;" onclick="prevSlide()">Back</button>
+        <button id="btn-next" class="btn-primary" onclick="nextSlide()">Next</button>
+    </div>
+</div>
+
+<script>
+    // App State
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const progressContainer = document.getElementById('progress-container');
+
+    // Quiz State
+    let currentQuestion = 0;
+    let quizPassed = false;
+    
+    const questions = [
+        {
+            q: "What type of footwear MUST you bring to work?",
+            options: [
+                "Blue sneakers",
+                "All-black, non-slip, closed-toe shoes",
+                "Comfortable sandals"
+            ],
+            answer: 1
+        },
+        {
+            q: "What is the rule for greeting guests in public areas?",
+            options: [
+                "Wait for them to ask for help",
+                "Acknowledge them within 60 seconds",
+                "Greet them within 5 minutes"
+            ],
+            answer: 1
+        },
+        {
+            q: "What does our '0-tolerance' policy refer to?",
+            options: [
+                "Being late to shifts",
+                "Using phones on duty",
+                "Alcohol and drugs"
+            ],
+            answer: 2
+        },
+        {
+            q: "What is a 'SAFIR' report used for?",
+            options: [
+                "Reporting safety issues and accidents",
+                "Ordering new uniforms",
+                "Requesting time off"
+            ],
+            answer: 0
+        }
+    ];
+
+    // Initialize Progress Bar
+    function initProgress() {
+        for (let i = 0; i < totalSlides; i++) {
+            const segment = document.createElement('div');
+            segment.className = 'progress-segment';
+            segment.innerHTML = `<div class="progress-fill" id="fill-${i}"></div>`;
+            progressContainer.appendChild(segment);
+        }
+        updateProgress();
+    }
+
+    // Navigation Logic
+    function updateProgress() {
+        for (let i = 0; i < totalSlides; i++) {
+            const fill = document.getElementById(`fill-${i}`);
+            if (i < currentSlide) {
+                fill.style.width = '100%';
+            } else if (i === currentSlide) {
+                fill.style.width = '50%'; // Active state indicator
+            } else {
+                fill.style.width = '0%';
+            }
+        }
+    }
+
+    function showSlide(index) {
+        slides.forEach(s => s.classList.remove('active'));
+        slides[index].classList.add('active');
+        
+        // Button visibility logic
+        btnPrev.style.visibility = index === 0 || index === totalSlides - 1 ? 'hidden' : 'visible';
+        
+        if (index === totalSlides - 2) {
+            // It's the Quiz slide
+            btnNext.innerText = 'Submit Answer';
+            btnNext.style.display = 'block';
+            loadQuestion();
+        } else if (index === totalSlides - 1) {
+            // Success Slide
+            btnNext.style.display = 'none';
+            btnPrev.style.display = 'none';
+            document.getElementById(`fill-${index}`).style.width = '100%'; // max out progress
+        } else {
+            btnNext.innerText = 'Next';
+            btnNext.style.display = 'block';
+            btnPrev.style.display = 'block';
+        }
+        
+        updateProgress();
+    }
+
+    function nextSlide() {
+        if (currentSlide === totalSlides - 2) {
+            checkAnswer();
+            return;
+        }
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+    }
+
+    // Quiz Logic
+    let selectedOption = null;
+
+    function loadQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('question-text').innerText = `Q${currentQuestion + 1}: ${q.q}`;
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        selectedOption = null;
+        document.getElementById('quiz-feedback').innerText = '';
+
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-option';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(btn, index);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function selectOption(btn, index) {
+        document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedOption = index;
+        document.getElementById('quiz-feedback').innerText = ''; // clear error
+    }
+
+    function checkAnswer() {
+        if (selectedOption === null) {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.innerText = "Please select an answer.";
+            feedback.className = "error";
+            return;
+        }
+
+        if (selectedOption === questions[currentQuestion].answer) {
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                // Passed all questions
+                currentSlide++;
+                showSlide(currentSlide);
+            } else {
+                // Next question
+                loadQuestion();
+            }
+        } else {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.innerText = "Incorrect. Please review the material and try again!";
+            feedback.className = "error";
+        }
+    }
+
+    // Boot App
+    initProgress();
+    showSlide(currentSlide);
+
+</script>
+</body>
+</html>
