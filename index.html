@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>M/F Norröna - Crew App</title>
     
+    <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
+
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     
@@ -240,10 +242,7 @@
         projectId: "norrona-app"
     };
     
-    // Initialize Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
     let LIVE_DATA = { handbook: {}, quizzes: {} };
@@ -386,9 +385,12 @@
             setTimeout(() => {
                 currentQuizIdx++;
                 if (currentQuizIdx >= activeQuiz.length) {
-                    localStorage.setItem('norrona_quiz_completed', selectedDeptName.replace('_', ' ')); 
-                    document.getElementById('pass-dept').innerText = selectedDeptName.replace('_', ' ');
-                    goToView('view-success');
+                    goToView('view-sending');
+                    setTimeout(() => {
+                        localStorage.setItem('norrona_quiz_completed', selectedDeptName.replace('_', ' ')); 
+                        document.getElementById('pass-dept').innerText = selectedDeptName.replace('_', ' ');
+                        goToView('view-success');
+                    }, 2500);
                 } else {
                     renderQuizQuestion();
                 }
