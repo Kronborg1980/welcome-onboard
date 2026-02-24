@@ -78,7 +78,7 @@
             <div class="sidebar-header"><span class="material-icons">cloud_done</span> LIVE ADMIN</div>
             <div class="sidebar-nav">
                 <div class="nav-group">
-                    <div class="nav-title">Ship Handbook</div>
+                    <div class="nav-title">Ship Handbook (Pages)</div>
                     <div class="nav-item active" onclick="loadEditor('handbook', 'general', this)"><span class="material-icons">public</span> General Rules</div>
                     <div class="nav-item" onclick="loadEditor('handbook', 'hotel', this)"><span class="material-icons">room_service</span> Hotel Dept.</div>
                     <div class="nav-item" onclick="loadEditor('handbook', 'bridge_engine', this)"><span class="material-icons">engineering</span> Bridge & Engine</div>
@@ -117,11 +117,16 @@
 
 <script>
     // ==========================================
-    // FIREBASE SETUP
+    // YOUR EXACT FIREBASE CONFIGURATION
     // ==========================================
     const firebaseConfig = {
+        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13idqc",
+        authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "norrona-app"
+        projectId: "norrona-app",
+        storageBucket: "norrona-app.firebasestorage.app",
+        messagingSenderId: "836610543277",
+        appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const auth = firebase.auth();
