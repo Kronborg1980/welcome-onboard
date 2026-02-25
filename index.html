@@ -14,108 +14,111 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        /* EXACT COLOR SCHEME MATCHING SCREENSHOTS */
+        /* LIGHT THEME SCHEME MATCHING PUBLIC APP */
         :root { 
-            --primary-dark: #001a24; 
-            --sheet-bg: #002836;
-            --card-bg: #00202d;
-            --primary-brand: #004A59; 
-            --accent-gold: #FCB900; 
-            --accent-gold-hover: #e5a800; 
-            --text-main: #ffffff; 
-            --text-muted: #8a9ba8; 
-            --glass-border: rgba(255, 255, 255, 0.1); 
-            --danger: #e74c3c; 
-            --success: #27ae60; 
+            --primary-navy: #002836; 
+            --primary-blue: #004A59;
+            --accent-gold: #fbb900; 
+            --bg-light: #f4f6f8;
+            --text-dark: #1a202c; 
+            --text-muted: #718096; 
+            --border-light: #e2e8f0; 
+            --danger: #e53e3e; 
+            --success: #38a169; 
             --header-height: 65px; 
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--primary-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
-        #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--primary-dark); box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+        #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg-light); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
-        /* --- HEADER EXACTLY LIKE SCREENSHOT --- */
-        header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: var(--primary-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 2px solid var(--accent-gold); }
+        /* --- HEADER & LOGO --- */
+        header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: var(--primary-navy); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .status-dot { width: 10px; height: 10px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); }
-        .logo-container span { font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+        .logo-container img { height: 22px; filter: brightness(0) invert(1); } /* Force logo to white */
+        .logo-container span { font-weight: 700; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
         .menu-toggle { background: none; border: none; color: #fff; cursor: pointer; padding: 5px; }
         
-        /* --- MENU --- */
-        #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 26, 36, 0.98); backdrop-filter: blur(20px); z-index: 999; transform: translateX(100%); transition: transform 0.4s ease; display: flex; flex-direction: column; padding: 30px 20px; overflow-y: auto;}
+        /* --- BURGER MENU --- */
+        #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 40, 54, 0.98); backdrop-filter: blur(10px); z-index: 999; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px; overflow-y: auto;}
         #nav-overlay.active { transform: translateX(0); }
-        .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 600; border-bottom: 1px solid var(--glass-border); transition: 0.2s; }
-        .nav-link:hover, .nav-link:active { background: var(--sheet-bg); color: var(--accent-gold); padding-left: 25px; }
+        .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: #fff; text-decoration: none; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-link:hover, .nav-link:active { color: var(--accent-gold); }
         .nav-link .material-icons { color: var(--accent-gold); }
 
         main { flex: 1; padding: 20px; display: flex; flex-direction: column; }
-        .view { display: none; animation: fadeIn 0.4s ease; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1, h2, h3 { font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
-        h1 { font-size: 1.8rem; color: #fff; }
-        h2 { font-size: 1.5rem; color: var(--accent-gold); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;}
-        p, li { font-size: 1rem; color: #d0dbe2; line-height: 1.7; margin-bottom: 15px; }
-        ul { padding-left: 20px; margin-bottom: 20px; }
+        /* Typography & Cards */
+        h1, h2, h3 { font-weight: 700; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
+        h1 { font-size: 1.8rem; }
+        h2 { font-size: 1.4rem; padding-bottom: 10px;}
+        p, li { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; }
+        ul { padding-left: 20px; margin-bottom: 20px; color: var(--text-muted); }
         
-        .card { background: var(--sheet-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
-        .hero-img { width: calc(100% + 48px); height: 200px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 20px; border: 2px solid var(--accent-gold); }
+        /* White rounded cards like public app */
+        .card { background: #ffffff; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .hero-img { width: calc(100% + 48px); height: 200px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 20px; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        .callout { background: rgba(252, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
-        .alert-danger { background: rgba(231, 76, 60, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
+        .callout { background: rgba(251, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+        .callout p { color: var(--primary-navy); margin-bottom: 0; font-weight: 500;}
+        .alert-danger { background: rgba(229, 62, 62, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
+        .alert-danger p { color: var(--danger); margin-bottom: 0; font-weight: bold; }
 
-        /* Buttons */
-        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
-        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); }
-        .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: #fff; }
-        .btn-dept { background: var(--card-bg); border: 1px solid var(--glass-border); color: #fff; justify-content: flex-start; padding: 20px; }
-        .btn-dept .material-icons { color: var(--accent-gold); font-size: 28px;}
+        /* YELLOW PILL BUTTONS */
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
+        .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
+        .btn-primary:active { background: #e5a800; transform: translateY(2px); }
+        .btn-outline { background: #fff; border: 2px solid var(--primary-navy); color: var(--primary-navy); }
+        
+        .btn-dept { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); justify-content: flex-start; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .btn-dept .material-icons { color: var(--primary-blue); font-size: 28px;}
 
-        .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding-left: 15px; border-left: 2px solid var(--accent-gold); margin-left: 20px; margin-bottom: 10px;}
+        .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 15px; border-left: 2px solid var(--border-light); margin-left: 20px; margin-bottom: 10px;}
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
-        .btn-sub { background: var(--card-bg); border: 1px solid var(--glass-border); padding: 12px; margin-bottom: 8px; color: #fff; width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; cursor: pointer;}
+        .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
-        .module-nav { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border); }
+        /* Handbook Reader nav */
+        .module-nav { display: flex; gap: 10px; margin-top: 10px; padding-top: 10px; }
         .module-nav .btn { margin-bottom: 0; flex: 1; }
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
-        .progress-step { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; transition: 0.3s;}
-        .progress-step.active { background: var(--accent-gold); box-shadow: 0 0 8px var(--accent-gold); }
+        .progress-step { flex: 1; height: 6px; background: var(--border-light); border-radius: 3px; transition: 0.3s;}
+        .progress-step.active { background: var(--primary-blue); }
         .progress-step.completed { background: var(--success); }
 
-        .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 1rem; cursor: pointer; transition: 0.2s; line-height: 1.4; }
-        .quiz-option.selected { border-color: var(--accent-gold); background: rgba(252, 185, 0, 0.15); font-weight: bold; }
+        /* Quiz Checkboxes */
+        .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: #fff; border: 2px solid var(--border-light); border-radius: 12px; color: var(--primary-navy); font-size: 1rem; transition: 0.2s; line-height: 1.4; font-weight: 500;}
+        .quiz-option.selected { border-color: var(--primary-blue); background: rgba(0, 74, 89, 0.05); font-weight: 700; }
         .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
-        .feedback-success { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid #27ae60; display: block; }
-        .feedback-error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; display: block; }
+        .feedback-success { background: #e6fffa; color: var(--success); border: 1px solid var(--success); display: block; }
+        .feedback-error { background: #fff5f5; color: var(--danger); border: 1px solid var(--danger); display: block; }
 
         .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
-        .spinner { width: 50px; height: 50px; border: 4px solid var(--glass-border); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- VOYAGE MAP UI (EXACT MATCH TO YOUR SCREENSHOT) --- */
-        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; }
-        #map { width: 100%; height: 100%; background: #001a24; filter: saturate(0.8) contrast(1.1); }
-        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, var(--sheet-bg)); pointer-events: none; z-index: 2; }
-        
-        .voyage-sheet { position: relative; z-index: 10; background: var(--sheet-bg); padding: 20px; min-height: 65vh; }
-        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        .weather-left { display: flex; align-items: center; gap: 15px; }
-        .weather-left img { width: 45px; height: 45px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
-        .weather-temp { font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1; }
-        .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-top: 5px; }
-        .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; line-height: 1.4; }
+        /* --- VOYAGE MAP UI (DARK THEME GRID IN LIGHT APP) --- */
+        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; margin-bottom: 20px; }
+        #map { width: 100%; height: 100%; background: #001a24; filter: saturate(0.8) contrast(1.1); border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
         
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-item { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; }
+        .grid-item { background: var(--primary-navy); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; }
         .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; }
         .grid-item .value { font-size: 1.4rem; font-weight: 700; color: #fff; display: flex; align-items: baseline; justify-content: center; }
-        .grid-item .value .unit { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; margin-left: 4px; text-transform: lowercase; }
-        .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--glass-border); margin: 0 8px; }
-        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; font-weight: 400; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .wind-dir-badge { background: rgba(252, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(252, 185, 0, 0.2); }
+        .grid-item .value .unit { font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-left: 4px; text-transform: lowercase; }
+        .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: rgba(255,255,255,0.2); margin: 0 8px; }
+        .grid-item .sub-value { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 6px; font-weight: 400; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        
+        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: var(--primary-navy); border-radius: 16px; padding: 20px; margin-bottom: 12px; }
+        .weather-left { display: flex; align-items: center; gap: 15px; }
+        .weather-left img { width: 45px; height: 45px; }
+        .weather-temp { font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1; }
+        .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-top: 5px; }
+        .weather-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -123,8 +126,8 @@
 <div id="app-shell">
     <header>
         <div class="logo-container" onclick="goToView('view-home')">
-            <span class="status-dot"></span>
-            <span>Norröna Crew</span>
+            <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line">
+            <span>Crew</span>
         </div>
         <button class="menu-toggle" onclick="toggleMenu()">
             <span class="material-icons" id="menu-icon">menu</span>
@@ -142,96 +145,93 @@
         <div id="view-init" class="view active">
             <div class="loader-container">
                 <div class="spinner"></div>
-                <h2 style="color:var(--accent-gold); border:none;">Syncing Systems...</h2>
+                <h2 style="color:var(--primary-navy); border:none;">Syncing Systems...</h2>
                 <p>Downloading latest instructions from HQ.</p>
             </div>
         </div>
 
         <div id="view-home" class="view">
+            
             <div style="text-align: center; padding: 20px 20px 30px 20px;">
-                <h1 style="color: #fff; margin-bottom: 5px; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">NORRÖNA CREW</h1>
-                <p style="color: var(--accent-gold); font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Official Portal</p>
+                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 60px; filter: brightness(0) drop-shadow(0px 2px 2px rgba(0,0,0,0.1)); margin-bottom: 15px;" alt="Smyril Line Logo">
+                <h1 style="color: var(--primary-navy); margin-bottom: 5px; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">Norröna Crew</h1>
+                <p style="color: var(--text-muted); font-size: 1rem; max-width: 80%; margin: 0 auto;">Official team portal.</p>
             </div>
 
-            <div class="card" style="padding:0; overflow:hidden; border:none; background: transparent; box-shadow:none;">
-                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" style="width: 100%; height: 180px; object-fit: cover; border-radius: 16px; border: 1px solid var(--glass-border); margin-bottom: 20px;" alt="Norrona">
-                
-                <div class="card" style="margin-bottom: 0;">
-                    <h2 style="border-bottom: none; color: #fff; margin-bottom: 10px;">Welcome Aboard</h2>
+            <div class="card" style="padding:0; overflow:hidden;">
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" style="width: 100%; height: 180px; object-fit: cover;" alt="Norrona">
+                <div style="padding: 24px;">
+                    <h2 style="border-bottom: none; margin-bottom: 5px;">Welcome Aboard</h2>
                     <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
-                    <button class="btn btn-outline" style="margin-top: 20px;" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Read the Ship Handbook</button>
-                    <button class="btn btn-primary" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Take Clearance Assessment</button>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
+                    <button class="btn btn-outline" onclick="openQuestionnaire()">Take Clearance Assessment</button>
                 </div>
             </div>
         </div>
 
-        <div id="view-voyage" class="view" style="padding: 0;">
+        <div id="view-voyage" class="view">
+            <h2 style="border:none; padding:0; margin-bottom:15px;">Live Ship Status</h2>
             <div class="voyage-map-container">
                 <div id="map"></div>
-                <div class="map-gradient"></div>
             </div>
             
-            <div class="voyage-sheet">
-                <div class="weather-strip">
-                    <div class="weather-left">
-                        <img id="weather-icon" src="" alt="" style="display:none;">
-                        <div>
-                            <div class="weather-temp" id="weather-temp">--°C</div>
-                            <div class="weather-desc" id="weather-description">--</div>
-                        </div>
+            <div class="weather-strip">
+                <div class="weather-left">
+                    <img id="weather-icon" src="" alt="" style="display:none;">
+                    <div>
+                        <div class="weather-temp" id="weather-temp">--°C</div>
+                        <div class="weather-desc" id="weather-description">--</div>
                     </div>
-                    <div class="weather-label">Destination<br>Weather</div>
                 </div>
+                <div class="weather-label">Destination<br>Weather</div>
+            </div>
 
-                <div class="voyage-grid">
-                    <div class="grid-item" style="grid-column: span 2;">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.6rem; color: var(--accent-gold);">--</div>
-                        <div class="sub-value" id="eta-voyage">--</div>
+            <div class="voyage-grid">
+                <div class="grid-item" style="grid-column: span 2;">
+                    <div class="label" id="destination-label">Next Destination</div>
+                    <div class="value" id="destination-voyage" style="font-size:1.6rem; color: var(--accent-gold);">--</div>
+                    <div class="sub-value" id="eta-voyage">--</div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Speed & Course</div>
+                    <div class="value">
+                        <span id="speed-knots">--</span> <span class="unit">kn</span>
+                        <span class="separator">|</span> 
+                        <span id="speed-kmh">--</span> <span class="unit">km/h</span>
                     </div>
-                    <div class="grid-item">
-                        <div class="label">Speed & Course</div>
-                        <div class="value">
-                            <span id="speed-knots">--</span> <span class="unit">kn</span>
-                        </div>
-                        <div class="sub-value" id="course-voyage">Course: --°</div>
+                    <div class="sub-value" id="course-voyage">Course: --°</div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Time (Tórshavn)</div>
+                    <div class="value" id="onboard-time">--:--</div>
+                    <div class="sub-value">GMT</div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Wind (Here)</div>
+                    <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
+                    <div class="sub-value">
+                        <span id="wind-knots">--</span> kn
                     </div>
-                    <div class="grid-item">
-                        <div class="label">Time (Tórshavn)</div>
-                        <div class="value" id="onboard-time">--:--</div>
-                        <div class="sub-value">GMT</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">Wind (Here)</div>
-                        <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
-                        <div class="sub-value">
-                            <span id="wind-knots">--</span> kn
-                            <span style="opacity:0.25; margin:0 4px;">|</span>
-                            <span id="wind-dir-text" class="wind-dir-badge">--</span>
-                        </div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">Wave Height</div>
-                        <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
-                        <div class="sub-value">Significant</div>
-                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Wave Height</div>
+                    <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
+                    <div class="sub-value">Significant</div>
                 </div>
             </div>
         </div>
 
         <div id="view-handbook-select" class="view">
-            <div class="card">
-                <h2>The Ship Handbook</h2>
-                <p>Select your department to read guidelines synced from HQ.</p>
-                <button class="btn btn-dept" onclick="openHandbook('hotel')">
-                    <span class="material-icons">room_service</span> 
-                    <div><div style="font-size:1.2rem;">Hotel & Commercial</div><div style="font-size:0.85rem; color:var(--text-muted);">Restaurants, Reception, Housekeeping, Shop</div></div>
-                </button>
-                <button class="btn btn-dept" onclick="openHandbook('bridge_engine')">
-                    <span class="material-icons">engineering</span> 
-                    <div><div style="font-size:1.2rem;">Bridge, Deck & Engine</div><div style="font-size:0.85rem; color:var(--text-muted);">Officers, Deckhands, Engineers</div></div>
-                </button>
-            </div>
+            <h2>The Ship Handbook</h2>
+            <p>Select your department to read guidelines synced from HQ.</p>
+            <button class="btn btn-dept" onclick="openHandbook('hotel')">
+                <span class="material-icons">room_service</span> 
+                <div><div style="font-size:1.2rem; font-weight:700;">Hotel & Commercial</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Restaurants, Reception, Housekeeping, Shop</div></div>
+            </button>
+            <button class="btn btn-dept" onclick="openHandbook('bridge_engine')">
+                <span class="material-icons">engineering</span> 
+                <div><div style="font-size:1.2rem; font-weight:700;">Bridge, Deck & Engine</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Officers, Deckhands, Engineers</div></div>
+            </button>
         </div>
 
         <div id="view-handbook-reader" class="view">
@@ -244,62 +244,58 @@
         </div>
 
         <div id="view-q-select" class="view">
-            <div class="card">
-                <h2>Clearance Assessment</h2>
-                <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
-                <button class="btn btn-dept" onclick="startQuiz('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem;">Deck Operations</div></div></button>
-                <button class="btn btn-dept" onclick="startQuiz('Engine')"><span class="material-icons">engineering</span> <div><div style="font-size:1.2rem;">Engine Room</div></div></button>
-                <button class="btn btn-dept" onclick="toggleSubMenu('hotel-sub')">
-                    <span class="material-icons">room_service</span> 
-                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;"><div style="font-size:1.2rem;">Hotel Department</div><span class="material-icons" style="color:#fff;">expand_more</span></div>
-                </button>
-                <div id="hotel-sub" class="sub-dept-menu">
-                    <button class="btn-sub" onclick="startQuiz('Galley')">Galley / Kitchen</button>
-                    <button class="btn-sub" onclick="startQuiz('Shop')">Tax-Free Shop</button>
-                    <button class="btn-sub" onclick="startQuiz('Reception')">Reception</button>
-                    <button class="btn-sub" onclick="startQuiz('Restaurant_Bar')">Restaurant & Bar</button>
-                    <button class="btn-sub" onclick="startQuiz('Housekeeping')">Housekeeping</button>
-                </div>
+            <h2>Clearance Assessment</h2>
+            <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
+            <button class="btn btn-dept" onclick="startQuiz('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem; font-weight:700;">Deck Operations</div></div></button>
+            <button class="btn btn-dept" onclick="startQuiz('Engine')"><span class="material-icons">engineering</span> <div><div style="font-size:1.2rem; font-weight:700;">Engine Room</div></div></button>
+            <button class="btn btn-dept" onclick="toggleSubMenu('hotel-sub')">
+                <span class="material-icons">room_service</span> 
+                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;"><div style="font-size:1.2rem; font-weight:700;">Hotel Department</div><span class="material-icons" style="color:var(--primary-navy);">expand_more</span></div>
+            </button>
+            <div id="hotel-sub" class="sub-dept-menu">
+                <button class="btn-sub" onclick="startQuiz('Galley')">Galley / Kitchen</button>
+                <button class="btn-sub" onclick="startQuiz('Shop')">Tax-Free Shop</button>
+                <button class="btn-sub" onclick="startQuiz('Reception')">Reception</button>
+                <button class="btn-sub" onclick="startQuiz('Restaurant_Bar')">Restaurant & Bar</button>
+                <button class="btn-sub" onclick="startQuiz('Housekeeping')">Housekeeping</button>
             </div>
         </div>
 
         <div id="view-quiz-active" class="view">
+            <h2 id="quiz-title">Assessment</h2>
             <div class="card">
-                <h2 id="quiz-title">Assessment</h2>
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
-                    <div style="color:var(--accent-gold); font-size:0.9rem; font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Question <span id="quiz-curr">1</span> of <span id="quiz-total">5</span></div>
-                    <h3 id="quiz-q" style="margin-bottom: 20px; font-size: 1.3rem;"></h3>
-                    <div id="quiz-options"></div>
-                    <div id="quiz-feedback" class="quiz-feedback"></div>
-                </div>
+                <div style="color:var(--primary-blue); font-size:0.9rem; font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Question <span id="quiz-curr">1</span> of <span id="quiz-total">5</span></div>
+                <h3 id="quiz-q" style="margin-bottom: 20px; font-size: 1.3rem;"></h3>
+                <div id="quiz-options"></div>
+                <div id="quiz-feedback" class="quiz-feedback"></div>
             </div>
             <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
         </div>
 
         <div id="view-sending" class="view">
-            <div class="card loader-container active">
+            <div class="loader-container active">
                 <div class="spinner"></div>
                 <h2 style="border:none; padding:0;">Processing...</h2>
-                <p style="color: #fff; margin-top: 10px;">Transmitting your results to the Department Leader.</p>
+                <p>Transmitting your results to the Department Leader.</p>
             </div>
         </div>
 
         <div id="view-success" class="view">
             <div class="card" style="text-align: center; padding: 40px 20px;">
                 <span class="material-icons" style="font-size: 80px; color: var(--success); margin-bottom: 20px;">check_circle</span>
-                <h1 style="color: var(--success); margin-bottom: 10px;">Clearance Granted</h1>
-                <p style="color: #fff; font-size: 1rem; margin-bottom: 30px;">Your assessment was successful.</p>
-                <div style="background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; text-align: left;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:15px; margin-bottom:15px;">
+                <h1 style="color: var(--primary-navy); margin-bottom: 10px;">Clearance Granted</h1>
+                <p style="margin-bottom: 30px;">Your assessment was successful.</p>
+                <div style="background: var(--bg-light); border: 2px dashed var(--border-light); border-radius: 16px; padding: 25px; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-light); padding-bottom:15px; margin-bottom:15px;">
                         <span style="color:var(--text-muted); text-transform:uppercase; font-size:0.8rem; font-weight:bold;">Digital Boarding Pass</span>
-                        <span class="material-icons" style="color:var(--accent-gold);">directions_boat</span>
+                        <span class="material-icons" style="color:var(--primary-blue);">directions_boat</span>
                     </div>
-                    <h2 style="border:none; padding:0; margin-bottom:5px; color:#fff;">M/F Norröna</h2>
-                    <p style="color:var(--accent-gold); font-size:1.1rem; font-weight:bold; margin-bottom:20px;" id="pass-dept">Department</p>
-                    <div style="font-size:0.8rem; color:var(--text-muted);">Status</div>
-                    <div style="font-weight:bold; color:var(--success);">CLEARED</div>
+                    <h2 style="border:none; padding:0; margin-bottom:5px; color:var(--primary-navy);">M/F Norröna</h2>
+                    <p style="color:var(--primary-blue); font-size:1.1rem; font-weight:bold; margin-bottom:20px;" id="pass-dept">Department</p>
+                    <div style="font-size:0.8rem; color:var(--text-muted); font-weight:bold;">Status</div>
+                    <div style="font-weight:bold; color:var(--success); font-size:1.2rem;">CLEARED</div>
                 </div>
-                <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">Return to Dashboard</button>
+                <button class="btn btn-primary" style="margin-top: 30px;" onclick="goToView('view-home')">Return to Dashboard</button>
             </div>
         </div>
     </main>
@@ -307,10 +303,10 @@
 
 <script>
     // ==========================================
-    // EXACT FIREBASE CONFIGURATION
+    // EXACT FIREBASE CONFIGURATION (v8 API)
     // ==========================================
     const firebaseConfig = {
-        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",
+        apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -344,7 +340,6 @@
     // ==========================================
     function toggleMenu() { document.getElementById('nav-overlay').classList.toggle('active'); document.getElementById('menu-icon').innerText = document.getElementById('nav-overlay').classList.contains('active') ? 'close' : 'menu'; }
     function toggleSubMenu(id) { document.getElementById(id).classList.toggle('active'); }
-    function toggleAccordion(el) { el.classList.toggle('open'); }
     function goToView(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(viewId).classList.add('active');
@@ -359,7 +354,7 @@
     let currentHbIdx = 0;
 
     function openHandbook(dept) {
-        if(!firebaseActive || !LIVE_DATA.handbook) { alert("Error: Could not connect to Database."); return; }
+        if(!firebaseActive || !LIVE_DATA.handbook) { alert("Error: Could not connect to Database. Check admin panel."); return; }
         handbookFlow = [...(LIVE_DATA.handbook.general || [])];
         if (LIVE_DATA.handbook[dept]) handbookFlow = handbookFlow.concat(LIVE_DATA.handbook[dept]);
         if(handbookFlow.length === 0) { alert("No handbook data found."); return; }
@@ -409,7 +404,7 @@
     let selectedDeptName = "";
 
     function openQuestionnaire() {
-        if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
+        if(!firebaseActive) { alert("Error: Could not connect to Database to load quiz."); return; }
         if (localStorage.getItem('norrona_quiz_completed')) {
             document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
             goToView('view-success');
@@ -518,6 +513,7 @@
             if (!norrona) return;
 
             const speedKnots = norrona.position?.speed || 0;
+            const speedKmh = speedKnots * 1.852;
             const course = Math.round(norrona.position?.course || 0);
             const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
             const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
@@ -525,6 +521,7 @@
             const isInPort = speedKnots < 1.0 && dist < 2.0;
 
             document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
+            document.getElementById("speed-kmh").textContent = speedKmh.toFixed(1); 
             document.getElementById("course-voyage").textContent = `Course: ${course}°`;
 
             if (isInPort) {
