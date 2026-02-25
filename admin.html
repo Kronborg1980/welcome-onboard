@@ -8,6 +8,9 @@
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -62,8 +65,13 @@
         .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
         input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; transition: 0.2s; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-blue); }
-        textarea { resize: vertical; min-height: 100px; font-family: monospace; font-size: 0.9rem; }
         
+        /* Quill Editor Styling Overrides */
+        .ql-toolbar.ql-snow { border: 1px solid var(--border-light); border-top-left-radius: 8px; border-top-right-radius: 8px; background: #fafafa; }
+        .ql-container.ql-snow { border: 1px solid var(--border-light); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-family: inherit; font-size: 1rem; background: #fff; min-height: 150px; }
+        .ql-editor { min-height: 150px; }
+        .ai-quill-container .ql-editor { min-height: 350px; }
+
         .btn { padding: 10px 18px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; }
@@ -81,7 +89,7 @@
             aside { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); box-shadow: 5px 0 20px rgba(0,0,0,0.2); }
             aside.open { transform: translateX(0); }
             .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
-            .btn-primary span.material-icons { display: none; } /* Save space on sync button */
+            .btn-primary span.material-icons { display: none; }
         }
     </style>
 </head>
@@ -237,8 +245,7 @@
             if (snapshot.exists()) { appData = snapshot.val(); } 
             else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
             
-            // Default select general rules on load
-            var firstItem = document.querySelectorAll('.nav-item')[1]; // Skip AI item
+            var firstItem = document.querySelectorAll('.nav-item')[1]; 
             loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { alert("Firebase Error: " + error.message); });
     }
@@ -256,7 +263,6 @@
         for(var i=0; i<navItems.length; i++) { navItems[i].classList.remove('active'); }
         if(navElement) navElement.classList.add('active');
         
-        // Auto-close sidebar on mobile after clicking
         if(window.innerWidth <= 768) {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('mobile-overlay').style.display = 'none';
@@ -284,25 +290,48 @@
         var html = '<h2>AI Background Knowledge</h2>';
         html += '<div class="card">';
         html += '<p style="color:var(--text-muted); margin-bottom: 15px; line-height:1.5;">Type or paste any hidden information here (WiFi passwords, manager phone numbers, unwritten rules). The AI Assistant will read this text to help answer crew questions. <strong>Crew members cannot see this text directly.</strong></p>';
-        html += '<textarea class="input-ai-text" style="min-height: 400px;" placeholder="Paste raw info here...">' + appData.ai_knowledge + '</textarea>';
+        html += '<div class="ai-quill-container">' + appData.ai_knowledge + '</div>';
         html += '</div>';
         container.innerHTML = html;
+        initQuillEditors();
     }
 
+    // --- HANDBOOK EDITOR (WITH QUILL) ---
     function renderHandbookForms(container) {
         if (!appData.handbook) appData.handbook = {};
         var slides = appData.handbook[currentEditorKey] || [];
         var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Page</button></h2>';
         for(var idx=0; idx<slides.length; idx++) {
             var slide = slides[idx];
-            html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Page Content (HTML)</label><textarea class="input-content">'+(slide.content||'')+'</textarea></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
+            html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Page Content</label><div class="quill-container">'+(slide.content||'')+'</div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
         }
         container.innerHTML = html;
+        initQuillEditors();
     }
 
-    function addHandbookSlide() { extractFormData(); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New Page", img: "", video: "", content: "<p>Content...</p>" }); renderCurrentEditor(); }
+    function initQuillEditors() {
+        var toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'header': [1, 2, 3, false] }],
+            ['link', 'clean']
+        ];
+
+        document.querySelectorAll('.quill-container, .ai-quill-container').forEach(function(el) {
+            // Only initialize if not already a Quill container
+            if (!el.classList.contains('ql-container')) {
+                new Quill(el, {
+                    theme: 'snow',
+                    modules: { toolbar: toolbarOptions }
+                });
+            }
+        });
+    }
+
+    function addHandbookSlide() { extractFormData(); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New Page", img: "", video: "", content: "<p>Start typing here...</p>" }); renderCurrentEditor(); }
     function deleteHandbookSlide(idx) { if(confirm('Delete?')) { appData.handbook[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
 
+    // --- QUIZ EDITOR ---
     function renderQuizForms(container) {
         if (!appData.quizzes) appData.quizzes = {};
         var questions = appData.quizzes[currentEditorKey] || [];
@@ -332,8 +361,8 @@
         if (!document.getElementById('editor-container').innerHTML) return;
         
         if (currentEditorType === 'ai') {
-            var aiTextarea = document.querySelector('.input-ai-text');
-            if(aiTextarea) { appData.ai_knowledge = aiTextarea.value; }
+            var aiEditor = document.querySelector('.ai-quill-container .ql-editor');
+            if(aiEditor) { appData.ai_knowledge = aiEditor.innerHTML; }
         }
         else if (currentEditorType === 'handbook') {
             var cards = document.querySelectorAll('.handbook-card');
@@ -343,7 +372,12 @@
                 appData.handbook[currentEditorKey][idx].title = cards[i].querySelector('.input-title').value;
                 appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value;
                 appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value;
-                appData.handbook[currentEditorKey][idx].content = cards[i].querySelector('.input-content').value;
+                
+                // Read from the Rich Text Editor HTML instead of textarea
+                var qlEditor = cards[i].querySelector('.ql-editor');
+                if(qlEditor) {
+                    appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML;
+                }
             }
         } else if (currentEditorType === 'quiz') {
             var cards = document.querySelectorAll('.quiz-card');
