@@ -6,7 +6,6 @@
     <title>M/F Norröna - Crew App</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
-
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -15,21 +14,38 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --primary-dark: #002836; --primary-brand: #004A59; --accent-gold: #FCB900; --accent-gold-hover: #e5a800; --text-main: #ffffff; --text-muted: rgba(255, 255, 255, 0.7); --glass-bg: rgba(255, 255, 255, 0.06); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); --danger: #e74c3c; --success: #27ae60; --header-height: 70px; }
+        /* EXACT COLOR SCHEME MATCHING SCREENSHOTS */
+        :root { 
+            --primary-dark: #001a24; 
+            --sheet-bg: #002836;
+            --card-bg: #00202d;
+            --primary-brand: #004A59; 
+            --accent-gold: #FCB900; 
+            --accent-gold-hover: #e5a800; 
+            --text-main: #ffffff; 
+            --text-muted: #8a9ba8; 
+            --glass-border: rgba(255, 255, 255, 0.1); 
+            --danger: #e74c3c; 
+            --success: #27ae60; 
+            --header-height: 65px; 
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--primary-dark); color: var(--text-main); background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 80%); background-attachment: fixed; min-height: 100vh; overflow-x: hidden; }
-        #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: rgba(0, 40, 54, 0.3); box-shadow: 0 0 40px rgba(0,0,0,0.7); }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--primary-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--primary-dark); box-shadow: 0 0 40px rgba(0,0,0,0.8); }
         
-        header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        /* --- HEADER EXACTLY LIKE SCREENSHOT --- */
+        header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: var(--primary-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 2px solid var(--accent-gold); }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-container img { height: 26px; filter: brightness(0) invert(1); }
-        .logo-container span { font-weight: 700; font-size: 1rem; color: var(--accent-gold); letter-spacing: 1px; text-transform: uppercase; }
-        .menu-toggle { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .status-dot { width: 10px; height: 10px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); }
+        .logo-container span { font-weight: 800; font-size: 1.1rem; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+        .menu-toggle { background: none; border: none; color: #fff; cursor: pointer; padding: 5px; }
         
-        #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 40, 54, 0.98); backdrop-filter: blur(25px); z-index: 999; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; padding: 30px 20px; overflow-y: auto;}
+        /* --- MENU --- */
+        #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 26, 36, 0.98); backdrop-filter: blur(20px); z-index: 999; transform: translateX(100%); transition: transform 0.4s ease; display: flex; flex-direction: column; padding: 30px 20px; overflow-y: auto;}
         #nav-overlay.active { transform: translateX(0); }
         .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 600; border-bottom: 1px solid var(--glass-border); transition: 0.2s; }
-        .nav-link:hover, .nav-link:active { background: var(--glass-bg); color: var(--accent-gold); padding-left: 25px; }
+        .nav-link:hover, .nav-link:active { background: var(--sheet-bg); color: var(--accent-gold); padding-left: 25px; }
         .nav-link .material-icons { color: var(--accent-gold); }
 
         main { flex: 1; padding: 20px; display: flex; flex-direction: column; }
@@ -40,10 +56,10 @@
         h1, h2, h3 { font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
         h1 { font-size: 1.8rem; color: #fff; }
         h2 { font-size: 1.5rem; color: var(--accent-gold); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;}
-        p, li { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 15px; }
+        p, li { font-size: 1rem; color: #d0dbe2; line-height: 1.7; margin-bottom: 15px; }
         ul { padding-left: 20px; margin-bottom: 20px; }
         
-        .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: var(--glass-shadow); backdrop-filter: blur(12px); }
+        .card { background: var(--sheet-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
         .hero-img { width: calc(100% + 48px); height: 200px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 20px; border: 2px solid var(--accent-gold); }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
@@ -51,16 +67,16 @@
         .callout { background: rgba(252, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
         .alert-danger { background: rgba(231, 76, 60, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
 
+        /* Buttons */
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
-        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); box-shadow: 0 4px 15px rgba(252, 185, 0, 0.3); }
-        .btn-primary:active { transform: translateY(2px); }
+        .btn-primary { background: var(--accent-gold); color: var(--primary-dark); }
         .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: #fff; }
-        .btn-dept { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; justify-content: flex-start; padding: 20px; }
+        .btn-dept { background: var(--card-bg); border: 1px solid var(--glass-border); color: #fff; justify-content: flex-start; padding: 20px; }
         .btn-dept .material-icons { color: var(--accent-gold); font-size: 28px;}
 
         .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding-left: 15px; border-left: 2px solid var(--accent-gold); margin-left: 20px; margin-bottom: 10px;}
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
-        .btn-sub { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; margin-bottom: 8px; color: #fff; width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; cursor: pointer;}
+        .btn-sub { background: var(--card-bg); border: 1px solid var(--glass-border); padding: 12px; margin-bottom: 8px; color: #fff; width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; cursor: pointer;}
 
         .module-nav { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border); }
         .module-nav .btn { margin-bottom: 0; flex: 1; }
@@ -69,36 +85,37 @@
         .progress-step.active { background: var(--accent-gold); box-shadow: 0 0 8px var(--accent-gold); }
         .progress-step.completed { background: var(--success); }
 
-        .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: rgba(0,0,0,0.4); border: 2px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 1rem; cursor: pointer; transition: 0.2s; line-height: 1.4; }
+        .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 1rem; cursor: pointer; transition: 0.2s; line-height: 1.4; }
         .quiz-option.selected { border-color: var(--accent-gold); background: rgba(252, 185, 0, 0.15); font-weight: bold; }
         .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
         .feedback-success { background: rgba(39, 174, 96, 0.2); color: #2ecc71; border: 1px solid #27ae60; display: block; }
         .feedback-error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; display: block; }
 
         .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
-        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--glass-border); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- VOYAGE MAP UI CSS --- */
-        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; margin-bottom: 20px; }
-        #map { width: 100%; height: 100%; background: #001e29; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8); overflow: hidden; }
-        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.6)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
-        .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--primary-dark); border-radius: 24px 24px 0 0; border-top: 1px solid var(--glass-border); padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; }
-        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border: 1px solid var(--glass-border); border-radius: 16px; padding: 16px; margin-bottom: 24px; }
-        .weather-left { display: flex; align-items: center; gap: 12px; }
-        .weather-left img { width: 40px; height: 40px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
-        .weather-details { display: flex; flex-direction: column; }
-        .weather-temp { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1; }
-        .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
-        .weather-label { font-size: 0.7rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
+        /* --- VOYAGE MAP UI (EXACT MATCH TO YOUR SCREENSHOT) --- */
+        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; }
+        #map { width: 100%; height: 100%; background: #001a24; filter: saturate(0.8) contrast(1.1); }
+        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, var(--sheet-bg)); pointer-events: none; z-index: 2; }
+        
+        .voyage-sheet { position: relative; z-index: 10; background: var(--sheet-bg); padding: 20px; min-height: 65vh; }
+        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .weather-left { display: flex; align-items: center; gap: 15px; }
+        .weather-left img { width: 45px; height: 45px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.1)); }
+        .weather-temp { font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1; }
+        .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-top: 5px; }
+        .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; line-height: 1.4; }
+        
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; }
-        .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); opacity: 0.9; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-weight: 700; }
-        .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; }
-        .grid-item .value .unit { font-size: 0.7rem; opacity: 0.6; font-weight: 400; margin-left: 3px; text-transform: lowercase; }
-        .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: rgba(255,255,255,0.2); margin: 0 8px; }
-        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .wind-dir-badge { background: rgba(252, 185, 0, 0.15); color: var(--accent-gold); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(252, 185, 0, 0.2); }
+        .grid-item { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; }
+        .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; }
+        .grid-item .value { font-size: 1.4rem; font-weight: 700; color: #fff; display: flex; align-items: baseline; justify-content: center; }
+        .grid-item .value .unit { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; margin-left: 4px; text-transform: lowercase; }
+        .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--glass-border); margin: 0 8px; }
+        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; font-weight: 400; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .wind-dir-badge { background: rgba(252, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(252, 185, 0, 0.2); }
     </style>
 </head>
 <body>
@@ -106,8 +123,8 @@
 <div id="app-shell">
     <header>
         <div class="logo-container" onclick="goToView('view-home')">
-            <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line">
-            <span>Crew</span>
+            <span class="status-dot"></span>
+            <span>Norröna Crew</span>
         </div>
         <button class="menu-toggle" onclick="toggleMenu()">
             <span class="material-icons" id="menu-icon">menu</span>
@@ -126,15 +143,14 @@
             <div class="loader-container">
                 <div class="spinner"></div>
                 <h2 style="color:var(--accent-gold); border:none;">Syncing Systems...</h2>
-                <p>Downloading latest crew instructions from headquarters.</p>
+                <p>Downloading latest instructions from HQ.</p>
             </div>
         </div>
 
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 20px 20px 30px 20px;">
-                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 60px; filter: brightness(0) invert(1); margin-bottom: 15px;" alt="Smyril Line Logo">
-                <h1 style="color: var(--accent-gold); margin-bottom: 5px; font-size: 2.2rem; letter-spacing: -1px;">Norröna Crew</h1>
-                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 80%; margin: 0 auto;">Official team portal for M/F Norröna.</p>
+                <h1 style="color: #fff; margin-bottom: 5px; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;">NORRÖNA CREW</h1>
+                <p style="color: var(--accent-gold); font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Official Portal</p>
             </div>
 
             <div class="card" style="padding:0; overflow:hidden; border:none; background: transparent; box-shadow:none;">
@@ -159,7 +175,7 @@
                 <div class="weather-strip">
                     <div class="weather-left">
                         <img id="weather-icon" src="" alt="" style="display:none;">
-                        <div class="weather-details">
+                        <div>
                             <div class="weather-temp" id="weather-temp">--°C</div>
                             <div class="weather-desc" id="weather-description">--</div>
                         </div>
@@ -168,18 +184,21 @@
                 </div>
 
                 <div class="voyage-grid">
+                    <div class="grid-item" style="grid-column: span 2;">
+                        <div class="label" id="destination-label">Next Destination</div>
+                        <div class="value" id="destination-voyage" style="font-size:1.6rem; color: var(--accent-gold);">--</div>
+                        <div class="sub-value" id="eta-voyage">--</div>
+                    </div>
                     <div class="grid-item">
                         <div class="label">Speed & Course</div>
-                        <div class="value" style="font-size: 1.2rem;">
+                        <div class="value">
                             <span id="speed-knots">--</span> <span class="unit">kn</span>
-                            <span class="separator">|</span> 
-                            <span id="speed-kmh">--</span> <span class="unit">km/h</span>
                         </div>
                         <div class="sub-value" id="course-voyage">Course: --°</div>
                     </div>
                     <div class="grid-item">
                         <div class="label">Time (Tórshavn)</div>
-                        <div class="value" id="onboard-time" style="font-size:1.5rem">--:--</div>
+                        <div class="value" id="onboard-time">--:--</div>
                         <div class="sub-value">GMT</div>
                     </div>
                     <div class="grid-item">
@@ -195,16 +214,6 @@
                         <div class="label">Wave Height</div>
                         <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
                         <div class="sub-value">Significant</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">Distance Left</div>
-                        <div class="value" id="distance" style="font-size:1.5rem">--</div>
-                        <div class="sub-value" id="distance-unit">Kilometers</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.5rem">--</div>
-                        <div class="sub-value" id="eta-voyage">--</div>
                     </div>
                 </div>
             </div>
@@ -280,7 +289,7 @@
                 <span class="material-icons" style="font-size: 80px; color: var(--success); margin-bottom: 20px;">check_circle</span>
                 <h1 style="color: var(--success); margin-bottom: 10px;">Clearance Granted</h1>
                 <p style="color: #fff; font-size: 1rem; margin-bottom: 30px;">Your assessment was successful.</p>
-                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; text-align: left;">
+                <div style="background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; text-align: left;">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:15px; margin-bottom:15px;">
                         <span style="color:var(--text-muted); text-transform:uppercase; font-size:0.8rem; font-weight:bold;">Digital Boarding Pass</span>
                         <span class="material-icons" style="color:var(--accent-gold);">directions_boat</span>
@@ -322,12 +331,12 @@
             firebaseActive = true;
             goToView('view-home');
         }).catch(error => {
-            console.error("Firebase Database error:", error);
-            goToView('view-home');
+            console.error("Firebase Database blocked or failed:", error);
+            goToView('view-home'); 
         });
     } catch(e) {
         console.error("Firebase SDK init failed.");
-        goToView('view-home');
+        goToView('view-home'); 
     }
 
     // ==========================================
@@ -350,7 +359,7 @@
     let currentHbIdx = 0;
 
     function openHandbook(dept) {
-        if(!firebaseActive || !LIVE_DATA.handbook) { alert("Error: Could not connect to Database. Please check admin panel."); return; }
+        if(!firebaseActive || !LIVE_DATA.handbook) { alert("Error: Could not connect to Database."); return; }
         handbookFlow = [...(LIVE_DATA.handbook.general || [])];
         if (LIVE_DATA.handbook[dept]) handbookFlow = handbookFlow.concat(LIVE_DATA.handbook[dept]);
         if(handbookFlow.length === 0) { alert("No handbook data found."); return; }
@@ -400,7 +409,7 @@
     let selectedDeptName = "";
 
     function openQuestionnaire() {
-        if(!firebaseActive) { alert("Error: Could not connect to Database to load quiz."); return; }
+        if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
         if (localStorage.getItem('norrona_quiz_completed')) {
             document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
             goToView('view-success');
@@ -471,7 +480,7 @@
     }
 
     // ==========================================
-    // VOYAGE API LOGIC & UI
+    // VOYAGE API LOGIC & LEAFLET MAP
     // ==========================================
     let map, liveRouteLine;
     let mapInitialized = false;
@@ -509,7 +518,6 @@
             if (!norrona) return;
 
             const speedKnots = norrona.position?.speed || 0;
-            const speedKmh = speedKnots * 1.852;
             const course = Math.round(norrona.position?.course || 0);
             const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
             const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
@@ -517,7 +525,6 @@
             const isInPort = speedKnots < 1.0 && dist < 2.0;
 
             document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
-            document.getElementById("speed-kmh").textContent = speedKmh.toFixed(1); 
             document.getElementById("course-voyage").textContent = `Course: ${course}°`;
 
             if (isInPort) {
@@ -535,7 +542,6 @@
                 document.getElementById("eta-voyage").textContent = arrivalTime ? `ETA: ${arrivalTime.day} ${arrivalTime.time}` : '--';
             }
 
-            // Wind
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${norrona.position.latitude}&longitude=${norrona.position.longitude}&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms`).then(r=>r.json()).then(d => {
                 const ms = d.current.wind_speed_10m;
                 document.getElementById("wind-ms").textContent = Math.round(ms);
@@ -543,12 +549,10 @@
                 document.getElementById("wind-dir-text").textContent = getWindDirection(d.current.wind_direction_10m);
             }).catch(e=>{});
 
-            // Waves
             fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${norrona.position.latitude}&longitude=${norrona.position.longitude}&current=wave_height`).then(r=>r.json()).then(d => {
                 document.getElementById("wave-height").textContent = d.current.wave_height ? d.current.wave_height.toFixed(1) : "--";
             }).catch(e=>{});
 
-            // Dest Weather
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentDestInfo.lat}&longitude=${currentDestInfo.lon}&current=temperature_2m,weathercode`).then(r=>r.json()).then(d => {
                 document.getElementById("weather-temp").textContent = `${Math.round(d.current.temperature_2m)}°C`;
                 const codeMap = { 0:{d:'Clear',i:'01d'}, 1:{d:'Mainly clear',i:'02d'}, 2:{d:'Partly cloudy',i:'03d'}, 3:{d:'Overcast',i:'04d'}, 45:{d:'Fog',i:'50d'}, 51:{d:'Drizzle',i:'09d'}, 61:{d:'Rain',i:'10d'}, 71:{d:'Snow',i:'13d'}, 80:{d:'Showers',i:'09d'}, 95:{d:'Storm',i:'11d'} };
@@ -559,7 +563,6 @@
                 iconImg.style.display = "block"; 
             }).catch(e=>{});
 
-            // Map
             if (map) {
                 const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
                 const destPos = [currentDestInfo.lat, currentDestInfo.lon];
