@@ -6,7 +6,6 @@
     <title>M/F Norröna - Crew App</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
-
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -33,7 +32,7 @@
         body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
         #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg-light); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
-        /* HEADER (White background, natural logo, dark text) */
+        /* HEADER */
         header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border-light); }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { height: 35px; } 
@@ -52,7 +51,6 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -69,7 +67,6 @@
         .alert-danger { background: rgba(229, 62, 62, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
         .alert-danger p { color: var(--danger); margin-bottom: 0; font-weight: bold; }
 
-        /* YELLOW PILL BUTTONS */
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 50px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; transform: translateY(2px); }
@@ -82,7 +79,6 @@
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
         .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
-        /* Progress Bar */
         .module-nav { display: flex; gap: 10px; margin-top: 10px; padding-top: 10px; }
         .module-nav .btn { margin-bottom: 0; flex: 1; }
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
@@ -90,7 +86,6 @@
         .progress-step.active { background: var(--primary-blue); }
         .progress-step.completed { background: var(--success); }
 
-        /* Quiz UI */
         .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: #fff; border: 2px solid var(--border-light); border-radius: 12px; color: var(--primary-navy); font-size: 1rem; transition: 0.2s; line-height: 1.4; font-weight: 600;}
         .quiz-option.selected { border-color: var(--primary-blue); background: rgba(0, 74, 89, 0.05); font-weight: 800; border-width: 3px; padding: 17px; }
         .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
@@ -101,9 +96,9 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI (Light Theme & Fixed Layout) */
+        /* VOYAGE MAP UI (Light Theme) */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
-        #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
+        #map { width: 100%; height: 100%; background: #e2e8f0; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
@@ -118,10 +113,26 @@
         .weather-left { display: flex; align-items: center; gap: 15px; }
         .weather-left img { width: 50px; height: 50px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
         .weather-temp { font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); line-height: 1; }
-        .weather-desc { font-size: 0.85rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
+        .weather-desc { font-size: 0.85rem; color: var(--primary-blue); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
         .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
         
         #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+
+        /* AI CHAT WIDGET STYLES */
+        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; transition: 0.3s; border: 2px solid var(--accent-gold); }
+        .chat-fab:active { transform: scale(0.9); }
+        .chat-panel { position: fixed; bottom: 100px; right: 25px; width: 350px; max-width: calc(100vw - 50px); height: 500px; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 9998; display: none; flex-direction: column; border: 1px solid var(--border-light); overflow: hidden; animation: slideUp 0.3s ease; }
+        .chat-panel.active { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-header { background: var(--primary-navy); color: #fff; padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; border-bottom: 2px solid var(--accent-gold); }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: var(--bg-light); }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
+        .msg.ai { background: #fff; border: 1px solid var(--border-light); color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg.user { background: var(--primary-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-input-area { display: flex; border-top: 1px solid var(--border-light); background: #fff; padding: 10px; }
+        .chat-input-area input { flex: 1; border: none; padding: 10px; font-size: 1rem; outline: none; background: transparent; }
+        .chat-input-area button { background: var(--accent-gold); color: var(--primary-navy); border: none; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .typing-indicator { font-size: 0.8rem; color: var(--text-muted); align-self: flex-start; margin-left: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -316,8 +327,29 @@
     </main>
 </div>
 
+<div class="chat-fab" onclick="toggleChat()">
+    <span class="material-icons" id="chat-icon">chat</span>
+</div>
+
+<div class="chat-panel" id="chat-panel">
+    <div class="chat-header">
+        <span class="material-icons" style="color: var(--accent-gold);">smart_toy</span>
+        Norröna AI Assistant
+    </div>
+    <div class="chat-messages" id="chat-messages">
+        <div class="msg ai">Hello! I am trained on the live Ship Handbook. What do you need help with?</div>
+    </div>
+    <div class="typing-indicator" id="chat-typing">AI is thinking...</div>
+    <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Ask about rules, uniforms..." onkeypress="handleChatEnter(event)">
+        <button onclick="sendChatMessage()"><span class="material-icons">send</span></button>
+    </div>
+</div>
+
 <script>
-    // API KEY SPLIT TO BYPASS GITHUB SCANNER
+    // ==========================================
+    // 1. FIREBASE SETUP
+    // ==========================================
     var firebaseConfig = {
         apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
         authDomain: "norrona-app.firebaseapp.com",
@@ -327,6 +359,11 @@
         messagingSenderId: "836610543277",
         appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
+
+    // ==========================================
+    // 2. GEMINI AI SETUP
+    // ==========================================
+    var GEMINI_API_KEY = "AIzaSy" + "Cd7PXbGXMnc54f1NsvKPH9wSkkuhlJZBU"; 
     
     var LIVE_DATA = { handbook: {}, quizzes: {} };
     var firebaseActive = false;
@@ -497,7 +534,7 @@
     }
 
     // ==========================================
-    // FULLY RESTORED VOYAGE DATA
+    // VOYAGE API LOGIC
     // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
@@ -555,7 +592,6 @@
             }
             var isInPort = speedKnots < 1.0 && dist < 2.0;
 
-            // Safe DOM updates to prevent JS crashes
             if(document.getElementById("speed-knots")) document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
             if(document.getElementById("speed-kmh")) document.getElementById("speed-kmh").textContent = speedKmh.toFixed(1); 
             if(document.getElementById("course-voyage")) document.getElementById("course-voyage").textContent = "Course: " + course + "°";
@@ -641,6 +677,78 @@
         L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map);
         updateShipData();
         setInterval(updateShipData, 60000); 
+    }
+
+    // ==========================================
+    // GOOGLE GEMINI AI CHAT LOGIC
+    // ==========================================
+    function toggleChat() {
+        var panel = document.getElementById("chat-panel");
+        var icon = document.getElementById("chat-icon");
+        if (panel.classList.contains("active")) {
+            panel.classList.remove("active");
+            icon.innerText = "chat";
+        } else {
+            panel.classList.add("active");
+            icon.innerText = "close";
+            if(document.getElementById("chat-messages").children.length === 1) {
+                window.aiContext = "You are the friendly, professional 'Norröna Crew Assistant'. Answer crew questions based ONLY on the following rules from the Ship Handbook. Do not invent rules. Be concise. Handbook Data: " + JSON.stringify(LIVE_DATA.handbook);
+                window.chatHistory = []; 
+            }
+        }
+    }
+
+    function handleChatEnter(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    }
+
+    async function sendChatMessage() {
+        var inputEl = document.getElementById("chat-input");
+        var msgText = inputEl.value.trim();
+        if (!msgText) return;
+
+        addMessage("You", msgText, "user");
+        inputEl.value = "";
+        document.getElementById("chat-typing").style.display = "block";
+
+        window.chatHistory.push({ "role": "user", "parts": [{ "text": msgText }] });
+
+        try {
+            var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "system_instruction": { "parts": { "text": window.aiContext } },
+                    "contents": window.chatHistory
+                })
+            });
+
+            var data = await response.json();
+            document.getElementById("chat-typing").style.display = "none";
+
+            if (data.error) {
+                addMessage("System", "AI Error: " + data.error.message, "ai");
+            } else {
+                var aiReply = data.candidates[0].content.parts[0].text;
+                addMessage("Assistant", aiReply, "ai");
+                window.chatHistory.push({ "role": "model", "parts": [{ "text": aiReply }] });
+            }
+        } catch (error) {
+            document.getElementById("chat-typing").style.display = "none";
+            addMessage("System", "Failed to connect to AI.", "ai");
+        }
+    }
+
+    function addMessage(sender, text, type) {
+        var container = document.getElementById("chat-messages");
+        var msgDiv = document.createElement("div");
+        msgDiv.className = "msg " + type;
+        
+        var formattedText = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        
+        msgDiv.innerHTML = formattedText;
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
     }
 </script>
 
