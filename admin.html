@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Norröna Admin</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
@@ -29,9 +29,9 @@
         body { display: flex; height: 100vh; background-color: var(--bg-light); color: var(--text-dark); overflow: hidden; }
         
         /* LOGIN SCREEN */
-        #login-screen { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: var(--bg-light); transition: 0.5s; }
-        .login-box { background: #fff; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--border-light); }
-        .login-box img { width: 140px; margin-bottom: 20px; }
+        #login-screen { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: var(--bg-light); transition: 0.5s; padding: 20px; }
+        .login-box { background: #fff; padding: 40px 20px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--border-light); }
+        .login-box img { width: 120px; margin-bottom: 20px; }
         .login-box h2 { margin-bottom: 25px; color: var(--primary-navy); font-size: 1.5rem; }
         .login-box input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; }
         .login-box input:focus { outline: none; border-color: var(--primary-blue); }
@@ -39,7 +39,7 @@
         
         /* APP UI */
         #admin-app { display: none; width: 100%; height: 100%; }
-        aside { width: 280px; background: #fff; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; }
+        aside { width: 280px; background: #fff; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
         .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; color: var(--primary-navy); }
         .sidebar-header .dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; }
         .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px 0; }
@@ -49,21 +49,24 @@
         .nav-item:hover { background: var(--bg-light); color: var(--primary-blue); }
         .nav-item.active { background: rgba(251, 185, 0, 0.1); border-left-color: var(--accent-gold); color: var(--primary-navy); font-weight: bold; }
         
-        main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { height: 70px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: #fff; }
-        .content-area { flex: 1; padding: 30px; overflow-y: auto; }
-        h2 { margin-bottom: 20px; font-weight: 700; color: var(--primary-navy); display: flex; align-items: center; justify-content: space-between; }
+        main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; width: 100%; }
+        header { height: 70px; min-height: 70px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #fff; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--primary-navy); cursor: pointer; padding: 5px; }
         
-        .card { background: #fff; border: 1px solid var(--border-light); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .content-area { flex: 1; padding: 20px; overflow-y: auto; }
+        h2 { margin-bottom: 20px; font-weight: 700; color: var(--primary-navy); display: flex; align-items: center; justify-content: space-between; font-size: 1.3rem; }
+        
+        .card { background: #fff; border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
         input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; transition: 0.2s; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-blue); }
         textarea { resize: vertical; min-height: 100px; font-family: monospace; font-size: 0.9rem; }
         
-        .btn { padding: 12px 24px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn { padding: 10px 18px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
-        .btn-primary:hover { background: #e5a800; }
+        .btn-primary:active { background: #e5a800; }
         .btn-danger { background: #fce8e6; color: var(--danger); }
         .btn-outline { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); }
         
@@ -72,6 +75,14 @@
         .option-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
         .option-row input { flex: 1; }
         .option-row button { padding: 8px; background: transparent; color: var(--danger); border: none; cursor: pointer; }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            aside { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); box-shadow: 5px 0 20px rgba(0,0,0,0.2); }
+            aside.open { transform: translateX(0); }
+            .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+            .btn-primary span.material-icons { display: none; } /* Save space on sync button */
+        }
     </style>
 </head>
 <body>
@@ -88,17 +99,26 @@
     </div>
 
     <div id="admin-app">
-        <aside>
+        <aside id="sidebar">
             <div class="sidebar-header">
                 <div class="dot"></div> LIVE ADMIN
             </div>
             <div class="sidebar-nav">
+                
+                <div class="nav-group">
+                    <div class="nav-title">AI Assistant</div>
+                    <div class="nav-item" onclick="loadEditor('ai', 'knowledge', this)">
+                        <span class="material-icons" style="color: var(--primary-blue);">psychology</span> AI Training Data
+                    </div>
+                </div>
+
                 <div class="nav-group">
                     <div class="nav-title">Ship Handbook</div>
                     <div class="nav-item active" onclick="loadEditor('handbook', 'general', this)"><span class="material-icons">public</span> General Rules</div>
                     <div class="nav-item" onclick="loadEditor('handbook', 'hotel', this)"><span class="material-icons">room_service</span> Hotel Dept.</div>
                     <div class="nav-item" onclick="loadEditor('handbook', 'bridge_engine', this)"><span class="material-icons">engineering</span> Bridge & Engine</div>
                 </div>
+
                 <div class="nav-group">
                     <div class="nav-title">Quizzes</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'universal', this)"><span class="material-icons">quiz</span> Universal</div>
@@ -110,9 +130,9 @@
                     <div class="nav-item" onclick="loadEditor('quiz', 'Restaurant_Bar', this)"><span class="material-icons">local_bar</span> Rest/Bar</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'Housekeeping', this)"><span class="material-icons">cleaning_services</span> Housekeeping</div>
                 </div>
+
                 <div class="nav-group">
                     <div class="nav-title">System</div>
-                    <div class="nav-item" onclick="loadEditor('system', 'settings', this)"><span class="material-icons">settings_applications</span> Settings</div>
                     <div class="nav-item" style="color: #e74c3c;" onclick="logoutAdmin()"><span class="material-icons">logout</span> Secure Logout</div>
                 </div>
             </div>
@@ -120,12 +140,15 @@
 
         <main>
             <header>
-                <div>
-                    <span style="color:var(--text-muted);">Editing: </span> 
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()"><span class="material-icons">menu</span></button>
                     <strong id="header-title" style="color:var(--primary-navy); font-size:1.1rem;">Loading...</strong>
                 </div>
-                <button class="btn btn-primary" onclick="saveToFirebase()"><span class="material-icons">cloud_upload</span> Sync to Live App</button>
+                <button class="btn btn-primary" onclick="saveToFirebase()"><span class="material-icons">cloud_upload</span> Sync Live</button>
             </header>
+            
+            <div id="mobile-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;" onclick="toggleSidebar()"></div>
+
             <div class="content-area" id="editor-container">
                 <h2 style="color: var(--text-muted); text-align:center; width:100%; margin-top:50px;">Connecting to Firebase...</h2>
             </div>
@@ -135,7 +158,7 @@
     <div class="toast" id="toast">App Updated Successfully!</div>
 
 <script>
-    // API KEY IS SPLIT TO BYPASS GITHUB SECRET SCANNER
+    // API KEY SPLIT FOR GITHUB
     var firebaseConfig = {
         apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",
         authDomain: "norrona-app.firebaseapp.com",
@@ -155,6 +178,14 @@
 
     var auth = firebase.auth();
     var db = firebase.database();
+
+    // MOBILE SIDEBAR TOGGLE
+    function toggleSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('mobile-overlay');
+        sidebar.classList.toggle('open');
+        overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+    }
 
     auth.onAuthStateChanged(function(user) {
         if (user) {
@@ -185,31 +216,19 @@
 
     function logoutAdmin() { auth.signOut(); }
 
-    var appData = { handbook: {}, quizzes: {} };
+    var appData = { handbook: {}, quizzes: {}, ai_knowledge: "" };
     var currentEditorType = 'handbook'; 
     var currentEditorKey = 'general';
 
     var DEFAULT_DATA = {
+        ai_knowledge: "The Captain's name is John Doe. The WiFi password for crew is 'Norrona2026'.",
         handbook: {
-            general: [
-                { title: "Your New Home at Sea", img: "https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg", video: "", content: "<p>Welcome on board the Smyril Line ferry, M/F Norröna.</p>" }
-            ],
-            hotel: [
-                { title: "Hotel Rules", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp", video: "", content: "<p>Footwear MUST be all black.</p>" }
-            ],
-            bridge_engine: [
-                { title: "Bridge & Engine", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp", video: "", content: "<p>Required certificates.</p>" }
-            ]
+            general: [ { title: "Your New Home at Sea", img: "https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg", video: "", content: "<p>Welcome on board.</p>" } ],
+            hotel: [ { title: "Hotel Rules", img: "", video: "", content: "<p>Footwear MUST be all black.</p>" } ],
+            bridge_engine: [ { title: "Bridge & Engine", img: "", video: "", content: "<p>Required certificates.</p>" } ]
         },
         quizzes: {
-            universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ],
-            Deck: [ { q: "Hazards greatest?", options: ["Open ocean", "Loading", "Drills"], ans: 1 } ],
-            Engine: [ { q: "Non-negotiable?", options: ["Tie", "PPE", "Running"], ans: 1 } ],
-            Galley: [ { q: "Jewelry?", options: ["Allowed", "Restricted", "Watches ok"], ans: 1 } ],
-            Shop: [ { q: "Crew purchase?", options: ["Anytime", "Crew Sale only", "Never"], ans: 1 } ],
-            Reception: [ { q: "60-Second Rule?", options: ["Clean", "Greet", "Phone"], ans: 1 } ],
-            Restaurant_Bar: [ { q: "60-Second Rule?", options: ["Serve", "Greet", "Clean"], ans: 1 } ],
-            Housekeeping: [ { q: "Footwear?", options: ["Running", "Black non-slip", "Slippers"], ans: 1 } ]
+            universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ]
         }
     };
 
@@ -217,24 +236,38 @@
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { appData = snapshot.val(); } 
             else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
-            loadEditor('handbook', 'general', document.querySelector('.nav-item')); 
+            
+            // Default select general rules on load
+            var firstItem = document.querySelectorAll('.nav-item')[1]; // Skip AI item
+            loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { alert("Firebase Error: " + error.message); });
     }
 
     function saveToFirebase() {
-        if(currentEditorType !== 'system') extractFormData(); 
+        extractFormData(); 
         db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
     }
 
     function loadEditor(type, key, navElement) {
-        if (currentEditorType !== 'system' && document.getElementById('editor-container').innerHTML !== '') extractFormData(); 
+        extractFormData(); 
         currentEditorType = type; currentEditorKey = key;
+        
         var navItems = document.querySelectorAll('.nav-item');
         for(var i=0; i<navItems.length; i++) { navItems[i].classList.remove('active'); }
         if(navElement) navElement.classList.add('active');
         
-        var t = key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ');
-        document.getElementById('header-title').innerText = type === 'system' ? "System Settings" : t + (type === 'quiz' ? ' Questions' : ' Pages');
+        // Auto-close sidebar on mobile after clicking
+        if(window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('mobile-overlay').style.display = 'none';
+        }
+
+        var titleDisplay = "";
+        if (type === 'ai') titleDisplay = "AI Knowledge Base";
+        else if (type === 'system') titleDisplay = "System Settings";
+        else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' Questions' : ' Pages');
+        
+        document.getElementById('header-title').innerText = titleDisplay;
         renderCurrentEditor();
     }
 
@@ -242,13 +275,24 @@
         var container = document.getElementById('editor-container');
         if (currentEditorType === 'handbook') renderHandbookForms(container);
         else if (currentEditorType === 'quiz') renderQuizForms(container);
-        else if (currentEditorType === 'system') renderSystemForms(container);
+        else if (currentEditorType === 'ai') renderAITraining(container);
+    }
+
+    // --- AI TRAINING EDITOR ---
+    function renderAITraining(container) {
+        if (appData.ai_knowledge === undefined) appData.ai_knowledge = "";
+        var html = '<h2>AI Background Knowledge</h2>';
+        html += '<div class="card">';
+        html += '<p style="color:var(--text-muted); margin-bottom: 15px; line-height:1.5;">Type or paste any hidden information here (WiFi passwords, manager phone numbers, unwritten rules). The AI Assistant will read this text to help answer crew questions. <strong>Crew members cannot see this text directly.</strong></p>';
+        html += '<textarea class="input-ai-text" style="min-height: 400px;" placeholder="Paste raw info here...">' + appData.ai_knowledge + '</textarea>';
+        html += '</div>';
+        container.innerHTML = html;
     }
 
     function renderHandbookForms(container) {
         if (!appData.handbook) appData.handbook = {};
         var slides = appData.handbook[currentEditorKey] || [];
-        var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()">Add Page</button></h2>';
+        var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Page</button></h2>';
         for(var idx=0; idx<slides.length; idx++) {
             var slide = slides[idx];
             html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Page Content (HTML)</label><textarea class="input-content">'+(slide.content||'')+'</textarea></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
@@ -262,19 +306,19 @@
     function renderQuizForms(container) {
         if (!appData.quizzes) appData.quizzes = {};
         var questions = appData.quizzes[currentEditorKey] || [];
-        var html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()">Add</button></h2>';
+        var html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Question</button></h2>';
         for(var idx=0; idx<questions.length; idx++) {
             var q = questions[idx];
             var optHtml = '';
             var opts = q.options || [];
             for(var optIdx=0; optIdx<opts.length; optIdx++) {
-                optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opts[optIdx]+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')">X</button></div>';
+                optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opts[optIdx]+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')"><span class="material-icons">close</span></button></div>';
             }
             var selHtml = '';
             for(var optIdx2=0; optIdx2<opts.length; optIdx2++) {
                 selHtml += '<option value="'+optIdx2+'" '+(q.ans == optIdx2 ? 'selected' : '')+'>Option '+(optIdx2 + 1)+': '+opts[optIdx2]+'</option>';
             }
-            html += '<div class="card quiz-card" data-idx="'+idx+'"><div class="form-group"><label>Question</label><input type="text" class="input-q" value="'+(q.q||'')+'"></div><div class="form-group"><label>Options</label>'+optHtml+'<button class="btn btn-outline" onclick="addQuizOption('+idx+')">+ Option</button></div><div class="form-group"><label>Correct Answer Index</label><select class="input-ans">'+selHtml+'</select></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion('+idx+')">Delete</button></div></div>';
+            html += '<div class="card quiz-card" data-idx="'+idx+'"><div class="form-group"><label>Question</label><input type="text" class="input-q" value="'+(q.q||'')+'"></div><div class="form-group"><label>Options</label>'+optHtml+'<button class="btn btn-outline" style="padding: 6px 12px; margin-top:5px; font-size:0.8rem;" onclick="addQuizOption('+idx+')">+ Add Option</button></div><div class="form-group"><label>Correct Answer Index</label><select class="input-ans">'+selHtml+'</select></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion('+idx+')">Delete</button></div></div>';
         }
         container.innerHTML = html;
     }
@@ -284,14 +328,14 @@
     function addQuizOption(idx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.push("New"); renderCurrentEditor(); }
     function removeQuizOption(idx, optIdx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.splice(optIdx, 1); renderCurrentEditor(); }
 
-    function renderSystemForms(container) {
-        container.innerHTML = '<h2>System</h2><div class="card"><p>Reset database to defaults.</p><button class="btn btn-danger" onclick="factoryReset()">Reset Database</button></div>';
-    }
-    
-    function factoryReset() { if(confirm("ERASE DATA?")) { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); saveToFirebase(); renderCurrentEditor(); } }
-
     function extractFormData() {
-        if (currentEditorType === 'handbook') {
+        if (!document.getElementById('editor-container').innerHTML) return;
+        
+        if (currentEditorType === 'ai') {
+            var aiTextarea = document.querySelector('.input-ai-text');
+            if(aiTextarea) { appData.ai_knowledge = aiTextarea.value; }
+        }
+        else if (currentEditorType === 'handbook') {
             var cards = document.querySelectorAll('.handbook-card');
             if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
             for(var i=0; i<cards.length; i++) {
