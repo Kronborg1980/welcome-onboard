@@ -318,7 +318,6 @@
         ];
 
         document.querySelectorAll('.quill-container, .ai-quill-container').forEach(function(el) {
-            // Only initialize if not already a Quill container
             if (!el.classList.contains('ql-container')) {
                 new Quill(el, {
                     theme: 'snow',
@@ -331,7 +330,6 @@
     function addHandbookSlide() { extractFormData(); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New Page", img: "", video: "", content: "<p>Start typing here...</p>" }); renderCurrentEditor(); }
     function deleteHandbookSlide(idx) { if(confirm('Delete?')) { appData.handbook[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
 
-    // --- QUIZ EDITOR ---
     function renderQuizForms(container) {
         if (!appData.quizzes) appData.quizzes = {};
         var questions = appData.quizzes[currentEditorKey] || [];
@@ -373,7 +371,6 @@
                 appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value;
                 appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value;
                 
-                // Read from the Rich Text Editor HTML instead of textarea
                 var qlEditor = cards[i].querySelector('.ql-editor');
                 if(qlEditor) {
                     appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML;
