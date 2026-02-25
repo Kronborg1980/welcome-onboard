@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Norröna Admin - Secure Login</title>
+    <title>Norröna Admin</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
@@ -28,16 +28,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { display: flex; height: 100vh; background-color: var(--bg-light); color: var(--text-dark); overflow: hidden; }
         
-        /* --- LOGIN SCREEN --- */
+        /* LOGIN SCREEN */
         #login-screen { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: var(--primary-navy); transition: 0.5s; }
         .login-box { background: #fff; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .login-box img { width: 150px; margin-bottom: 20px; }
+        /* Fixed logo styling */
+        .login-box img { width: 140px; margin-bottom: 20px; }
         .login-box h2 { margin-bottom: 25px; color: var(--primary-navy); font-size: 1.5rem; }
         .login-box input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; }
         .login-box input:focus { outline: none; border-color: var(--primary-blue); }
         #login-error { color: var(--danger); font-size: 0.9rem; margin-bottom: 15px; display: none; }
         
-        /* --- APP UI --- */
+        /* APP UI */
         #admin-app { display: none; width: 100%; height: 100%; }
         aside { width: 280px; background: var(--primary-navy); color: #fff; display: flex; flex-direction: column; }
         .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; }
@@ -66,7 +67,6 @@
         .btn-primary:hover { background: #e5a800; }
         .btn-danger { background: #fce8e6; color: var(--danger); }
         .btn-outline { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); }
-        .btn-outline:hover { background: var(--bg-light); }
         
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--success); color: #fff; padding: 15px 25px; border-radius: 8px; font-weight: bold; transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 9999; }
         .toast.show { transform: translateY(0); opacity: 1; }
@@ -133,11 +133,11 @@
         </main>
     </div>
 
-    <div class="toast" id="toast">Live App Updated Successfully!</div>
+    <div class="toast" id="toast">App Updated Successfully!</div>
 
 <script>
     const firebaseConfig = {
-        apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",
+        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -146,20 +146,17 @@
         appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
     
-    try {
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    } catch(e) {
-        document.getElementById('login-error').innerText = "Firebase failed to connect. Check Config.";
-        document.getElementById('login-error').style.display = 'block';
+    if (!firebase.apps.length) { 
+        firebase.initializeApp(firebaseConfig); 
     }
 
     const auth = firebase.auth();
     const db = firebase.database();
 
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(function(user) {
         if (user) {
             document.getElementById('login-screen').style.opacity = '0';
-            setTimeout(() => {
+            setTimeout(function() {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-app').style.display = 'flex';
                 fetchDatabase();
@@ -176,7 +173,8 @@
         const pass = document.getElementById('auth-password').value;
         const errorMsg = document.getElementById('login-error');
         errorMsg.style.display = 'none';
-        auth.signInWithEmailAndPassword(email, pass).catch(error => {
+        
+        auth.signInWithEmailAndPassword(email, pass).catch(function(error) {
             errorMsg.innerText = error.message;
             errorMsg.style.display = 'block';
         });
@@ -191,49 +189,46 @@
     const DEFAULT_DATA = {
         handbook: {
             general: [
-                { title: "Your New Home at Sea", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Job-1920x1325-1.jpg.webp", video: "", content: "<p>Welcome on board the Smyril Line ferry, M/F Norröna. You will be working alongside 30 to 120 colleagues.</p>" },
-                { title: "Our Safety Culture", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Engine_Room-56_1920x1325-1600x1104.jpg.webp", video: "", content: "<div class='callout'><h4>If you see it, you own it.</h4><p>We aspire to have a proactive safety culture. If you see a safety issue, you have the responsibility to correct it immediately and report it.</p></div>" }
+                { title: "Your New Home at Sea", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Norr%C3%B6na_in_faroese_waters.jpg/1024px-Norr%C3%B6na_in_faroese_waters.jpg", video: "", content: "<p>Welcome on board the Smyril Line ferry, M/F Norröna.</p>" }
             ],
             hotel: [
-                { title: "Hotel Department Rules", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp", video: "", content: "<p><strong>Footwear:</strong> Black, comfortable, non-slippery shoes closed at the toes. MUST be all black. Worn with black socks.</p>" },
-                { title: "How to Treat Guests", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8508-1920x1325-1-1600x1104.jpg.webp", video: "", content: "<div class='callout'><h4>The 60-Second Rule</h4><p>Acknowledge and greet guests within 60 seconds. If busy, say: 'Please take a seat and I will be with you in a minute.'</p></div>" }
+                { title: "Hotel Rules", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/QQL8303-1920x1325-1-1600x1104.jpg.webp", video: "", content: "<p>Footwear MUST be all black.</p>" }
             ],
             bridge_engine: [
-                { title: "Bridge & Engine Operations", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp", video: "", content: "<h3>Certificates</h3><p>Smyril Line pays for required certificates. <strong>It is your own responsibility to sign up for a course before expiration.</strong></p>" }
+                { title: "Bridge & Engine", img: "https://www.smyrilline.com/wp-content/smush-webp/2025/04/Deck-56_1920x1325-1600x1104.jpg.webp", video: "", content: "<p>Required certificates.</p>" }
             ]
         },
         quizzes: {
-            universal: [ { q: "What does the SAFIR system handle?", options: ["Food supplies", "Passenger tickets", "Reporting accidents & near misses"], ans: 2 } ],
-            Deck: [ { q: "When are hazards greatest for Deck ops?", options: ["Open ocean", "Loading and unloading", "Drills"], ans: 1 } ],
-            Engine: [ { q: "What is non-negotiable in the engine room?", options: ["Tie", "Hearing protection and PPE", "Running"], ans: 1 } ],
-            Galley: [ { q: "Jewelry rules in galley?", options: ["Allowed", "Restricted due to hygiene", "Only watches"], ans: 1 } ],
-            Shop: [ { q: "When can crew purchase from Tax-Free?", options: ["Anytime", "Only during Crew Sale slots", "Never"], ans: 1 } ],
-            Reception: [ { q: "The 60-Second Rule?", options: ["Clean desk in 60s", "Greet guests within 60s", "Answer phone in 60s"], ans: 1 } ],
-            Restaurant_Bar: [ { q: "The 60-Second Rule?", options: ["Serve drinks in 60s", "Greet guests within 60s", "Clean tables in 60s"], ans: 1 } ],
-            Housekeeping: [ { q: "Footwear required?", options: ["Running shoes", "Black, closed-toe, non-slip", "Slippers"], ans: 1 } ]
+            universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ],
+            Deck: [ { q: "Hazards greatest?", options: ["Open ocean", "Loading", "Drills"], ans: 1 } ],
+            Engine: [ { q: "Non-negotiable?", options: ["Tie", "PPE", "Running"], ans: 1 } ],
+            Galley: [ { q: "Jewelry?", options: ["Allowed", "Restricted", "Watches ok"], ans: 1 } ],
+            Shop: [ { q: "Crew purchase?", options: ["Anytime", "Crew Sale only", "Never"], ans: 1 } ],
+            Reception: [ { q: "60-Second Rule?", options: ["Clean", "Greet", "Phone"], ans: 1 } ],
+            Restaurant_Bar: [ { q: "60-Second Rule?", options: ["Serve", "Greet", "Clean"], ans: 1 } ],
+            Housekeeping: [ { q: "Footwear?", options: ["Running", "Black non-slip", "Slippers"], ans: 1 } ]
         }
     };
 
     function fetchDatabase() {
-        db.ref('appData').once('value').then((snapshot) => {
+        db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { appData = snapshot.val(); } 
             else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
             loadEditor('handbook', 'general', document.querySelector('.nav-item')); 
-        }).catch(error => alert("Firebase Error: " + error.message));
+        }).catch(function(error) { alert("Firebase Error: " + error.message); });
     }
 
     function saveToFirebase() {
         if(currentEditorType !== 'system') extractFormData(); 
-        db.ref('appData').set(appData).then(() => showToast()).catch(err => alert("Save failed: " + err.message));
+        db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
     }
 
     function loadEditor(type, key, navElement) {
         if (currentEditorType !== 'system' && document.getElementById('editor-container').innerHTML !== '') extractFormData(); 
         currentEditorType = type; currentEditorKey = key;
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
         if(navElement) navElement.classList.add('active');
-        let headerText = type === 'system' ? "System Settings" : `${key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')} ${type === 'quiz' ? 'Questions' : 'Pages'}`;
-        document.getElementById('header-title').innerText = headerText;
+        document.getElementById('header-title').innerText = type === 'system' ? "System Settings" : (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ') + (type === 'quiz' ? ' Questions' : ' Pages'));
         renderCurrentEditor();
     }
 
@@ -247,16 +242,9 @@
     function renderHandbookForms(container) {
         if (!appData.handbook) appData.handbook = {};
         const slides = appData.handbook[currentEditorKey] || [];
-        let html = `<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()"><span class="material-icons">add</span> Add New Page</button></h2>`;
-        slides.forEach((slide, idx) => {
-            html += `
-            <div class="card handbook-card" data-idx="${idx}">
-                <div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="${slide.title || ''}"></div>
-                <div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" placeholder="https://..." value="${slide.img || ''}"></div>
-                <div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" placeholder="https://youtube.com/embed/..." value="${slide.video || ''}"></div>
-                <div class="form-group"><label>Content (HTML)</label><textarea class="input-content">${slide.content || ''}</textarea></div>
-                <div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide(${idx})">Delete</button></div>
-            </div>`;
+        let html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()">Add Page</button></h2>';
+        slides.forEach(function(slide, idx) {
+            html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>Video URL</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Content (HTML)</label><textarea class="input-content">'+(slide.content||'')+'</textarea></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
         });
         container.innerHTML = html;
     }
@@ -267,55 +255,37 @@
     function renderQuizForms(container) {
         if (!appData.quizzes) appData.quizzes = {};
         const questions = appData.quizzes[currentEditorKey] || [];
-        let html = `<h2>Manage Questions <button class="btn btn-outline" onclick="addQuizQuestion()"><span class="material-icons">add</span> Add Question</button></h2>`;
-        questions.forEach((q, idx) => {
-            html += `
-            <div class="card quiz-card" data-idx="${idx}">
-                <div class="form-group"><label>Question</label><input type="text" class="input-q" value="${q.q || ''}"></div>
-                <div class="form-group">
-                    <label>Options</label>
-                    <div id="options-container-${idx}">
-                        ${(q.options || []).map((opt, optIdx) => `
-                            <div class="option-row"><input type="text" class="input-opt" value="${opt}"><button onclick="removeQuizOption(${idx}, ${optIdx})"><span class="material-icons">close</span></button></div>
-                        `).join('')}
-                    </div>
-                    <button class="btn btn-outline" style="padding: 5px 10px; margin-top:5px; font-size:0.8rem; border-radius:4px;" onclick="addQuizOption(${idx})">+ Add Option</button>
-                </div>
-                <div class="form-group">
-                    <label>Correct Answer Index</label>
-                    <select class="input-ans">
-                        ${(q.options || []).map((opt, optIdx) => `<option value="${optIdx}" ${q.ans == optIdx ? 'selected' : ''}>Option ${optIdx + 1}: ${opt}</option>`).join('')}
-                    </select>
-                </div>
-                <div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion(${idx})">Delete</button></div>
-            </div>`;
+        let html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()">Add</button></h2>';
+        questions.forEach(function(q, idx) {
+            let optHtml = '';
+            (q.options || []).forEach(function(opt, optIdx) {
+                optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opt+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')">X</button></div>';
+            });
+            let selHtml = '';
+            (q.options || []).forEach(function(opt, optIdx) {
+                selHtml += '<option value="'+optIdx+'" '+(q.ans == optIdx ? 'selected' : '')+'>Option '+(optIdx + 1)+': '+opt+'</option>';
+            });
+            html += '<div class="card quiz-card" data-idx="'+idx+'"><div class="form-group"><label>Question</label><input type="text" class="input-q" value="'+(q.q||'')+'"></div><div class="form-group"><label>Options</label>'+optHtml+'<button class="btn btn-outline" onclick="addQuizOption('+idx+')">+ Option</button></div><div class="form-group"><label>Correct Answer Index</label><select class="input-ans">'+selHtml+'</select></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion('+idx+')">Delete</button></div></div>';
         });
         container.innerHTML = html;
     }
 
-    function addQuizQuestion() { extractFormData(); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = []; appData.quizzes[currentEditorKey].push({ q: "New Question?", options: ["A", "B"], ans: 0 }); renderCurrentEditor(); }
+    function addQuizQuestion() { extractFormData(); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = []; appData.quizzes[currentEditorKey].push({ q: "Question?", options: ["A", "B"], ans: 0 }); renderCurrentEditor(); }
     function deleteQuizQuestion(idx) { if(confirm('Delete?')) { appData.quizzes[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
     function addQuizOption(idx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.push("New"); renderCurrentEditor(); }
     function removeQuizOption(idx, optIdx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.splice(optIdx, 1); renderCurrentEditor(); }
 
     function renderSystemForms(container) {
-        container.innerHTML = `
-            <h2>System Settings</h2>
-            <div class="card">
-                <h3>Database Controls</h3>
-                <p style="color:var(--text-muted); margin-bottom:15px;">Resetting will overwrite live Firebase data with defaults.</p>
-                <button class="btn btn-danger" onclick="factoryReset()">Reset Database to Defaults</button>
-            </div>
-        `;
+        container.innerHTML = '<h2>System</h2><div class="card"><p>Reset database to defaults.</p><button class="btn btn-danger" onclick="factoryReset()">Reset Database</button></div>';
     }
     
-    function factoryReset() { if(confirm("ERASE ALL LIVE DATA?")) { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); saveToFirebase(); renderCurrentEditor(); } }
+    function factoryReset() { if(confirm("ERASE DATA?")) { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); saveToFirebase(); renderCurrentEditor(); } }
 
     function extractFormData() {
         if (currentEditorType === 'handbook') {
             const cards = document.querySelectorAll('.handbook-card');
             if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
-            cards.forEach(card => {
+            cards.forEach(function(card) {
                 const idx = card.getAttribute('data-idx');
                 appData.handbook[currentEditorKey][idx].title = card.querySelector('.input-title').value;
                 appData.handbook[currentEditorKey][idx].img = card.querySelector('.input-img').value;
@@ -325,18 +295,18 @@
         } else if (currentEditorType === 'quiz') {
             const cards = document.querySelectorAll('.quiz-card');
             if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = [];
-            cards.forEach(card => {
+            cards.forEach(function(card) {
                 const idx = card.getAttribute('data-idx');
                 appData.quizzes[currentEditorKey][idx].q = card.querySelector('.input-q').value;
                 appData.quizzes[currentEditorKey][idx].ans = parseInt(card.querySelector('.input-ans').value);
                 const optInputs = card.querySelectorAll('.input-opt');
                 appData.quizzes[currentEditorKey][idx].options = [];
-                optInputs.forEach(optInput => appData.quizzes[currentEditorKey][idx].options.push(optInput.value));
+                optInputs.forEach(function(optInput) { appData.quizzes[currentEditorKey][idx].options.push(optInput.value); });
             });
         }
     }
 
-    function showToast() { const t = document.getElementById('toast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    function showToast() { const t = document.getElementById('toast'); t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 3000); }
 </script>
 </body>
 </html>
