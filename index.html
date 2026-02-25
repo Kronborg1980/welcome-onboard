@@ -35,7 +35,7 @@
         /* HEADER */
         header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border-light); }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-container img { height: 35px; } 
+        .logo-container img { height: 35px; } /* NATURAL LOGO COLORS */
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--primary-navy); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--primary-navy); cursor: pointer; padding: 5px; }
         
@@ -96,7 +96,7 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI */
+        /* VOYAGE MAP UI (Light Theme) */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #e2e8f0; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
@@ -153,7 +153,7 @@
             </div>
 
             <div class="card" style="padding:0; overflow:hidden; border:none; background: transparent; box-shadow:none;">
-                <img src="https://www.smyrilline.com/wp-content/uploads/2025/09/DSC7077-Edit-1600px.jpg" style="width: 100%; height: 220px; object-fit: cover; border-radius: 16px; border: 1px solid var(--border-light); margin-bottom: 20px;" alt="M/F Norröna">
+                <img src="https://www.smyrilline.com/wp-content/uploads/2025/09/DSC7077-Edit-1600px.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 220px; object-fit: cover; border-radius: 16px; border: 1px solid var(--border-light); margin-bottom: 20px;" alt="M/F Norröna">
                 
                 <div class="card" style="margin-bottom: 0;">
                     <h2 style="border-bottom: none; margin-bottom: 10px;">Welcome Aboard</h2>
@@ -175,7 +175,7 @@
                         <img id="weather-icon" src="" alt="" style="display:none;">
                         <div>
                             <div class="weather-temp" id="weather-temp">--°C</div>
-                            <div class="weather-desc" id="weather-description">--</div>
+                            <div class="weather-desc" id="weather-description">Loading...</div>
                         </div>
                     </div>
                     <div class="weather-label">Destination<br>Weather</div>
@@ -184,8 +184,8 @@
                 <div class="voyage-grid">
                     <div class="grid-item" style="grid-column: span 2;">
                         <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.8rem;">--</div>
-                        <div class="sub-value" id="eta-voyage">--</div>
+                        <div class="value" id="destination-voyage" style="font-size:1.8rem;">Locating Ship...</div>
+                        <div class="sub-value" id="eta-voyage">Please wait</div>
                     </div>
                     <div class="grid-item">
                         <div class="label">Speed & Course</div>
@@ -478,7 +478,7 @@
     }
 
     // ==========================================
-    // VOYAGE API LOGIC (LIVE DATA RESTORED)
+    // VOYAGE API LOGIC (LIVE DATA)
     // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
@@ -514,15 +514,26 @@
             var response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
             var data = await response.json();
             var norrona = null;
+            
+            // Look for Norrona carefully
             for(var i=0; i<data.length; i++) {
-                if(data[i].vesselName && data[i].vesselName.toUpperCase() === 'NORRONA') { norrona = data[i]; break; }
+                if(data[i].vesselName && (data[i].vesselName.toUpperCase() === 'NORRONA' || data[i].vesselName.toUpperCase() === 'NORRÖNA')) { 
+                    norrona = data[i]; 
+                    break; 
+                }
             }
-            if (!norrona) return;
+            
+            if (!norrona) {
+                document.getElementById("destination-voyage").textContent = "Location Unknown";
+                return;
+            }
 
             var speedKnots = norrona.position && norrona.position.speed ? norrona.position.speed : 0;
             var speedKmh = speedKnots * 1.852;
             var course = norrona.position && norrona.position.course ? Math.round(norrona.position.course) : 0;
-            var currentDestKey = normalizeDestinationName(norrona.destinationFromAIS ? norrona.destinationFromAIS.split(",")[0].trim() : "torshavn");
+            
+            var destString = norrona.destinationFromAIS ? norrona.destinationFromAIS.split(",")[0].trim() : "torshavn";
+            var currentDestKey = normalizeDestinationName(destString);
             var currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
             
             var dist = 0;
@@ -578,7 +589,12 @@
                     var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>';
                     var icon = L.divIcon({ className: 'ship-marker-container', html: '<div style="transform: rotate('+course+'deg); width: 30px; height: 30px;">'+svg+'</div>', iconSize: [30, 30], iconAnchor: [15, 15] });
                     map.shipMarker = L.marker(shipPos, { icon: icon }).addTo(map); 
-                } else { map.shipMarker.setLatLng(shipPos); }
+                } else { 
+                    map.shipMarker.setLatLng(shipPos);
+                    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>';
+                    var newIcon = L.divIcon({ className: 'ship-marker-container', html: '<div style="transform: rotate('+course+'deg); width: 30px; height: 30px;">'+svg+'</div>', iconSize: [30, 30], iconAnchor: [15, 15] });
+                    map.shipMarker.setIcon(newIcon);
+                }
 
                 if (!isInPort) {
                     var pinIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41] });
@@ -593,7 +609,7 @@
                 }
             }
         } catch(e) {
-            console.log("Error fetching live ship data", e);
+            console.error("Live Fetch Error:", e);
         }
     }
 
