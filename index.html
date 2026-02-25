@@ -96,7 +96,7 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI (Light Theme) */
+        /* VOYAGE MAP UI */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #e2e8f0; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
@@ -113,7 +113,7 @@
         .weather-left { display: flex; align-items: center; gap: 15px; }
         .weather-left img { width: 50px; height: 50px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
         .weather-temp { font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); line-height: 1; }
-        .weather-desc { font-size: 0.85rem; color: var(--primary-blue); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
+        .weather-desc { font-size: 0.85rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
         .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
         
         #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
@@ -205,6 +205,11 @@
                 </div>
 
                 <div class="voyage-grid">
+                    <div class="grid-item" style="grid-column: span 2;">
+                        <div class="label" id="destination-label">Next Destination</div>
+                        <div class="value" id="destination-voyage" style="font-size:1.8rem;">Locating Ship...</div>
+                        <div class="sub-value" id="eta-voyage">Please wait</div>
+                    </div>
                     <div class="grid-item">
                         <div class="label">Speed & Course</div>
                         <div class="value">
@@ -237,11 +242,6 @@
                         <div class="label">Distance Left</div>
                         <div class="value" id="distance" style="font-size:1.6rem;">--</div>
                         <div class="sub-value" id="distance-unit">km</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--primary-blue);">--</div>
-                        <div class="sub-value" id="eta-voyage">--</div>
                     </div>
                 </div>
             </div>
@@ -361,7 +361,7 @@
     };
 
     // ==========================================
-    // 2. GEMINI AI SETUP
+    // 2. GEMINI AI SETUP (UPDATED TO GEMINI 2.5 FLASH)
     // ==========================================
     var GEMINI_API_KEY = "AIzaSy" + "Cd7PXbGXMnc54f1NsvKPH9wSkkuhlJZBU"; 
     
@@ -399,6 +399,9 @@
         window.scrollTo(0,0);
     }
 
+    // ==========================================
+    // HANDBOOK RENDERER
+    // ==========================================
     var handbookFlow = [];
     var currentHbIdx = 0;
 
@@ -450,6 +453,9 @@
     function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
+    // ==========================================
+    // QUIZ LOGIC
+    // ==========================================
     var activeQuiz = [];
     var currentQuizIdx = 0;
     var selectedQuizAns = null;
@@ -680,7 +686,7 @@
     }
 
     // ==========================================
-    // GOOGLE GEMINI AI CHAT LOGIC
+    // GOOGLE GEMINI AI CHAT LOGIC (UPDATED TO GEMINI 2.5 FLASH)
     // ==========================================
     function toggleChat() {
         var panel = document.getElementById("chat-panel");
@@ -714,7 +720,8 @@
         window.chatHistory.push({ "role": "user", "parts": [{ "text": msgText }] });
 
         try {
-            var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY, {
+            // CHANGED API ENDPOINT TO GEMINI 2.5 FLASH
+            var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
