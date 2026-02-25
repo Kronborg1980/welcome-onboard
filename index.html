@@ -6,6 +6,7 @@
     <title>M/F Norröna - Crew App</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
+
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -32,10 +33,10 @@
         body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
         #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg-light); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
-        /* HEADER */
+        /* HEADER (White background, natural logo, dark text) */
         header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border-light); }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-container img { height: 35px; } /* NATURAL LOGO COLORS */
+        .logo-container img { height: 35px; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--primary-navy); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--primary-navy); cursor: pointer; padding: 5px; }
         
@@ -51,6 +52,7 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -67,6 +69,7 @@
         .alert-danger { background: rgba(229, 62, 62, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
         .alert-danger p { color: var(--danger); margin-bottom: 0; font-weight: bold; }
 
+        /* YELLOW PILL BUTTONS */
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 50px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; transform: translateY(2px); }
@@ -79,6 +82,7 @@
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
         .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
+        /* Progress Bar */
         .module-nav { display: flex; gap: 10px; margin-top: 10px; padding-top: 10px; }
         .module-nav .btn { margin-bottom: 0; flex: 1; }
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
@@ -86,6 +90,7 @@
         .progress-step.active { background: var(--primary-blue); }
         .progress-step.completed { background: var(--success); }
 
+        /* Quiz UI */
         .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: #fff; border: 2px solid var(--border-light); border-radius: 12px; color: var(--primary-navy); font-size: 1rem; transition: 0.2s; line-height: 1.4; font-weight: 600;}
         .quiz-option.selected { border-color: var(--primary-blue); background: rgba(0, 74, 89, 0.05); font-weight: 800; border-width: 3px; padding: 17px; }
         .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
@@ -96,9 +101,9 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI (Light Theme) */
+        /* VOYAGE MAP UI (Light Theme & Fixed Layout) */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
-        #map { width: 100%; height: 100%; background: #e2e8f0; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
+        #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
@@ -107,13 +112,16 @@
         .grid-item .value .unit { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; text-transform: lowercase; }
         .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--border-light); margin: 0 8px; }
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        
+        .wind-dir-badge { background: rgba(251, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; border: 1px solid rgba(251, 185, 0, 0.3); }
+
         .weather-strip { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .weather-left { display: flex; align-items: center; gap: 15px; }
         .weather-left img { width: 50px; height: 50px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
         .weather-temp { font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); line-height: 1; }
-        .weather-desc { font-size: 0.85rem; color: var(--primary-blue); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
+        .weather-desc { font-size: 0.85rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
         .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+        
+        #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
     </style>
 </head>
 <body>
@@ -165,11 +173,15 @@
         </div>
 
         <div id="view-voyage" class="view" style="padding: 0;">
-            <div class="voyage-map-container" style="padding: 12px 12px 0 12px;">
-                <div id="map"></div>
+            <div style="padding: 12px 12px 0 12px;">
+                <div id="ship-status-bar">Locating Ship...</div>
+                
+                <div class="voyage-map-container">
+                    <div id="map"></div>
+                </div>
             </div>
             
-            <div style="padding: 20px;">
+            <div style="padding: 0 20px 20px 20px;">
                 <div class="weather-strip">
                     <div class="weather-left">
                         <img id="weather-icon" src="" alt="" style="display:none;">
@@ -182,11 +194,6 @@
                 </div>
 
                 <div class="voyage-grid">
-                    <div class="grid-item" style="grid-column: span 2;">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.8rem;">Locating Ship...</div>
-                        <div class="sub-value" id="eta-voyage">Please wait</div>
-                    </div>
                     <div class="grid-item">
                         <div class="label">Speed & Course</div>
                         <div class="value">
@@ -206,12 +213,24 @@
                         <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
                         <div class="sub-value">
                             <span id="wind-knots">--</span> kn
+                            <span style="opacity:0.25; margin:0 4px;">|</span>
+                            <span id="wind-dir-text" class="wind-dir-badge">--</span>
                         </div>
                     </div>
                     <div class="grid-item">
                         <div class="label">Wave Height</div>
                         <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
                         <div class="sub-value">Significant</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="label">Distance Left</div>
+                        <div class="value" id="distance" style="font-size:1.6rem;">--</div>
+                        <div class="sub-value" id="distance-unit">km</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="label" id="destination-label">Next Destination</div>
+                        <div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--primary-blue);">--</div>
+                        <div class="sub-value" id="eta-voyage">--</div>
                     </div>
                 </div>
             </div>
@@ -478,7 +497,7 @@
     }
 
     // ==========================================
-    // VOYAGE API LOGIC (LIVE DATA)
+    // FULLY RESTORED VOYAGE DATA
     // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
@@ -515,18 +534,12 @@
             var data = await response.json();
             var norrona = null;
             
-            // Look for Norrona carefully
             for(var i=0; i<data.length; i++) {
                 if(data[i].vesselName && (data[i].vesselName.toUpperCase() === 'NORRONA' || data[i].vesselName.toUpperCase() === 'NORRÖNA')) { 
-                    norrona = data[i]; 
-                    break; 
+                    norrona = data[i]; break; 
                 }
             }
-            
-            if (!norrona) {
-                document.getElementById("destination-voyage").textContent = "Location Unknown";
-                return;
-            }
+            if (!norrona) return;
 
             var speedKnots = norrona.position && norrona.position.speed ? norrona.position.speed : 0;
             var speedKmh = speedKnots * 1.852;
@@ -542,44 +555,53 @@
             }
             var isInPort = speedKnots < 1.0 && dist < 2.0;
 
-            document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
-            document.getElementById("speed-kmh").textContent = speedKmh.toFixed(1); 
-            document.getElementById("course-voyage").textContent = "Course: " + course + "°";
+            // Safe DOM updates to prevent JS crashes
+            if(document.getElementById("speed-knots")) document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
+            if(document.getElementById("speed-kmh")) document.getElementById("speed-kmh").textContent = speedKmh.toFixed(1); 
+            if(document.getElementById("course-voyage")) document.getElementById("course-voyage").textContent = "Course: " + course + "°";
+
+            var topStatusBar = document.getElementById("ship-status-bar");
 
             if (isInPort) {
-                document.getElementById("distance").textContent = "Docked"; 
-                document.getElementById("destination-label").textContent = "Current Location";
-                document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                document.getElementById("eta-voyage").textContent = "Arrived";
+                if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
+                if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name;
+                if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Current Location";
+                if(document.getElementById("destination-voyage")) document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = "Arrived";
+                if(topStatusBar) topStatusBar.innerHTML = "<span style='color:var(--accent-gold);'>●</span> IN " + currentDestInfo.name.toUpperCase() + " • DOCKED";
             } else {
                 var arrivalTime = formatETA(norrona.etaFromAIS);
-                document.getElementById("distance").textContent = Math.round(dist);
-                document.getElementById("destination-label").textContent = "Next Destination";
-                document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                document.getElementById("eta-voyage").textContent = arrivalTime ? "ETA: " + arrivalTime.day + " " + arrivalTime.time : '--';
+                if(document.getElementById("distance")) document.getElementById("distance").textContent = Math.round(dist);
+                if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "km left";
+                if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Next Destination";
+                if(document.getElementById("destination-voyage")) document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = arrivalTime ? "ETA: " + arrivalTime.day + " " + arrivalTime.time : '--';
+                if(topStatusBar) topStatusBar.innerHTML = "<span style='color:var(--success);'>●</span> SAILING TO " + currentDestInfo.name.toUpperCase();
             }
 
             if(norrona.position) {
                 fetch("https://api.open-meteo.com/v1/forecast?latitude="+norrona.position.latitude+"&longitude="+norrona.position.longitude+"&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms").then(function(r){return r.json()}).then(function(d) {
                     var ms = d.current.wind_speed_10m;
-                    document.getElementById("wind-ms").textContent = Math.round(ms);
-                    document.getElementById("wind-knots").textContent = Math.round(ms * 1.94384);
-                    document.getElementById("wind-dir-text").textContent = getWindDirection(d.current.wind_direction_10m);
+                    if(document.getElementById("wind-ms")) document.getElementById("wind-ms").textContent = Math.round(ms);
+                    if(document.getElementById("wind-knots")) document.getElementById("wind-knots").textContent = Math.round(ms * 1.94384);
+                    if(document.getElementById("wind-dir-text")) document.getElementById("wind-dir-text").textContent = getWindDirection(d.current.wind_direction_10m);
                 }).catch(function(e){});
 
                 fetch("https://marine-api.open-meteo.com/v1/marine?latitude="+norrona.position.latitude+"&longitude="+norrona.position.longitude+"&current=wave_height").then(function(r){return r.json()}).then(function(d) {
-                    document.getElementById("wave-height").textContent = d.current.wave_height ? d.current.wave_height.toFixed(1) : "--";
+                    if(document.getElementById("wave-height")) document.getElementById("wave-height").textContent = d.current.wave_height ? d.current.wave_height.toFixed(1) : "--";
                 }).catch(function(e){});
             }
 
             fetch("https://api.open-meteo.com/v1/forecast?latitude="+currentDestInfo.lat+"&longitude="+currentDestInfo.lon+"&current=temperature_2m,weathercode").then(function(r){return r.json()}).then(function(d) {
-                document.getElementById("weather-temp").textContent = Math.round(d.current.temperature_2m) + "°C";
+                if(document.getElementById("weather-temp")) document.getElementById("weather-temp").textContent = Math.round(d.current.temperature_2m) + "°C";
                 var codeMap = { 0:{d:'Clear',i:'01d'}, 1:{d:'Mainly clear',i:'02d'}, 2:{d:'Partly cloudy',i:'03d'}, 3:{d:'Overcast',i:'04d'}, 45:{d:'Fog',i:'50d'}, 51:{d:'Drizzle',i:'09d'}, 61:{d:'Rain',i:'10d'}, 71:{d:'Snow',i:'13d'}, 80:{d:'Showers',i:'09d'}, 95:{d:'Storm',i:'11d'} };
                 var w = codeMap[d.current.weathercode] || {d:'Unknown', i:'01d'};
-                document.getElementById("weather-description").textContent = w.d;
+                if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = w.d;
                 var iconImg = document.getElementById("weather-icon");
-                iconImg.src = "https://openweathermap.org/img/wn/" + w.i + "@2x.png";
-                iconImg.style.display = "block"; 
+                if(iconImg) {
+                    iconImg.src = "https://openweathermap.org/img/wn/" + w.i + "@2x.png";
+                    iconImg.style.display = "block"; 
+                }
             }).catch(function(e){});
 
             if (map && norrona.position) {
@@ -600,7 +622,7 @@
                     var pinIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41] });
                     if (!map.destMarker) map.destMarker = L.marker(destPos, {icon: pinIcon}).addTo(map); else map.destMarker.setLatLng(destPos);
                     if (liveRouteLine) map.removeLayer(liveRouteLine); 
-                    liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10' }).addTo(map);
+                    liveRouteLine = L.polyline([shipPos, destPos], { color: '#004A59', weight: 3, dashArray: '10, 10' }).addTo(map);
                     map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
                 } else {
                     if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
@@ -608,9 +630,7 @@
                     map.setView(shipPos, 14);
                 }
             }
-        } catch(e) {
-            console.error("Live Fetch Error:", e);
-        }
+        } catch(e) { console.error("Data error", e); }
     }
 
     function initializeVoyagePage() {
