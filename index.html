@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>M/F Norröna - Crew App</title>
+    <title>M/F Norröna - Welcome Onboard</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
@@ -51,6 +51,7 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -96,7 +97,7 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI (Light Theme) */
+        /* VOYAGE MAP UI */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #e2e8f0; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
@@ -167,18 +168,18 @@
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 30px 20px 30px 20px;">
                 <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 100px; margin-bottom: 20px;" alt="Smyril Line Logo">
-                <h1 style="margin-bottom: 5px;">Norröna Crew</h1>
-                <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--primary-blue); font-weight: 600;">Official Team Portal</p>
+                <h1 style="margin-bottom: 5px;">Welcome Onboard</h1>
+                <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--primary-blue); font-weight: 600;">Norröna Crew Portal</p>
             </div>
 
             <div class="card" style="padding:0; overflow:hidden; border:none; background: transparent; box-shadow:none;">
                 <img src="https://www.smyrilline.com/wp-content/uploads/2025/09/DSC7077-Edit-1600px.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 220px; object-fit: cover; border-radius: 16px; border: 1px solid var(--border-light); margin-bottom: 20px;" alt="M/F Norröna">
                 
                 <div class="card" style="margin-bottom: 0;">
-                    <h2 style="border-bottom: none; margin-bottom: 10px;">Welcome Aboard</h2>
-                    <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
-                    <button class="btn btn-outline" onclick="openQuestionnaire()">Take Clearance Assessment</button>
+                    <h2 style="border-bottom: none; margin-bottom: 10px;">Mandatory Onboarding</h2>
+                    <p>All new crew members <strong>must</strong> read the Ship Handbook and achieve a 100% perfect score on the Clearance Assessment to begin duties.</p>
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Step 1: Read Handbook</button>
+                    <button class="btn btn-outline" onclick="openQuestionnaire()">Step 2: Take Assessment</button>
                 </div>
             </div>
         </div>
@@ -271,7 +272,7 @@
 
         <div id="view-q-select" class="view">
             <h2>Clearance Assessment</h2>
-            <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
+            <p>Select your role. <strong style="color:var(--danger)">100% Score Required.</strong></p>
             <button class="btn btn-dept" onclick="startQuiz('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem; font-weight:800;">Deck Operations</div></div></button>
             <button class="btn btn-dept" onclick="startQuiz('Engine')"><span class="material-icons">engineering</span> <div><div style="font-size:1.2rem; font-weight:800;">Engine Room</div></div></button>
             <button class="btn btn-dept" onclick="toggleSubMenu('hotel-sub')">
@@ -298,11 +299,21 @@
             <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
         </div>
 
+        <div id="view-fail" class="view">
+            <div class="card" style="text-align: center; padding: 40px 20px; border-color: var(--danger);">
+                <span class="material-icons" style="font-size: 80px; color: var(--danger); margin-bottom: 20px;">cancel</span>
+                <h1 style="color: var(--primary-navy); margin-bottom: 10px;">Assessment Failed</h1>
+                <p style="margin-bottom: 30px;">You selected an incorrect answer. Safety and compliance require a 100% perfect score.</p>
+                <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Review Handbook</button>
+                <button class="btn btn-outline" onclick="goToView('view-q-select')"><span class="material-icons">refresh</span> Try Again</button>
+            </div>
+        </div>
+
         <div id="view-sending" class="view">
             <div class="loader-container active">
                 <div class="spinner"></div>
                 <h2 style="border:none; padding:0;">Processing...</h2>
-                <p>Transmitting your results to the Department Leader.</p>
+                <p>Verifying your 100% score with the Department Leader.</p>
             </div>
         </div>
 
@@ -454,7 +465,7 @@
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
     // ==========================================
-    // QUIZ LOGIC
+    // QUIZ LOGIC (NOW STRICT!)
     // ==========================================
     var activeQuiz = [];
     var currentQuizIdx = 0;
@@ -534,8 +545,8 @@
                 }
             }, 1000);
         } else {
-            feedback.innerText = "Incorrect. Please check the Ship Handbook and try again!";
-            feedback.className = "quiz-feedback feedback-error";
+            // STRICT FAIL LOGIC
+            goToView('view-fail');
         }
     }
 
