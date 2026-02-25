@@ -15,14 +15,15 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --primary-dark: #002836; --primary-brand: #004A59; --accent-gold: #FCB900; --accent-gold-hover: #e5a800; --text-main: #ffffff; --text-muted: rgba(255, 255, 255, 0.7); --glass-bg: rgba(255, 255, 255, 0.06); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); --danger: #e74c3c; --success: #27ae60; --header-height: 65px; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--primary-dark); color: var(--text-main); background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 80%); background-attachment: fixed; min-height: 100vh; overflow-x: hidden; }
-        #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: rgba(0, 40, 54, 0.3); box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+        :root { --primary-dark: #002836; --primary-brand: #004A59; --accent-gold: #FCB900; --accent-gold-hover: #e5a800; --text-main: #ffffff; --text-muted: rgba(255, 255, 255, 0.7); --glass-bg: rgba(255, 255, 255, 0.06); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4); --danger: #e74c3c; --success: #27ae60; --header-height: 70px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--primary-dark); color: var(--text-main); background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 80%); background-attachment: fixed; min-height: 100vh; overflow-x: hidden; }
+        #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: rgba(0, 40, 54, 0.3); box-shadow: 0 0 40px rgba(0,0,0,0.7); }
         
         header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .logo { font-weight: 800; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; cursor: pointer;}
-        .logo .status-dot { width: 8px; height: 8px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 10px var(--accent-gold); animation: pulse 2s infinite; }
+        .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-container img { height: 26px; filter: brightness(0) invert(1); }
+        .logo-container span { font-weight: 700; font-size: 1rem; color: var(--accent-gold); letter-spacing: 1px; text-transform: uppercase; }
         .menu-toggle { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
         
         #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 40, 54, 0.98); backdrop-filter: blur(25px); z-index: 999; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; padding: 30px 20px; overflow-y: auto;}
@@ -35,7 +36,6 @@
         .view { display: none; animation: fadeIn 0.4s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
         h1, h2, h3 { font-weight: 700; margin-bottom: 15px; line-height: 1.3; }
         h1 { font-size: 1.8rem; color: #fff; }
@@ -44,7 +44,7 @@
         ul { padding-left: 20px; margin-bottom: 20px; }
         
         .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: var(--glass-shadow); backdrop-filter: blur(12px); }
-        .hero-img { width: calc(100% + 48px); height: 220px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
+        .hero-img { width: calc(100% + 48px); height: 200px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--accent-gold); }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 20px; border: 2px solid var(--accent-gold); }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
@@ -79,8 +79,8 @@
         .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- VOYAGE MAP UI CSS (Imported exactly to match your desired UI) --- */
-        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
+        /* --- VOYAGE MAP UI CSS --- */
+        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #001e29; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8); overflow: hidden; }
         .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.6)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
         .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--primary-dark); border-radius: 24px 24px 0 0; border-top: 1px solid var(--glass-border); padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; }
@@ -105,8 +105,9 @@
 
 <div id="app-shell">
     <header>
-        <div class="logo" onclick="goToView('view-home')">
-            <span class="status-dot"></span> Norröna Crew
+        <div class="logo-container" onclick="goToView('view-home')">
+            <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line">
+            <span>Crew</span>
         </div>
         <button class="menu-toggle" onclick="toggleMenu()">
             <span class="material-icons" id="menu-icon">menu</span>
@@ -130,11 +131,17 @@
         </div>
 
         <div id="view-home" class="view">
-            <div class="card" style="padding:0; overflow:hidden;">
-                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" class="hero-img" alt="Norrona">
-                <div style="padding: 24px;">
-                    <h1>Welcome to Our Team</h1>
-                    <p style="font-size: 1.1rem; color: #fff;">You are joining the crew of M/F Norröna, the largest passenger ship in the North Atlantic Ocean.</p>
+            <div style="text-align: center; padding: 20px 20px 30px 20px;">
+                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 60px; filter: brightness(0) invert(1); margin-bottom: 15px;" alt="Smyril Line Logo">
+                <h1 style="color: var(--accent-gold); margin-bottom: 5px; font-size: 2.2rem; letter-spacing: -1px;">Norröna Crew</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 80%; margin: 0 auto;">Official team portal for M/F Norröna.</p>
+            </div>
+
+            <div class="card" style="padding:0; overflow:hidden; border:none; background: transparent; box-shadow:none;">
+                <img src="https://www.smyrilline.com/wp-content/smush-webp/2025/04/Captains-9_1920x1325-1600x1104.jpg.webp" style="width: 100%; height: 180px; object-fit: cover; border-radius: 16px; border: 1px solid var(--glass-border); margin-bottom: 20px;" alt="Norrona">
+                
+                <div class="card" style="margin-bottom: 0;">
+                    <h2 style="border-bottom: none; color: #fff; margin-bottom: 10px;">Welcome Aboard</h2>
                     <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
                     <button class="btn btn-outline" style="margin-top: 20px;" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Read the Ship Handbook</button>
                     <button class="btn btn-primary" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Take Clearance Assessment</button>
@@ -294,7 +301,7 @@
     // EXACT FIREBASE CONFIGURATION
     // ==========================================
     const firebaseConfig = {
-        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
+        apiKey: "AIzaSyD1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -315,12 +322,12 @@
             firebaseActive = true;
             goToView('view-home');
         }).catch(error => {
-            console.error("Firebase DB error:", error);
-            goToView('view-home'); 
+            console.error("Firebase Database error:", error);
+            goToView('view-home');
         });
     } catch(e) {
-        console.error("Firebase Init failed.");
-        goToView('view-home'); 
+        console.error("Firebase SDK init failed.");
+        goToView('view-home');
     }
 
     // ==========================================
