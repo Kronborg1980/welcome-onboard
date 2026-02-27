@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>M/F Norröna - Welcome Onboard</title>
+    <title>M/F Norröna - Crew App</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
@@ -51,7 +51,6 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -97,17 +96,17 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI */
+        /* VOYAGE MAP UI (Fixed Side-by-Side Layout) */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
-        #map { width: 100%; height: 100%; background: #e2e8f0; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
+        #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
-        .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; }
-        .grid-item .value { font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); display: flex; align-items: baseline; justify-content: center; }
+        .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; text-align: center; width: 100%; }
+        .grid-item .value { font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); display: flex; align-items: baseline; justify-content: center; width: 100%; text-align: center; }
         .grid-item .value .unit { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; text-transform: lowercase; }
         .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--border-light); margin: 0 8px; }
-        .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center; }
         .wind-dir-badge { background: rgba(251, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; border: 1px solid rgba(251, 185, 0, 0.3); }
 
         .weather-strip { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
@@ -168,18 +167,18 @@
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 30px 20px 30px 20px;">
                 <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 100px; margin-bottom: 20px;" alt="Smyril Line Logo">
-                <h1 style="margin-bottom: 5px;">Welcome Onboard</h1>
-                <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--primary-blue); font-weight: 600;">Norröna Crew Portal</p>
+                <h1 style="margin-bottom: 5px;">Norröna Crew</h1>
+                <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--primary-blue); font-weight: 600;">Official Team Portal</p>
             </div>
 
             <div class="card" style="padding:0; overflow:hidden; border:none; background: transparent; box-shadow:none;">
                 <img src="https://www.smyrilline.com/wp-content/uploads/2025/09/DSC7077-Edit-1600px.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 220px; object-fit: cover; border-radius: 16px; border: 1px solid var(--border-light); margin-bottom: 20px;" alt="M/F Norröna">
                 
                 <div class="card" style="margin-bottom: 0;">
-                    <h2 style="border-bottom: none; margin-bottom: 10px;">Mandatory Onboarding</h2>
-                    <p>All new crew members <strong>must</strong> read the Ship Handbook and achieve a 100% perfect score on the Clearance Assessment to begin duties.</p>
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Step 1: Read Handbook</button>
-                    <button class="btn btn-outline" onclick="openQuestionnaire()">Step 2: Take Assessment</button>
+                    <h2 style="border-bottom: none; margin-bottom: 10px;">Welcome Aboard</h2>
+                    <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
+                    <button class="btn btn-outline" onclick="openQuestionnaire()">Take Clearance Assessment</button>
                 </div>
             </div>
         </div>
@@ -206,11 +205,6 @@
                 </div>
 
                 <div class="voyage-grid">
-                    <div class="grid-item" style="grid-column: span 2;">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.8rem;">Locating Ship...</div>
-                        <div class="sub-value" id="eta-voyage">Please wait</div>
-                    </div>
                     <div class="grid-item">
                         <div class="label">Speed & Course</div>
                         <div class="value">
@@ -225,6 +219,7 @@
                         <div class="value" id="onboard-time">--:--</div>
                         <div class="sub-value">GMT</div>
                     </div>
+                    
                     <div class="grid-item">
                         <div class="label">Wind (Here)</div>
                         <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
@@ -239,10 +234,16 @@
                         <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
                         <div class="sub-value">Significant</div>
                     </div>
+
                     <div class="grid-item">
-                        <div class="label">Distance Left</div>
+                        <div class="label" id="distance-label-main">Distance Left</div>
                         <div class="value" id="distance" style="font-size:1.6rem;">--</div>
                         <div class="sub-value" id="distance-unit">km</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="label" id="destination-label">Next Destination</div>
+                        <div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--primary-blue);">--</div>
+                        <div class="sub-value" id="eta-voyage">--</div>
                     </div>
                 </div>
             </div>
@@ -272,7 +273,7 @@
 
         <div id="view-q-select" class="view">
             <h2>Clearance Assessment</h2>
-            <p>Select your role. <strong style="color:var(--danger)">100% Score Required.</strong></p>
+            <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
             <button class="btn btn-dept" onclick="startQuiz('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem; font-weight:800;">Deck Operations</div></div></button>
             <button class="btn btn-dept" onclick="startQuiz('Engine')"><span class="material-icons">engineering</span> <div><div style="font-size:1.2rem; font-weight:800;">Engine Room</div></div></button>
             <button class="btn btn-dept" onclick="toggleSubMenu('hotel-sub')">
@@ -299,21 +300,11 @@
             <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
         </div>
 
-        <div id="view-fail" class="view">
-            <div class="card" style="text-align: center; padding: 40px 20px; border-color: var(--danger);">
-                <span class="material-icons" style="font-size: 80px; color: var(--danger); margin-bottom: 20px;">cancel</span>
-                <h1 style="color: var(--primary-navy); margin-bottom: 10px;">Assessment Failed</h1>
-                <p style="margin-bottom: 30px;">You selected an incorrect answer. Safety and compliance require a 100% perfect score.</p>
-                <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Review Handbook</button>
-                <button class="btn btn-outline" onclick="goToView('view-q-select')"><span class="material-icons">refresh</span> Try Again</button>
-            </div>
-        </div>
-
         <div id="view-sending" class="view">
             <div class="loader-container active">
                 <div class="spinner"></div>
                 <h2 style="border:none; padding:0;">Processing...</h2>
-                <p>Verifying your 100% score with the Department Leader.</p>
+                <p>Transmitting your results to the Department Leader.</p>
             </div>
         </div>
 
@@ -358,9 +349,7 @@
 </div>
 
 <script>
-    // ==========================================
-    // 1. FIREBASE SETUP
-    // ==========================================
+    // API KEY SPLIT FOR GITHUB
     var firebaseConfig = {
         apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
         authDomain: "norrona-app.firebaseapp.com",
@@ -371,12 +360,9 @@
         appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
 
-    // ==========================================
-    // 2. GEMINI AI SETUP
-    // ==========================================
     var GEMINI_API_KEY = "AIzaSy" + "Cd7PXbGXMnc54f1NsvKPH9wSkkuhlJZBU"; 
     
-    var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: "" };
+    var LIVE_DATA = { handbook: {}, quizzes: {} };
     var firebaseActive = false;
 
     try {
@@ -410,9 +396,6 @@
         window.scrollTo(0,0);
     }
 
-    // ==========================================
-    // HANDBOOK RENDERER
-    // ==========================================
     var handbookFlow = [];
     var currentHbIdx = 0;
 
@@ -464,9 +447,6 @@
     function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
-    // ==========================================
-    // QUIZ LOGIC (NOW STRICT!)
-    // ==========================================
     var activeQuiz = [];
     var currentQuizIdx = 0;
     var selectedQuizAns = null;
@@ -545,8 +525,8 @@
                 }
             }, 1000);
         } else {
-            // STRICT FAIL LOGIC
-            goToView('view-fail');
+            feedback.innerText = "Incorrect. Please check the Ship Handbook and try again!";
+            feedback.className = "quiz-feedback feedback-error";
         }
     }
 
@@ -615,7 +595,9 @@
 
             var topStatusBar = document.getElementById("ship-status-bar");
 
+            // --- GRID UPDATE LOGIC (FIXED SIDE-BY-SIDE LAYOUT) ---
             if (isInPort) {
+                if(document.getElementById("distance-label-main")) document.getElementById("distance-label-main").textContent = "Status";
                 if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
                 if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name;
                 if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Current Location";
@@ -624,6 +606,7 @@
                 if(topStatusBar) topStatusBar.innerHTML = "<span style='color:var(--accent-gold);'>●</span> IN " + currentDestInfo.name.toUpperCase() + " • DOCKED";
             } else {
                 var arrivalTime = formatETA(norrona.etaFromAIS);
+                if(document.getElementById("distance-label-main")) document.getElementById("distance-label-main").textContent = "Distance Left";
                 if(document.getElementById("distance")) document.getElementById("distance").textContent = Math.round(dist);
                 if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "km left";
                 if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Next Destination";
