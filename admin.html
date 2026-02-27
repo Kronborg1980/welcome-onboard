@@ -64,7 +64,6 @@
         input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; transition: 0.2s; }
         input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-blue); }
         
-        /* AI INSIGHTS BOX */
         .insights-box { background: rgba(251, 185, 0, 0.1); border: 1px solid var(--accent-gold); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
         .insights-box h3 { color: var(--primary-navy); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .insight-item { background: #fff; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(0,0,0,0.05); }
@@ -126,7 +125,6 @@
                 <div class="dot"></div> LIVE ADMIN
             </div>
             <div class="sidebar-nav">
-                
                 <div class="nav-group">
                     <div class="nav-title">AI Assistant</div>
                     <div class="nav-item" onclick="loadEditor('ai', 'knowledge', this)">
@@ -237,7 +235,7 @@
     function logoutAdmin() { auth.signOut(); }
 
     var appData = { handbook: {}, quizzes: {}, ai_knowledge: [] };
-    var unansweredQuestions = []; // NEW: Array to hold insights
+    var unansweredQuestions = [];
     var currentEditorType = 'handbook'; 
     var currentEditorKey = 'general';
 
@@ -256,7 +254,6 @@
     };
 
     function fetchDatabase() {
-        // 1. Fetch normal app data
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { 
                 appData = snapshot.val(); 
@@ -270,20 +267,16 @@
             loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { alert("Firebase Error: " + error.message); });
 
-        // 2. Fetch Unanswered Questions for AI Insights (Real-time)
+        // Listen for new Unanswered Questions without destroying the editor
         db.ref('ai_unanswered').on('value', function(snapshot) {
             unansweredQuestions = [];
             if (snapshot.exists()) {
                 snapshot.forEach(function(childSnapshot) {
-                    unansweredQuestions.push({
-                        id: childSnapshot.key,
-                        q: childSnapshot.val().question
-                    });
+                    unansweredQuestions.push({ id: childSnapshot.key, q: childSnapshot.val().question });
                 });
             }
-            // Refresh editor if we are currently looking at AI screen
             if (currentEditorType === 'ai') {
-                renderCurrentEditor();
+                updateInsightsUI(); 
             }
         });
     }
@@ -322,44 +315,17 @@
         else if (currentEditorType === 'ai') renderAITraining(container);
     }
 
-    // --- AI TRAINING EDITOR (WITH TOP 5 INSIGHTS) ---
     function renderAITraining(container) {
         if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
-        
         var html = '';
-
-        // 1. RENDER AI INSIGHTS BOX
+        
+        // Static shell for the Insights Box
         html += '<div class="insights-box">';
         html += '<h3><span class="material-icons">tips_and_updates</span> AI Insights: Top Unanswered Questions</h3>';
-        html += '<p style="color:var(--text-dark); font-size:0.9rem; margin-bottom:15px;">This is what your crew is asking, but the AI doesn\'t know the answer to. Create chapters below to teach the AI the answers!</p>';
-        
-        if (unansweredQuestions.length === 0) {
-            html += '<div style="color: var(--success); font-weight:bold;">No unanswered questions right now. The AI knows everything!</div>';
-        } else {
-            // Count frequencies
-            var counts = {};
-            unansweredQuestions.forEach(function(item) {
-                var cleanedQ = item.q.toLowerCase().trim();
-                counts[cleanedQ] = (counts[cleanedQ] || 0) + 1;
-            });
-            
-            // Sort by top
-            var sortedCounts = Object.keys(counts).map(function(k) { return { q: k, count: counts[k] }; });
-            sortedCounts.sort(function(a, b) { return b.count - a.count; });
-
-            // Display Top 5
-            for(var i=0; i<Math.min(5, sortedCounts.length); i++) {
-                html += '<div class="insight-item">';
-                html += '<div class="insight-text">"' + sortedCounts[i].q + '"</div>';
-                html += '<div class="insight-count">Asked ' + sortedCounts[i].count + 'x</div>';
-                html += '</div>';
-            }
-            
-            html += '<button class="btn btn-outline" style="margin-top:15px; font-size:0.8rem; padding: 6px 12px; color:var(--danger); border-color:var(--danger);" onclick="clearInsights()"><span class="material-icons" style="font-size:1rem;">delete</span> Clear List</button>';
-        }
+        html += '<p style="color:var(--text-dark); font-size:0.9rem; margin-bottom:15px;">This is what your crew is asking, but the AI doesn\'t know the answer to.</p>';
+        html += '<div id="ai-insights-container">Loading data...</div>';
         html += '</div>';
 
-        // 2. RENDER CHAPTERS
         html += '<h2>AI Chapters <button class="btn btn-outline" onclick="addAITopic()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Topic</button></h2>';
         
         for(var idx=0; idx<appData.ai_knowledge.length; idx++) {
@@ -375,7 +341,7 @@
             html += '<div class="ai-card-body">';
             html += '  <div class="form-group">';
             html += '    <label>Chapter / Topic Name</label>';
-            html += '    <input type="text" class="input-ai-topic" value="'+(item.topic||'')+'" placeholder="e.g. Salaries, WiFi, Medical..." oninput="updateAITitleDisplay(this.value, '+idx+')">';
+            html += '    <input type="text" class="input-ai-topic" value="'+(item.topic||'')+'" placeholder="e.g. Salaries, WiFi..." oninput="updateAITitleDisplay(this.value, '+idx+')">';
             html += '  </div>';
             html += '  <div class="form-group">';
             html += '    <label>Information</label>';
@@ -387,12 +353,43 @@
         }
         container.innerHTML = html;
         initQuillEditors();
+        updateInsightsUI(); // Inject the real-time insight data safely
+    }
+
+    // Safely updates just the Top 5 list without breaking the text editors
+    function updateInsightsUI() {
+        var box = document.getElementById('ai-insights-container');
+        if(!box) return;
+
+        if (unansweredQuestions.length === 0) {
+            box.innerHTML = '<div style="color: var(--success); font-weight:bold;">No unanswered questions right now. The AI knows everything!</div>';
+            return;
+        }
+
+        var counts = {};
+        unansweredQuestions.forEach(function(item) {
+            var cleanedQ = item.q.toLowerCase().trim();
+            counts[cleanedQ] = (counts[cleanedQ] || 0) + 1;
+        });
+        
+        var sortedCounts = Object.keys(counts).map(function(k) { return { q: k, count: counts[k] }; });
+        sortedCounts.sort(function(a, b) { return b.count - a.count; });
+
+        var html = '';
+        for(var i=0; i<Math.min(5, sortedCounts.length); i++) {
+            html += '<div class="insight-item">';
+            html += '<div class="insight-text">"' + sortedCounts[i].q + '"</div>';
+            html += '<div class="insight-count">Asked ' + sortedCounts[i].count + 'x</div>';
+            html += '</div>';
+        }
+        
+        html += '<button class="btn btn-outline" style="margin-top:15px; font-size:0.8rem; padding: 6px 12px; color:var(--danger); border-color:var(--danger);" onclick="clearInsights()"><span class="material-icons" style="font-size:1rem;">delete</span> Clear List</button>';
+        box.innerHTML = html;
     }
 
     function clearInsights() {
         if(confirm("Are you sure you want to delete all logged questions? This cannot be undone.")) {
             db.ref('ai_unanswered').remove();
-            // The real-time listener will automatically re-render the page
         }
     }
 
@@ -445,7 +442,6 @@
             [{ 'header': [1, 2, 3, false] }],
             ['link', 'clean']
         ];
-
         document.querySelectorAll('.quill-container').forEach(function(el) {
             if (!el.classList.contains('ql-container')) {
                 new Quill(el, { theme: 'snow', modules: { toolbar: toolbarOptions } });
