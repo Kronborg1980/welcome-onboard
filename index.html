@@ -14,6 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+        /* OFFICIAL SMYRIL LINE LIGHT THEME */
         :root { 
             --primary-navy: #002836; 
             --primary-blue: #004A59;
@@ -31,12 +32,14 @@
         body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
         #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg-light); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
+        /* HEADER */
         header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border-light); }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { height: 35px; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--primary-navy); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--primary-navy); cursor: pointer; padding: 5px; }
         
+        /* BURGER MENU */
         #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 40, 54, 0.98); backdrop-filter: blur(10px); z-index: 999; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px; overflow-y: auto;}
         #nav-overlay.active { transform: translateX(0); }
         .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: #fff; text-decoration: none; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -48,6 +51,7 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -68,6 +72,7 @@
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; transform: translateY(2px); }
         .btn-outline { background: #fff; border: 2px solid var(--primary-navy); color: var(--primary-navy); }
+        .btn-danger-outline { background: #fff; border: 2px solid var(--danger); color: var(--danger); }
         
         .btn-dept { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); justify-content: flex-start; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .btn-dept .material-icons { color: var(--primary-blue); font-size: 28px;}
@@ -79,8 +84,15 @@
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
         .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
-        .module-nav { display: flex; gap: 10px; margin-top: 10px; padding-top: 10px; }
-        .module-nav .btn { margin-bottom: 0; flex: 1; }
+        /* Form Inputs for Reporting */
+        .form-label { display: block; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px; font-size: 0.95rem; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; margin-bottom: 20px; background: #fff; color: var(--text-dark); font-family: inherit;}
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0,74,89,0.1); }
+        .form-textarea { min-height: 120px; resize: vertical; }
+        .photo-upload-box { border: 2px dashed var(--border-light); border-radius: 12px; padding: 30px 20px; text-align: center; cursor: pointer; background: #fafbfc; margin-bottom: 20px; transition: 0.2s;}
+        .photo-upload-box:active { background: #f0f4f8; }
+        .photo-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; display: none; border: 1px solid var(--border-light); }
+
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
         .progress-step { flex: 1; height: 6px; background: var(--border-light); border-radius: 3px; transition: 0.3s;}
         .progress-step.active { background: var(--primary-blue); }
@@ -96,6 +108,7 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        /* VOYAGE MAP UI */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
@@ -117,8 +130,8 @@
         
         #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
 
-        /* AI CHAT WIDGET STYLES */
-        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; border: 2px solid var(--accent-gold); }
+        /* AI CHAT WIDGET STYLES (Minimizable) */
+        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; transition: 0.3s; border: 2px solid var(--accent-gold); }
         .chat-fab:active { transform: scale(0.95); }
         .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: var(--border-light); color: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .chat-minimized-tab { position: fixed; bottom: 35px; right: 0; width: 40px; height: 40px; background: var(--primary-navy); border-radius: 20px 0 0 20px; display: none; align-items: center; justify-content: center; color: var(--accent-gold); cursor: pointer; z-index: 9999; box-shadow: -2px 2px 10px rgba(0,0,0,0.2); border: 1px solid var(--accent-gold); border-right: none; }
@@ -155,6 +168,7 @@
         <a href="#" class="nav-link" onclick="openVoyage()"><span class="material-icons">explore</span> Voyage & Ship Status</a>
         <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook</a>
         <a href="#" class="nav-link" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Clearance Assessment</a>
+        <a href="#" class="nav-link" style="color: var(--danger); border-top: 1px solid rgba(255,255,255,0.1);" onclick="openReporting()"><span class="material-icons" style="color: var(--danger);">report_problem</span> Report Safety Issue</a>
     </div>
 
     <main>
@@ -167,8 +181,8 @@
         </div>
 
         <div id="view-home" class="view">
-            <div style="text-align: center; padding: 30px 20px 30px 20px;">
-                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 100px; margin-bottom: 20px;" alt="Smyril Line Logo">
+            <div style="text-align: center; padding: 20px 20px 30px 20px;">
+                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 90px; margin-bottom: 15px;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna Crew</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--primary-blue); font-weight: 600;">Official Team Portal</p>
             </div>
@@ -181,7 +195,57 @@
                     <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
                     <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
                     <button class="btn btn-outline" onclick="openQuestionnaire()">Take Clearance Assessment</button>
+                    <button class="btn btn-danger-outline" style="margin-top: 10px;" onclick="openReporting()"><span class="material-icons">report_problem</span> Report Safety Issue</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="view-reporting" class="view">
+            <button class="btn btn-back" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
+            <h2>Safety Reporting</h2>
+            <p>If you see a hazard, near miss, or safety issue, report it immediately to the Captain and Bridge.</p>
+            
+            <div class="card">
+                <label class="form-label">Type of Report</label>
+                <select class="form-select" id="report-type">
+                    <option value="Safety Observation">Safety Observation (Potential Hazard)</option>
+                    <option value="Near Miss">Near Miss (Almost an accident)</option>
+                    <option value="Incident">Incident / Accident</option>
+                    <option value="Equipment Failure">Equipment Failure</option>
+                </select>
+
+                <label class="form-label">Where did this happen?</label>
+                <input type="text" class="form-input" id="report-location" placeholder="e.g. Deck 5, Galley, Stairwell C">
+
+                <label class="form-label">What happened? What did you see?</label>
+                <textarea class="form-textarea" id="report-desc" placeholder="Describe the situation clearly..."></textarea>
+
+                <label class="form-label">Did you take any immediate action?</label>
+                <input type="text" class="form-input" id="report-action" placeholder="e.g. Cleaned up spill, warned others...">
+
+                <label class="form-label">Take a Photo (Optional)</label>
+                <div class="photo-upload-box" onclick="document.getElementById('report-photo').click()">
+                    <span class="material-icons" style="font-size: 40px; color: var(--primary-blue); margin-bottom: 10px;">add_a_photo</span><br>
+                    <span style="font-weight: 600; color: var(--primary-navy);">Tap to use camera</span>
+                </div>
+                <input type="file" id="report-photo" accept="image/*" capture="environment" style="display:none;" onchange="previewReportPhoto(event)">
+                <img id="report-photo-preview" class="photo-preview" src="" alt="Preview">
+            </div>
+
+            <button class="btn btn-primary" onclick="submitSafetyReport()" style="background: var(--danger); color: #fff;">
+                <span class="material-icons">send</span> Send Securely to Captain
+            </button>
+        </div>
+
+        <div id="view-report-success" class="view">
+            <div class="card" style="text-align: center; padding: 50px 20px;">
+                <span class="material-icons" style="font-size: 80px; color: var(--success); margin-bottom: 20px;">verified_user</span>
+                <h1 style="color: var(--primary-navy); margin-bottom: 15px;">Report Sent</h1>
+                <p style="font-size: 1.1rem;">Your safety report has been securely transmitted to the Captain and Safety Officer.</p>
+                <p style="font-weight: bold; color: var(--primary-blue);">Thank you for keeping M/F Norröna safe.</p>
+                <button class="btn btn-primary" style="margin-top: 30px;" onclick="goToView('view-home')">Return to Dashboard</button>
             </div>
         </div>
 
@@ -211,11 +275,6 @@
                 </div>
 
                 <div class="voyage-grid">
-                    <div class="grid-item" style="grid-column: span 2;">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.8rem;">Locating Ship...</div>
-                        <div class="sub-value" id="eta-voyage">Please wait</div>
-                    </div>
                     <div class="grid-item">
                         <div class="label">Speed & Course</div>
                         <div class="value">
@@ -230,17 +289,31 @@
                         <div class="value" id="onboard-time">--:--</div>
                         <div class="sub-value">GMT</div>
                     </div>
+                    
                     <div class="grid-item">
                         <div class="label">Wind (Here)</div>
                         <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
                         <div class="sub-value">
                             <span id="wind-knots">--</span> kn
+                            <span style="opacity:0.25; margin:0 4px;">|</span>
+                            <span id="wind-dir-text" class="wind-dir-badge">--</span>
                         </div>
                     </div>
                     <div class="grid-item">
                         <div class="label">Wave Height</div>
                         <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
                         <div class="sub-value">Significant</div>
+                    </div>
+
+                    <div class="grid-item">
+                        <div class="label" id="distance-label-main">Distance Left</div>
+                        <div class="value" id="distance" style="font-size:1.6rem;">--</div>
+                        <div class="sub-value" id="distance-unit">km</div>
+                    </div>
+                    <div class="grid-item">
+                        <div class="label" id="destination-label">Next Destination</div>
+                        <div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--primary-blue);">--</div>
+                        <div class="sub-value" id="eta-voyage">--</div>
                     </div>
                 </div>
             </div>
@@ -312,8 +385,8 @@
         <div id="view-sending" class="view">
             <div class="loader-container active">
                 <div class="spinner"></div>
-                <h2 style="border:none; padding:0;">Processing...</h2>
-                <p>Transmitting your results to the Department Leader.</p>
+                <h2 style="border:none; padding:0;" id="loading-msg">Processing...</h2>
+                <p id="loading-sub">Transmitting your results to the Department Leader.</p>
             </div>
         </div>
 
@@ -365,6 +438,7 @@
 </div>
 
 <script>
+    // API KEY SPLIT FOR GITHUB
     var firebaseConfig = {
         apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
         authDomain: "norrona-app.firebaseapp.com",
@@ -411,6 +485,91 @@
         window.scrollTo(0,0);
     }
 
+    // ==========================================
+    // SAFETY REPORTING LOGIC
+    // ==========================================
+    var capturedPhotoBase64 = null;
+
+    function openReporting() {
+        // Reset form
+        document.getElementById('report-type').selectedIndex = 0;
+        document.getElementById('report-location').value = "";
+        document.getElementById('report-desc').value = "";
+        document.getElementById('report-action').value = "";
+        document.getElementById('report-photo-preview').style.display = "none";
+        document.getElementById('report-photo-preview').src = "";
+        capturedPhotoBase64 = null;
+        goToView('view-reporting');
+    }
+
+    function previewReportPhoto(event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var preview = document.getElementById('report-photo-preview');
+                preview.src = e.target.result;
+                preview.style.display = "block";
+                
+                // Compress image to save database space (Simple Canvas Resize)
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    var MAX_WIDTH = 800; // Compress width
+                    var scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.7); // 70% quality JPG
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function submitSafetyReport() {
+        if(!firebaseActive) { alert("Cannot connect to server."); return; }
+        
+        var type = document.getElementById('report-type').value;
+        var loc = document.getElementById('report-location').value.trim();
+        var desc = document.getElementById('report-desc').value.trim();
+        var action = document.getElementById('report-action').value.trim();
+
+        if (loc === "" || desc === "") {
+            alert("Please fill in the Location and Description before sending.");
+            return;
+        }
+
+        var reportData = {
+            timestamp: new Date().toISOString(),
+            type: type,
+            location: loc,
+            description: desc,
+            immediateAction: action,
+            photoData: capturedPhotoBase64 || "No photo attached"
+        };
+
+        // Show sending screen
+        document.getElementById("loading-msg").innerText = "Transmitting to Bridge...";
+        document.getElementById("loading-sub").innerText = "Securely sending report to Captain.";
+        goToView('view-sending');
+
+        // Push to Firebase Realtime Database
+        db.ref('reports').push(reportData).then(function() {
+            setTimeout(function() {
+                goToView('view-report-success');
+            }, 1500); // Artificial delay to show processing
+        }).catch(function(error) {
+            alert("Error sending report: " + error.message);
+            goToView('view-reporting');
+        });
+    }
+
+    // ==========================================
+    // HANDBOOK RENDERER
+    // ==========================================
     var handbookFlow = [];
     var currentHbIdx = 0;
 
@@ -446,7 +605,7 @@
         html += '</div>';
 
         document.getElementById('handbook-content').innerHTML = html;
-        document.getElementById('btn-hb-back').style.display = currentHbIdx === 0 ? 'none' : 'flex';
+        document.getElementById('btn-hb-back').style.display = currentHbIdx === 0 ? 'none' : 'block';
         
         var nextBtn = document.getElementById('btn-hb-next');
         if (currentHbIdx === handbookFlow.length - 1) {
@@ -462,20 +621,13 @@
     function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
+    // ==========================================
+    // QUIZ LOGIC
+    // ==========================================
     var activeQuiz = [];
     var currentQuizIdx = 0;
     var selectedQuizAns = null;
     var selectedDeptName = "";
-
-    function openQuestionnaire() {
-        if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
-        if (localStorage.getItem('norrona_quiz_completed')) {
-            document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
-            goToView('view-success');
-        } else {
-            goToView('view-q-select');
-        }
-    }
 
     function startQuiz(dept) {
         selectedDeptName = dept;
@@ -529,6 +681,8 @@
             setTimeout(function() {
                 currentQuizIdx++;
                 if (currentQuizIdx >= activeQuiz.length) {
+                    document.getElementById("loading-msg").innerText = "Processing...";
+                    document.getElementById("loading-sub").innerText = "Transmitting your results to the Department Leader.";
                     goToView('view-sending');
                     setTimeout(function() {
                         localStorage.setItem('norrona_quiz_completed', selectedDeptName.replace('_', ' ')); 
@@ -545,6 +699,9 @@
         }
     }
 
+    // ==========================================
+    // VOYAGE API LOGIC
+    // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
 
@@ -691,7 +848,7 @@
     }
 
     // ==========================================
-    // AI CHAT LOGIC
+    // GOOGLE GEMINI AI CHAT LOGIC 
     // ==========================================
     function minimizeChatTab(e) {
         e.stopPropagation();
@@ -717,7 +874,6 @@
             panel.classList.add("active");
             icon.innerText = "close";
             if(document.getElementById("chat-messages").children.length === 1) {
-                
                 var extraIntel = "";
                 if (Array.isArray(LIVE_DATA.ai_knowledge)) {
                     for(var i=0; i<LIVE_DATA.ai_knowledge.length; i++) {
