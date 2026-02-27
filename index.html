@@ -651,6 +651,8 @@
 
     function openQuestionnaire() {
         if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
+        
+        // This alerts the user nicely if they have already passed it!
         if (localStorage.getItem('norrona_quiz_completed')) {
             alert("You have already passed the clearance assessment! Loading your digital boarding pass...");
             document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
@@ -916,8 +918,8 @@
                     extraIntel = "No extra data provided.";
                 }
                 
-                // NEW INSTRUCTION: Tell the AI to use the secret [UNANSWERED] tag if it doesn't know the answer
-                window.aiContext = "You are the friendly 'Norröna Crew Assistant'. Answer questions based strictly on the Handbook AND the Custom Knowledge provided below. Do not invent information. Be concise. IMPORTANT RULE: If the answer is NOT found in the provided text, you MUST start your reply exactly with the word '[UNANSWERED]'. Then politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
+                // STRONGER PROMPT FOR THE AI
+                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Do not invent information.\n\nCRITICAL RULE: If the answer is not in the text, you MUST start your reply exactly with the tag [UNANSWERED].\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
                 window.chatHistory = []; 
             }
         }
@@ -956,10 +958,22 @@
             } else {
                 var aiReply = data.candidates[0].content.parts[0].text;
                 
-                // CHECK FOR THE SECRET TAG
-                if(aiReply.includes('[UNANSWERED]')) {
+                // MULTI-LAYER CHECK FOR UNANSWERED QUESTIONS
+                var lowerReply = aiReply.toLowerCase();
+                var isUnanswered = aiReply.includes('[UNANSWERED]') || 
+                                   lowerReply.includes("i don't have that information") || 
+                                   lowerReply.includes("i do not have that information") ||
+                                   lowerReply.includes("not mentioned in the handbook") ||
+                                   lowerReply.includes("not provided");
+                
+                if(isUnanswered) {
                     // Remove the tag so the crew member doesn't see it
-                    aiReply = aiReply.replace('[UNANSWERED]', '').trim();
+                    aiReply = aiReply.replace(/\[UNANSWERED\]/gi, '').trim();
+                    
+                    // If the AI only sent the tag or gave a weird blank response, give a fallback polite message
+                    if (aiReply === "" || aiReply.length < 5) {
+                         aiReply = "I'm sorry, I don't have that information in my current training data. I have logged this question for the Admin!";
+                    }
                     
                     // Send the question to Firebase so the Admin can see it!
                     if(firebaseActive) {
