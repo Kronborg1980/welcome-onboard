@@ -14,7 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        /* OFFICIAL SMYRIL LINE LIGHT THEME */
         :root { 
             --primary-navy: #002836; 
             --primary-blue: #004A59;
@@ -32,14 +31,12 @@
         body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
         #app-shell { max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg-light); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         
-        /* HEADER */
         header { position: sticky; top: 0; z-index: 1000; height: var(--header-height); background: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--border-light); }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { height: 35px; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--primary-navy); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--primary-navy); cursor: pointer; padding: 5px; }
         
-        /* BURGER MENU */
         #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(0, 40, 54, 0.98); backdrop-filter: blur(10px); z-index: 999; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px; overflow-y: auto;}
         #nav-overlay.active { transform: translateX(0); }
         .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: #fff; text-decoration: none; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -51,7 +48,6 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -71,7 +67,6 @@
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 50px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; transform: translateY(2px); }
-        
         .btn-outline { background: #fff; border: 2px solid var(--primary-navy); color: var(--primary-navy); }
         .btn-outline:active { background: var(--bg-light); transform: translateY(2px); }
         .btn-danger-outline { background: #fff; border: 2px solid var(--danger); color: var(--danger); }
@@ -87,7 +82,7 @@
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
         .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
-        /* MULTI-PHOTO UPLOAD STYLES */
+        /* Form Inputs for Reporting */
         .form-label { display: block; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px; font-size: 0.95rem; }
         .form-input, .form-select, .form-textarea { width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; margin-bottom: 20px; background: #fff; color: var(--text-dark); font-family: inherit;}
         .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0,74,89,0.1); }
@@ -117,7 +112,6 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
@@ -139,7 +133,7 @@
         
         #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
 
-        /* AI CHAT WIDGET STYLES (Minimizable) */
+        /* AI CHAT WIDGET STYLES */
         .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; transition: 0.3s; border: 2px solid var(--accent-gold); }
         .chat-fab:active { transform: scale(0.95); }
         .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: var(--border-light); color: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -582,7 +576,8 @@
                 goToView('view-report-success');
             }, 1500); 
         }).catch(function(error) {
-            alert("Error sending report: " + error.message);
+            console.error("Firebase write blocked:", error);
+            alert("Security Error: Database is locked. Please check your Firebase Security Rules.");
             goToView('view-reporting');
         });
     }
@@ -651,8 +646,6 @@
 
     function openQuestionnaire() {
         if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
-        
-        // This alerts the user nicely if they have already passed it!
         if (localStorage.getItem('norrona_quiz_completed')) {
             alert("You have already passed the clearance assessment! Loading your digital boarding pass...");
             document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
@@ -881,7 +874,7 @@
     }
 
     // ==========================================
-    // GOOGLE GEMINI AI CHAT LOGIC (WITH UNANSWERED LOGGING)
+    // GOOGLE GEMINI AI CHAT LOGIC
     // ==========================================
     function minimizeChatTab(e) {
         e.stopPropagation();
@@ -918,8 +911,7 @@
                     extraIntel = "No extra data provided.";
                 }
                 
-                // STRONGER PROMPT FOR THE AI
-                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Do not invent information.\n\nCRITICAL RULE: If the answer is not in the text, you MUST start your reply exactly with the tag [UNANSWERED].\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
+                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Do not invent information.\n\nCRITICAL RULE: If you do not have the answer in the text below, you MUST reply starting with exactly this tag: [UNANSWERED]. After the tag, politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
                 window.chatHistory = []; 
             }
         }
@@ -958,7 +950,6 @@
             } else {
                 var aiReply = data.candidates[0].content.parts[0].text;
                 
-                // MULTI-LAYER CHECK FOR UNANSWERED QUESTIONS
                 var lowerReply = aiReply.toLowerCase();
                 var isUnanswered = aiReply.includes('[UNANSWERED]') || 
                                    lowerReply.includes("i don't have that information") || 
@@ -967,19 +958,18 @@
                                    lowerReply.includes("not provided");
                 
                 if(isUnanswered) {
-                    // Remove the tag so the crew member doesn't see it
                     aiReply = aiReply.replace(/\[UNANSWERED\]/gi, '').trim();
                     
-                    // If the AI only sent the tag or gave a weird blank response, give a fallback polite message
                     if (aiReply === "" || aiReply.length < 5) {
                          aiReply = "I'm sorry, I don't have that information in my current training data. I have logged this question for the Admin!";
                     }
                     
-                    // Send the question to Firebase so the Admin can see it!
                     if(firebaseActive) {
                         db.ref('ai_unanswered').push({
                             question: msgText,
                             timestamp: new Date().toISOString()
+                        }).catch(function(err) {
+                            console.error("Firebase Security Rules blocked the write:", err);
                         });
                     }
                 }
