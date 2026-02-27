@@ -51,6 +51,7 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Typography & Cards */
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--primary-navy); }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
@@ -62,11 +63,7 @@
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 20px; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        .callout { background: rgba(251, 185, 0, 0.1); border-left: 4px solid var(--accent-gold); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
-        .callout p { color: var(--primary-navy); margin-bottom: 0; font-weight: 500;}
-        .alert-danger { background: rgba(229, 62, 62, 0.1); border-left: 4px solid var(--danger); padding: 16px; border-radius: 0 12px 12px 0; margin-bottom: 20px;}
-        .alert-danger p { color: var(--danger); margin-bottom: 0; font-weight: bold; }
-
+        /* BUTTONS */
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 50px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; transform: translateY(2px); }
@@ -74,11 +71,16 @@
         
         .btn-dept { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); justify-content: flex-start; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .btn-dept .material-icons { color: var(--primary-blue); font-size: 28px;}
+        
+        /* BACK BUTTON */
+        .btn-back { background: transparent; border: none; padding: 5px 0 15px 0; justify-content: flex-start; color: var(--primary-navy); font-size: 1rem; width: auto; margin-bottom: 0; }
+        .btn-back .material-icons { font-size: 1.2rem; }
 
         .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 15px; border-left: 2px solid var(--border-light); margin-left: 20px; margin-bottom: 10px;}
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
         .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
+        /* Progress Bar */
         .module-nav { display: flex; gap: 10px; margin-top: 10px; padding-top: 10px; }
         .module-nav .btn { margin-bottom: 0; flex: 1; }
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
@@ -86,6 +88,7 @@
         .progress-step.active { background: var(--primary-blue); }
         .progress-step.completed { background: var(--success); }
 
+        /* Quiz UI */
         .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: #fff; border: 2px solid var(--border-light); border-radius: 12px; color: var(--primary-navy); font-size: 1rem; transition: 0.2s; line-height: 1.4; font-weight: 600;}
         .quiz-option.selected { border-color: var(--primary-blue); background: rgba(0, 74, 89, 0.05); font-weight: 800; border-width: 3px; padding: 17px; }
         .quiz-feedback { margin-top: 20px; font-weight: bold; text-align: center; padding: 15px; border-radius: 12px; display: none; font-size: 1.1rem; }
@@ -96,17 +99,17 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE MAP UI (Fixed Side-by-Side Layout) */
+        /* VOYAGE MAP UI (Fixed Alignment) */
         .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
         #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
         
-        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
-        .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; text-align: center; width: 100%; }
-        .grid-item .value { font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); display: flex; align-items: baseline; justify-content: center; width: 100%; text-align: center; }
+        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+        .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; width: 100%; text-align: center; }
+        .grid-item .value { font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); display: flex; align-items: baseline; justify-content: center; width: 100%; text-align: center;}
         .grid-item .value .unit { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; text-transform: lowercase; }
         .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--border-light); margin: 0 8px; }
-        .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center; }
+        .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center;}
         .wind-dir-badge { background: rgba(251, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; border: 1px solid rgba(251, 185, 0, 0.3); }
 
         .weather-strip { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
@@ -118,9 +121,12 @@
         
         #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
 
-        /* AI CHAT WIDGET STYLES */
-        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; transition: 0.3s; border: 2px solid var(--accent-gold); }
-        .chat-fab:active { transform: scale(0.9); }
+        /* AI CHAT WIDGET STYLES (Minimizable) */
+        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; border: 2px solid var(--accent-gold); }
+        .chat-fab:active { transform: scale(0.95); }
+        .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: var(--border-light); color: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .chat-minimized-tab { position: fixed; bottom: 35px; right: 0; width: 40px; height: 40px; background: var(--primary-navy); border-radius: 20px 0 0 20px; display: none; align-items: center; justify-content: center; color: var(--accent-gold); cursor: pointer; z-index: 9999; box-shadow: -2px 2px 10px rgba(0,0,0,0.2); border: 1px solid var(--accent-gold); border-right: none; }
+        
         .chat-panel { position: fixed; bottom: 100px; right: 25px; width: 350px; max-width: calc(100vw - 50px); height: 500px; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 9998; display: none; flex-direction: column; border: 1px solid var(--border-light); overflow: hidden; animation: slideUp 0.3s ease; }
         .chat-panel.active { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -183,73 +189,74 @@
             </div>
         </div>
 
-        <div id="view-voyage" class="view" style="padding: 0;">
-            <div style="padding: 12px 12px 0 12px;">
-                <div id="ship-status-bar">Locating Ship...</div>
-                
-                <div class="voyage-map-container">
-                    <div id="map"></div>
-                </div>
+        <div id="view-voyage" class="view">
+            <button class="btn btn-back" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
+            
+            <div id="ship-status-bar">Locating Ship...</div>
+            <div class="voyage-map-container">
+                <div id="map"></div>
             </div>
             
-            <div style="padding: 0 20px 20px 20px;">
-                <div class="weather-strip">
-                    <div class="weather-left">
-                        <img id="weather-icon" src="" alt="" style="display:none;">
-                        <div>
-                            <div class="weather-temp" id="weather-temp">--°C</div>
-                            <div class="weather-desc" id="weather-description">Loading...</div>
-                        </div>
+            <div class="weather-strip">
+                <div class="weather-left">
+                    <img id="weather-icon" src="" alt="" style="display:none;">
+                    <div>
+                        <div class="weather-temp" id="weather-temp">--°C</div>
+                        <div class="weather-desc" id="weather-description">Loading...</div>
                     </div>
-                    <div class="weather-label">Destination<br>Weather</div>
                 </div>
+                <div class="weather-label">Destination<br>Weather</div>
+            </div>
 
-                <div class="voyage-grid">
-                    <div class="grid-item">
-                        <div class="label">Speed & Course</div>
-                        <div class="value">
-                            <span id="speed-knots">--</span> <span class="unit">kn</span>
-                            <span class="separator">|</span> 
-                            <span id="speed-kmh">--</span> <span class="unit">km/h</span>
-                        </div>
-                        <div class="sub-value" id="course-voyage">Course: --°</div>
+            <div class="voyage-grid">
+                <div class="grid-item">
+                    <div class="label">Speed & Course</div>
+                    <div class="value">
+                        <span id="speed-knots">--</span> <span class="unit">kn</span>
+                        <span class="separator">|</span> 
+                        <span id="speed-kmh">--</span> <span class="unit">km/h</span>
                     </div>
-                    <div class="grid-item">
-                        <div class="label">Time (Tórshavn)</div>
-                        <div class="value" id="onboard-time">--:--</div>
-                        <div class="sub-value">GMT</div>
+                    <div class="sub-value" id="course-voyage">Course: --°</div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Time (Tórshavn)</div>
+                    <div class="value" id="onboard-time">--:--</div>
+                    <div class="sub-value">GMT</div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Wind (Here)</div>
+                    <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
+                    <div class="sub-value">
+                        <span id="wind-knots">--</span> kn
+                        <span style="opacity:0.25; margin:0 4px;">|</span>
+                        <span id="wind-dir-text" class="wind-dir-badge">--</span>
                     </div>
-                    
-                    <div class="grid-item">
-                        <div class="label">Wind (Here)</div>
-                        <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
-                        <div class="sub-value">
-                            <span id="wind-knots">--</span> kn
-                            <span style="opacity:0.25; margin:0 4px;">|</span>
-                            <span id="wind-dir-text" class="wind-dir-badge">--</span>
-                        </div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">Wave Height</div>
-                        <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
-                        <div class="sub-value">Significant</div>
-                    </div>
-
-                    <div class="grid-item">
-                        <div class="label" id="distance-label-main">Distance Left</div>
-                        <div class="value" id="distance" style="font-size:1.6rem;">--</div>
-                        <div class="sub-value" id="distance-unit">km</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label" id="destination-label">Next Destination</div>
-                        <div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--primary-blue);">--</div>
-                        <div class="sub-value" id="eta-voyage">--</div>
-                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="label">Wave Height</div>
+                    <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
+                    <div class="sub-value">Significant</div>
+                </div>
+                
+                <div class="grid-item">
+                    <div class="label" id="distance-label-main">Distance Left</div>
+                    <div class="value" id="distance" style="font-size:1.6rem;">--</div>
+                    <div class="sub-value" id="distance-unit">km</div>
+                </div>
+                <div class="grid-item">
+                    <div class="label" id="destination-label">Next Destination</div>
+                    <div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--primary-blue);">--</div>
+                    <div class="sub-value" id="eta-voyage">--</div>
                 </div>
             </div>
         </div>
 
         <div id="view-handbook-select" class="view">
+            <button class="btn btn-back" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
             <h2>The Ship Handbook</h2>
             <p>Select your department to read guidelines synced from HQ.</p>
             <button class="btn btn-dept" onclick="openHandbook('hotel')">
@@ -263,6 +270,9 @@
         </div>
 
         <div id="view-handbook-reader" class="view">
+            <button class="btn btn-back" onclick="goToView('view-handbook-select')">
+                <span class="material-icons">arrow_back</span> Back to Departments
+            </button>
             <div class="progress-bar" id="handbook-progress"></div>
             <div class="card" id="handbook-content" style="padding: 0; overflow: hidden;"></div>
             <div class="module-nav">
@@ -272,6 +282,9 @@
         </div>
 
         <div id="view-q-select" class="view">
+            <button class="btn btn-back" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
             <h2>Clearance Assessment</h2>
             <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
             <button class="btn btn-dept" onclick="startQuiz('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem; font-weight:800;">Deck Operations</div></div></button>
@@ -290,6 +303,9 @@
         </div>
 
         <div id="view-quiz-active" class="view">
+            <button class="btn btn-back" onclick="goToView('view-q-select')">
+                <span class="material-icons">arrow_back</span> Quit Assessment
+            </button>
             <h2 id="quiz-title">Assessment</h2>
             <div class="card">
                 <div style="color:var(--primary-blue); font-size:0.9rem; font-weight:800; margin-bottom:10px; text-transform:uppercase;">Question <span id="quiz-curr">1</span> of <span id="quiz-total">5</span></div>
@@ -329,8 +345,15 @@
     </main>
 </div>
 
-<div class="chat-fab" onclick="toggleChat()">
+<div class="chat-fab" id="chat-fab" onclick="toggleChat()">
+    <div class="chat-minimize-btn" onclick="minimizeChatTab(event)">
+        <span class="material-icons" style="font-size: 14px;">close</span>
+    </div>
     <span class="material-icons" id="chat-icon">chat</span>
+</div>
+
+<div class="chat-minimized-tab" id="chat-minimized-tab" onclick="restoreChatTab()">
+    <span class="material-icons">chevron_left</span>
 </div>
 
 <div class="chat-panel" id="chat-panel">
@@ -595,7 +618,6 @@
 
             var topStatusBar = document.getElementById("ship-status-bar");
 
-            // --- GRID UPDATE LOGIC (FIXED SIDE-BY-SIDE LAYOUT) ---
             if (isInPort) {
                 if(document.getElementById("distance-label-main")) document.getElementById("distance-label-main").textContent = "Status";
                 if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
@@ -682,6 +704,20 @@
     // ==========================================
     // GOOGLE GEMINI AI CHAT LOGIC 
     // ==========================================
+    function minimizeChatTab(e) {
+        e.stopPropagation();
+        document.getElementById('chat-fab').style.display = 'none';
+        if(document.getElementById('chat-panel').classList.contains('active')) {
+            document.getElementById('chat-panel').classList.remove('active');
+        }
+        document.getElementById('chat-minimized-tab').style.display = 'flex';
+    }
+
+    function restoreChatTab() {
+        document.getElementById('chat-minimized-tab').style.display = 'none';
+        document.getElementById('chat-fab').style.display = 'flex';
+    }
+
     function toggleChat() {
         var panel = document.getElementById("chat-panel");
         var icon = document.getElementById("chat-icon");
