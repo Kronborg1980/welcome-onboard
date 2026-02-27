@@ -46,7 +46,8 @@
         .nav-link:hover, .nav-link:active { color: var(--accent-gold); }
         .nav-link .material-icons { color: var(--accent-gold); }
 
-        main { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        /* Added heavy bottom padding so buttons aren't blocked by the AI bubble! */
+        main { flex: 1; padding: 20px; padding-bottom: 120px; display: flex; flex-direction: column; }
         .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -71,14 +72,15 @@
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 50px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
         .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
         .btn-primary:active { background: #e5a800; transform: translateY(2px); }
+        
+        /* Active states added so buttons physically press down when tapped */
         .btn-outline { background: #fff; border: 2px solid var(--primary-navy); color: var(--primary-navy); }
+        .btn-outline:active { background: var(--bg-light); transform: translateY(2px); }
         .btn-danger-outline { background: #fff; border: 2px solid var(--danger); color: var(--danger); }
+        .btn-danger-outline:active { background: #fff5f5; transform: translateY(2px); }
         
         .btn-dept { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); justify-content: flex-start; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .btn-dept .material-icons { color: var(--primary-blue); font-size: 28px;}
-        
-        .btn-back { background: transparent; border: none; padding: 5px 0 15px 0; justify-content: flex-start; color: var(--primary-navy); font-size: 1rem; width: auto; margin-bottom: 0; }
-        .btn-back .material-icons { font-size: 1.2rem; }
 
         .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 15px; border-left: 2px solid var(--border-light); margin-left: 20px; margin-bottom: 10px;}
         .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
@@ -136,7 +138,7 @@
         
         #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
 
-        /* AI CHAT WIDGET STYLES */
+        /* AI CHAT WIDGET STYLES (Minimizable) */
         .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; transition: 0.3s; border: 2px solid var(--accent-gold); }
         .chat-fab:active { transform: scale(0.95); }
         .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: var(--border-light); color: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -207,9 +209,6 @@
         </div>
 
         <div id="view-reporting" class="view">
-            <button class="btn btn-back" onclick="goToView('view-home')">
-                <span class="material-icons">arrow_back</span> Return to Dashboard
-            </button>
             <h2>Safety Reporting</h2>
             <p>If you see a hazard, near miss, or safety issue, report it immediately to the Captain and Bridge.</p>
             
@@ -245,6 +244,10 @@
             <button class="btn btn-primary" onclick="submitSafetyReport()" style="background: var(--danger); color: #fff;">
                 <span class="material-icons">send</span> Send Securely to Captain
             </button>
+            
+            <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
         </div>
 
         <div id="view-report-success" class="view">
@@ -259,10 +262,6 @@
 
         <div id="view-voyage" class="view" style="padding: 0;">
             <div style="padding: 12px 12px 0 12px;">
-                <button class="btn btn-back" onclick="goToView('view-home')">
-                    <span class="material-icons">arrow_back</span> Return to Dashboard
-                </button>
-                
                 <div id="ship-status-bar">Locating Ship...</div>
                 
                 <div class="voyage-map-container">
@@ -324,13 +323,14 @@
                         <div class="sub-value" id="eta-voyage">--</div>
                     </div>
                 </div>
+                
+                <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">
+                    <span class="material-icons">arrow_back</span> Return to Dashboard
+                </button>
             </div>
         </div>
 
         <div id="view-handbook-select" class="view">
-            <button class="btn btn-back" onclick="goToView('view-home')">
-                <span class="material-icons">arrow_back</span> Return to Dashboard
-            </button>
             <h2>The Ship Handbook</h2>
             <p>Select your department to read guidelines synced from HQ.</p>
             <button class="btn btn-dept" onclick="openHandbook('hotel')">
@@ -341,24 +341,27 @@
                 <span class="material-icons">engineering</span> 
                 <div><div style="font-size:1.2rem; font-weight:800;">Bridge, Deck & Engine</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Officers, Deckhands, Engineers</div></div>
             </button>
+            
+            <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
         </div>
 
         <div id="view-handbook-reader" class="view">
-            <button class="btn btn-back" onclick="goToView('view-handbook-select')">
-                <span class="material-icons">arrow_back</span> Back to Departments
-            </button>
             <div class="progress-bar" id="handbook-progress"></div>
             <div class="card" id="handbook-content" style="padding: 0; overflow: hidden;"></div>
+            
             <div class="module-nav">
                 <button class="btn btn-outline" id="btn-hb-back" onclick="prevHandbook()">Previous</button>
                 <button class="btn btn-primary" id="btn-hb-next" onclick="nextHandbook()">Next Page</button>
             </div>
+            
+            <button class="btn btn-outline" style="margin-top: 15px; border-color: var(--border-light); color: var(--text-muted);" onclick="goToView('view-handbook-select')">
+                <span class="material-icons">close</span> Exit Handbook
+            </button>
         </div>
 
         <div id="view-q-select" class="view">
-            <button class="btn btn-back" onclick="goToView('view-home')">
-                <span class="material-icons">arrow_back</span> Return to Dashboard
-            </button>
             <h2>Clearance Assessment</h2>
             <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
             <button class="btn btn-dept" onclick="startQuiz('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem; font-weight:800;">Deck Operations</div></div></button>
@@ -374,12 +377,13 @@
                 <button class="btn-sub" onclick="startQuiz('Restaurant_Bar')">Restaurant & Bar</button>
                 <button class="btn-sub" onclick="startQuiz('Housekeeping')">Housekeeping</button>
             </div>
+            
+            <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
         </div>
 
         <div id="view-quiz-active" class="view">
-            <button class="btn btn-back" onclick="goToView('view-q-select')">
-                <span class="material-icons">arrow_back</span> Quit Assessment
-            </button>
             <h2 id="quiz-title">Assessment</h2>
             <div class="card">
                 <div style="color:var(--primary-blue); font-size:0.9rem; font-weight:800; margin-bottom:10px; text-transform:uppercase;">Question <span id="quiz-curr">1</span> of <span id="quiz-total">5</span></div>
@@ -388,6 +392,10 @@
                 <div id="quiz-feedback" class="quiz-feedback"></div>
             </div>
             <button class="btn btn-primary" id="btn-quiz-submit" onclick="submitQuizAnswer()">Submit Answer</button>
+            
+            <button class="btn btn-outline" style="margin-top: 15px; border-color: var(--danger); color: var(--danger);" onclick="goToView('view-q-select')">
+                <span class="material-icons">close</span> Quit Assessment
+            </button>
         </div>
 
         <div id="view-sending" class="view">
@@ -477,18 +485,15 @@
     // ==========================================
     // MULTI-PHOTO SAFETY REPORTING LOGIC
     // ==========================================
-    var capturedPhotos = []; // Array to hold multiple base64 strings
+    var capturedPhotos = []; 
 
     function openReporting() {
         document.getElementById('report-type').selectedIndex = 0;
         document.getElementById('report-location').value = "";
         document.getElementById('report-desc').value = "";
         document.getElementById('report-action').value = "";
-        
-        // Clear out previously taken photos
         capturedPhotos = [];
         renderPhotoPreviews();
-        
         goToView('view-reporting');
     }
 
@@ -500,34 +505,28 @@
                 var img = new Image();
                 img.onload = function() {
                     var canvas = document.createElement('canvas');
-                    var MAX_WIDTH = 800; // Compress width to save database space
+                    var MAX_WIDTH = 800; 
                     var scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
                     var ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    // Add the compressed image to our array
                     var base64 = canvas.toDataURL('image/jpeg', 0.7); 
                     capturedPhotos.push(base64);
-                    
-                    // Update the UI
                     renderPhotoPreviews();
                 }
                 img.src = e.target.result;
             }
             reader.readAsDataURL(file);
-            
-            // Reset the file input so they can click it again
             event.target.value = ''; 
         }
     }
 
     function renderPhotoPreviews() {
         var container = document.getElementById('photo-preview-grid');
-        container.innerHTML = ""; // Clear existing thumbnails
+        container.innerHTML = ""; 
         
-        // Create a little thumbnail box for every photo they took
         capturedPhotos.forEach(function(photoBase64, index) {
             var wrapper = document.createElement('div');
             wrapper.className = "photo-thumbnail-wrapper";
@@ -539,7 +538,7 @@
             var deleteBtn = document.createElement('div');
             deleteBtn.className = "photo-remove-btn";
             deleteBtn.innerHTML = "<span class='material-icons'>close</span>";
-            // When clicked, remove this specific photo from the array and re-draw
+            
             deleteBtn.onclick = function() {
                 capturedPhotos.splice(index, 1);
                 renderPhotoPreviews();
@@ -570,15 +569,13 @@
             location: loc,
             description: desc,
             immediateAction: action,
-            photos: capturedPhotos // Now sends the entire array of photos
+            photos: capturedPhotos 
         };
 
-        // Show sending screen
         document.getElementById("loading-msg").innerText = "Transmitting to Bridge...";
         document.getElementById("loading-sub").innerText = "Securely sending report to Captain.";
         goToView('view-sending');
 
-        // Push to Firebase
         db.ref('reports').push(reportData).then(function() {
             setTimeout(function() {
                 goToView('view-report-success');
@@ -650,6 +647,19 @@
     var currentQuizIdx = 0;
     var selectedQuizAns = null;
     var selectedDeptName = "";
+
+    function openQuestionnaire() {
+        if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
+        
+        // This alerts the user nicely if they have already passed it!
+        if (localStorage.getItem('norrona_quiz_completed')) {
+            alert("You have already passed the clearance assessment! Loading your digital boarding pass...");
+            document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
+            goToView('view-success');
+        } else {
+            goToView('view-q-select');
+        }
+    }
 
     function startQuiz(dept) {
         selectedDeptName = dept;
