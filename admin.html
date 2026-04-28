@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Norröna Admin</title>
+    <title>Norröna Admin - TEST MODE</title>
     
     <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
@@ -12,7 +12,6 @@
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
@@ -31,18 +30,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { display: flex; height: 100vh; background-color: var(--bg-light); color: var(--text-dark); overflow: hidden; }
         
-        #login-screen { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: var(--bg-light); transition: 0.5s; padding: 20px; }
-        .login-box { background: #fff; padding: 40px 20px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid var(--border-light); }
-        .login-box img { width: 120px; margin-bottom: 20px; }
-        .login-box h2 { margin-bottom: 25px; color: var(--primary-navy); font-size: 1.5rem; }
-        .login-box input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; }
-        .login-box input:focus { outline: none; border-color: var(--primary-blue); }
-        #login-error { color: var(--danger); font-size: 0.9rem; margin-bottom: 15px; display: none; }
+        /* LOGIN UI HIDDEN PERMANENTLY FOR TESTING */
+        #login-screen { display: none !important; }
         
-        #admin-app { display: none; width: 100%; height: 100%; }
+        /* ADMIN APP FORCED VISIBLE FOR TESTING */
+        #admin-app { display: flex; width: 100%; height: 100%; }
+        
         aside { width: 280px; background: #fff; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
         .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; color: var(--primary-navy); }
-        .sidebar-header .dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; }
+        .sidebar-header .dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
         .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px 0; }
         .nav-group { margin-bottom: 20px; }
         .nav-title { padding: 0 20px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 1px; font-weight: 700; }
@@ -108,21 +106,10 @@
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line">
-            <h2>Admin Login</h2>
-            <div id="login-error">Invalid Email or Password.</div>
-            <input type="email" id="auth-email" placeholder="Email Address" autocomplete="email">
-            <input type="password" id="auth-password" placeholder="Password">
-            <button class="btn btn-primary" style="width: 100%; border-radius: 8px;" onclick="loginAdmin()">Secure Login</button>
-        </div>
-    </div>
-
     <div id="admin-app">
         <aside id="sidebar">
             <div class="sidebar-header">
-                <div class="dot"></div> LIVE ADMIN
+                <div class="dot"></div> DEV MODE (NO LOGIN)
             </div>
             <div class="sidebar-nav">
                 <div class="nav-group">
@@ -149,11 +136,6 @@
                     <div class="nav-item" onclick="loadEditor('quiz', 'Reception', this)"><span class="material-icons">desk</span> Reception</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'Restaurant_Bar', this)"><span class="material-icons">local_bar</span> Rest/Bar</div>
                     <div class="nav-item" onclick="loadEditor('quiz', 'Housekeeping', this)"><span class="material-icons">cleaning_services</span> Housekeeping</div>
-                </div>
-
-                <div class="nav-group">
-                    <div class="nav-title">System</div>
-                    <div class="nav-item" style="color: #e74c3c;" onclick="logoutAdmin()"><span class="material-icons">logout</span> Secure Logout</div>
                 </div>
             </div>
         </aside>
@@ -194,11 +176,10 @@
     try {
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     } catch(e) {
-        document.getElementById('login-error').innerText = "Firebase failed to connect. Check Config.";
-        document.getElementById('login-error').style.display = 'block';
+        alert("Firebase failed to connect. Check Config.");
     }
 
-    var auth = firebase.auth();
+    // Removed the auth variable entirely
     var db = firebase.database();
 
     function toggleSidebar() {
@@ -207,35 +188,6 @@
         sidebar.classList.toggle('open');
         overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
     }
-
-    auth.onAuthStateChanged(function(user) {
-        if (user) {
-            document.getElementById('login-screen').style.opacity = '0';
-            setTimeout(function() {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-app').style.display = 'flex';
-                fetchDatabase();
-            }, 500);
-        } else {
-            document.getElementById('admin-app').style.display = 'none';
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('login-screen').style.opacity = '1';
-        }
-    });
-
-    function loginAdmin() {
-        var email = document.getElementById('auth-email').value;
-        var pass = document.getElementById('auth-password').value;
-        var errorMsg = document.getElementById('login-error');
-        errorMsg.style.display = 'none';
-        
-        auth.signInWithEmailAndPassword(email, pass).catch(function(error) {
-            errorMsg.innerText = error.message;
-            errorMsg.style.display = 'block';
-        });
-    }
-
-    function logoutAdmin() { auth.signOut(); }
 
     var appData = { handbook: {}, quizzes: {}, ai_knowledge: [] };
     var unansweredQuestions = [];
@@ -268,7 +220,13 @@
             }
             var firstItem = document.querySelectorAll('.nav-item')[1]; 
             loadEditor('handbook', 'general', firstItem); 
-        }).catch(function(error) { alert("Firebase Error: " + error.message); });
+        }).catch(function(error) { 
+            alert("Firebase Error: " + error.message + "\n\n(If you see 'Permission Denied', your Firebase rules are blocking unauthenticated users. Set your rules to 'true' to test without logging in.)"); 
+            // Fallback to default data so the UI still loads for testing even if DB is blocked
+            appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            var firstItem = document.querySelectorAll('.nav-item')[1]; 
+            loadEditor('handbook', 'general', firstItem); 
+        });
 
         db.ref('ai_unanswered').on('value', function(snapshot) {
             unansweredQuestions = [];
@@ -285,7 +243,7 @@
 
     function saveToFirebase() {
         extractFormData(); 
-        db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
+        db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed. Permission Denied? Check Firebase Rules."); });
     }
 
     function loadEditor(type, key, navElement) {
@@ -376,7 +334,6 @@
         sortedCounts.sort(function(a, b) { return b.count - a.count; });
 
         var html = '';
-        // Changed the limit to 10 here!
         for(var i=0; i<Math.min(10, sortedCounts.length); i++) {
             html += '<div class="insight-item">';
             html += '<div class="insight-text">"' + sortedCounts[i].q + '"</div>';
@@ -520,6 +477,12 @@
     }
 
     function showToast() { var t = document.getElementById('toast'); t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 3000); }
+
+    // INITIALIZE APP DIRECTLY (BYPASSING AUTH)
+    window.onload = function() {
+        fetchDatabase();
+    };
+
 </script>
 </body>
 </html>
