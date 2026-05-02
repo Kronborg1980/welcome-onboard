@@ -52,7 +52,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-container img { height: 35px; filter: brightness(0) invert(1); opacity: 0.9; } 
+        .logo-container img { height: 35px; opacity: 0.9; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--text-main); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px; }
         
@@ -114,6 +114,8 @@
         
         .poll-container { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 15px; border: 1px solid var(--glass-border); margin-top: 10px;}
         .poll-option-btn { display: block; width: 100%; text-align: left; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: #fff; font-weight: 700; font-size: 1rem; transition: 0.2s; }
+        .poll-option-btn:active { background: rgba(0, 229, 255, 0.1); border-color: var(--accent-cyan); }
+        
         .poll-result-wrapper { height: 48px; background: rgba(0,0,0,0.5); border-radius: 12px; margin-bottom: 8px; position: relative; overflow: hidden; box-shadow: inset 0 2px 6px rgba(0,0,0,0.4); display: flex; align-items: center; border: 1px solid var(--glass-border); }
         .poll-result-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--primary-blue), var(--accent-cyan)); z-index: 1; border-radius: 10px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); width: 0%; opacity: 0.8; box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);}
         .poll-result-text { position: relative; z-index: 2; width: 100%; display: flex; justify-content: space-between; padding: 0 16px; font-weight: 700; color: #fff; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
@@ -219,7 +221,7 @@
              ========================================== -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
-                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 70px; margin-bottom: 15px; filter: brightness(0) invert(1); opacity:0.8;" alt="Smyril Line Logo">
+                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 70px; margin-bottom: 15px; opacity:0.9;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna Hub</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--accent-cyan); font-weight: 600; letter-spacing: 1px;">OPERATIONS PORTAL</p>
             </div>
@@ -264,6 +266,7 @@
             <h2 style="display:flex; align-items:center; gap:12px; margin-bottom: 5px;"><span class="material-icons" style="color:var(--accent-cyan); font-size:2.4rem;">forum</span> Crew Mess</h2>
             <p style="margin-bottom: 25px;">Internal noticeboard. Ask for shift swaps, announce events, or start a poll!</p>
 
+            <!-- COMPOSER -->
             <div class="card" style="border: 1px solid var(--accent-cyan); padding: 20px; box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1);">
                 <input type="text" id="mess-name" class="form-input" placeholder="Your Name (e.g. John - Deck)" style="margin-bottom: 15px; font-weight:bold;">
 
@@ -411,7 +414,7 @@
         </div>
 
         <!-- ==========================================
-             QUIZ SYSTEM (KORREKT GENINDSAT)
+             QUIZ SYSTEM
              ========================================== -->
         <div id="view-q-select" class="view">
             <h2>Clearance Assessment</h2>
@@ -515,7 +518,7 @@
         });
     } catch(e) { goToView('view-home'); }
 
-    // Helper: Generates beautiful consistent colors from a name
+    // Generates beautiful consistent colors from a name
     function getAvatarColor(name) {
         var colors = ['#FF4B4B', '#00E5FF', '#FBB900', '#B070FF', '#00DF89', '#FF8F00'];
         var hash = 0;
@@ -744,7 +747,8 @@
         var slide = handbookFlow[currentHbIdx]; var progressHtml = '';
         for(var i=0; i<handbookFlow.length; i++) { progressHtml += '<div class="progress-step ' + (i === currentHbIdx ? 'active' : (i < currentHbIdx ? 'completed' : '')) + '"></div>'; }
         document.getElementById('handbook-progress').innerHTML = progressHtml;
-        var html = ''; if (slide.img) html += '<img src="'+slide.img+'" class="hero-img">';
+        var html = '';
+        if (slide.img) html += '<img src="'+slide.img+'" class="hero-img">';
         html += '<div style="padding: 24px;">';
         if (slide.title) html += '<h2>'+slide.title+'</h2>';
         if (slide.video && slide.video.trim() !== '') { html += '<div class="video-container"><iframe src="'+slide.video+'" frameborder="0" allowfullscreen></iframe></div>'; }
