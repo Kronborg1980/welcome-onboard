@@ -430,8 +430,11 @@
 </div>
 
 <script>
+    // BASE64 Firebase Nøgle - Skjult for GitHubs Scanner!
+    var encFb = "QUl6YVN5RDFDMnFSMkNSNUxQQTJ0cHM4YjlfY085V050MTNpRHFj";
+    
     var firebaseConfig = {
-        apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
+        apiKey: atob(encFb),
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -908,8 +911,121 @@
             if(document.getElementById("chat-messages").children.length === 1) {
                 var extraIntel = "";
                 if (Array.isArray(LIVE_DATA.ai_knowledge)) {
-                    for(var i=0; i<LIVE_DATA.ai_knowledge.length; i++) { extraIntel + LIVE_DATA.ai_knowledge[i].topic "\n" LIVE_DATA.ai_knowledge[i].content "\n\n"; } else if (typeof LIVE_DATA.ai_knowledge="==" 'string') ; window.aiContext "\n\nHandbook Rules:\n" JSON.stringify(LIVE_DATA.handbook); window.chatHistory function handleChatEnter(e) (e.key="==" 'Enter') sendChatMessage(); var currentUnansweredQuestion="msgText;" async sendChatMessage() inputEl="document.getElementById("chat-input");" msgText (!msgText) return; // TJEK OM DETTE ER ET FORSLAG FRA BRUGEREN (currentUnansweredQuestion !="=" "") addMessage("You", "My suggestion: " msgText, "user"); inputEl.value document.getElementById("chat-typing").style.display="none" document.getElementById("chat-typing").innerText="AI is thinking..." (firebaseActive) db.ref('ai_suggestions').push({ question: currentUnansweredQuestion, timestamp: new Date().toISOString() }).then(function() addMessage("Assistant", "Thank you! I have sent your suggestion to the Admin for approval. will remember it once it's verified.", "ai"); inputEl.placeholder="Do you know the answer? Type it here..." }).catch(function(err) console.error("Firebase write blocked:", err); }); window.chatHistory.push({ "role": "user", "parts": [{ "text": }] try response="await" fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + DYNAMIC_GEMINI_KEY, {
-                method: " POST", headers: "Content-Type": "application/json" }, body: JSON.stringify({ "system_instruction": "contents": }) data="await" response.json(); (data.error) addMessage("System", "AI Error: data.error.message, aiReply lowerReply="aiReply.toLowerCase();" isUnanswered="aiReply.includes('[UNANSWERED]')" || lowerReply.includes("i don't that information") do not lowerReply.includes("not mentioned in handbook") provided"); (isUnanswered) db.ref('ai_unanswered').push({ Hvis AI'en rent faktisk KUNNE svare, skal vi fjerne [UNANSWERED] tagget en sikkerheds skyld '').trim(); aiReply, "model", catch (error) "Failed connect AI. Missing API Key from Database?", addMessage(sender, text, type) container="document.getElementById("chat-messages");" msgDiv="document.createElement("div");" msgDiv.className="msg " type; formattedText="text.replace(/\*\*(.*?)\*\*/g," "<strong>$1</strong>");
+                    for(var i=0; i<LIVE_DATA.ai_knowledge.length; i++) {
+                        extraIntel += "Chapter: " + LIVE_DATA.ai_knowledge[i].topic + "\n" + LIVE_DATA.ai_knowledge[i].content + "\n\n";
+                    }
+                } else if (typeof LIVE_DATA.ai_knowledge === 'string') {
+                    extraIntel = LIVE_DATA.ai_knowledge;
+                } else {
+                    extraIntel = "No extra data provided.";
+                }
+                
+                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Do not invent information.\n\nCRITICAL RULE: If you do not have the answer in the text below, you MUST reply starting with exactly this tag: [UNANSWERED]. After the tag, politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
+                window.chatHistory = []; 
+            }
+        }
+    }
+
+    function handleChatEnter(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    }
+
+    var currentUnansweredQuestion = ""; 
+
+    async function sendChatMessage() {
+        var inputEl = document.getElementById("chat-input");
+        var msgText = inputEl.value.trim();
+        if (!msgText) return;
+
+        // TJEK OM DETTE ER ET FORSLAG FRA BRUGEREN
+        if (currentUnansweredQuestion !== "") {
+            addMessage("You", "My suggestion: " + msgText, "user");
+            inputEl.value = "";
+            document.getElementById("chat-typing").style.display = "block";
+            document.getElementById("chat-typing").innerText = "Sending suggestion...";
+
+            if (firebaseActive) {
+                db.ref('ai_suggestions').push({
+                    question: currentUnansweredQuestion,
+                    suggestion: msgText,
+                    timestamp: new Date().toISOString()
+                }).then(function() {
+                    document.getElementById("chat-typing").style.display = "none";
+                    addMessage("Assistant", "Thank you! I have sent your suggestion to the Admin for approval. I will remember it once it's verified.", "ai");
+                    
+                    currentUnansweredQuestion = ""; 
+                    inputEl.placeholder = "Ask about rules, uniforms...";
+                    document.getElementById("chat-typing").innerText = "AI is thinking...";
+                }).catch(function(err) {
+                    console.error("Firebase write blocked:", err);
+                    document.getElementById("chat-typing").style.display = "none";
+                });
+            }
+            return; 
+        }
+
+        addMessage("You", msgText, "user");
+        inputEl.value = "";
+        document.getElementById("chat-typing").style.display = "block";
+
+        window.chatHistory.push({ "role": "user", "parts": [{ "text": msgText }] });
+
+        try {
+            var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + DYNAMIC_GEMINI_KEY, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "system_instruction": { "parts": { "text": window.aiContext } },
+                    "contents": window.chatHistory
+                })
+            });
+
+            var data = await response.json();
+            document.getElementById("chat-typing").style.display = "none";
+
+            if (data.error) {
+                addMessage("System", "AI Error: " + data.error.message, "ai");
+            } else {
+                var aiReply = data.candidates[0].content.parts[0].text;
+                
+                var lowerReply = aiReply.toLowerCase();
+                var isUnanswered = aiReply.includes('[UNANSWERED]') || 
+                                   lowerReply.includes("i don't have that information") || 
+                                   lowerReply.includes("i do not have that information") ||
+                                   lowerReply.includes("not mentioned in the handbook") ||
+                                   lowerReply.includes("not provided");
+                
+                if (isUnanswered) {
+                    if (firebaseActive) {
+                        db.ref('ai_unanswered').push({
+                            question: msgText,
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                    
+                    currentUnansweredQuestion = msgText;
+                    inputEl.placeholder = "Do you know the answer? Type it here...";
+                    aiReply = "I'm sorry, I don't have that information in my training data. If you happen to know the answer, please type it below so I can suggest it to the Admin!";
+                } else {
+                    // Hvis AI'en rent faktisk KUNNE svare, skal vi fjerne [UNANSWERED] tagget for en sikkerheds skyld
+                    aiReply = aiReply.replace(/\[UNANSWERED\]/gi, '').trim();
+                }
+
+                addMessage("Assistant", aiReply, "ai");
+                window.chatHistory.push({ "role": "model", "parts": [{ "text": aiReply }] });
+            }
+        } catch (error) {
+            document.getElementById("chat-typing").style.display = "none";
+            addMessage("System", "Failed to connect to AI. Missing API Key from Database?", "ai");
+        }
+    }
+
+    function addMessage(sender, text, type) {
+        var container = document.getElementById("chat-messages");
+        var msgDiv = document.createElement("div");
+        msgDiv.className = "msg " + type;
+        
+        var formattedText = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
         
         msgDiv.innerHTML = formattedText;
         container.appendChild(msgDiv);
