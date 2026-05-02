@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>M/F Norröna - Crew App</title>
     
-    <!-- Nyt højopløseligt PNG logo som ikon -->
+    <!-- Det nye højopløselige PNG logo -->
     <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png">
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
@@ -54,8 +54,8 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        /* FILTER FJERNET HER: Logoet står nu skarpt i egne farver */
-        .logo-container img { height: 35px; opacity: 0.95; } 
+        /* Logo inverteres til knivskarp hvid og skaleres pænt */
+        .logo-container img { height: 35px; filter: brightness(0) invert(1); opacity: 0.95; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--text-main); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px; }
         
@@ -222,8 +222,8 @@
              ========================================== -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
-                <!-- FILTER FJERNET HER OGSÅ -->
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 60px; margin-bottom: 15px; opacity:0.95;" alt="Smyril Line Logo">
+                <!-- Højopløselig Logo m. filter -->
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; filter: brightness(0) invert(1); opacity:0.95;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna Hub</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--accent-cyan); font-weight: 600; letter-spacing: 1px;">OPERATIONS PORTAL</p>
             </div>
