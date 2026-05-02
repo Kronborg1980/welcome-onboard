@@ -54,7 +54,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-container img { height: 35px; } 
+        .logo-container img { height: 35px; opacity: 0.95; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--text-main); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px; }
         
@@ -182,9 +182,56 @@
         
         .typing-indicator { padding: 0 15px 10px 15px; font-size: 0.8rem; color: var(--text-muted); display: none; }
         
-        /* NEW HOME STYLES */
-        .step-badge { background: var(--accent-gold); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; flex-shrink: 0; box-shadow: 0 0 10px rgba(251, 185, 0, 0.3);}
-        .action-box { border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: inset 0 0 15px rgba(255,255,255,0.02);}
+        /* ==========================================
+           NYE ONBOARDING "LED/GLASS" STYLES 
+           ========================================== */
+        .onboarding-step { 
+            position: relative;
+            background: linear-gradient(145deg, rgba(0, 30, 40, 0.6), rgba(0, 10, 15, 0.8)); 
+            border: 1px solid rgba(0, 229, 255, 0.3); 
+            border-radius: 16px; 
+            padding: 24px 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 229, 255, 0.05);
+            overflow: hidden;
+        }
+        
+        /* Den glødende LED kant i venstre side */
+        .onboarding-step::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+        
+        /* Unikke farver til Trin 2 (Guld) */
+        .onboarding-step.step-2 {
+            background: linear-gradient(145deg, rgba(40, 30, 0, 0.6), rgba(15, 10, 0, 0.8));
+            border-color: rgba(251, 185, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(251, 185, 0, 0.05);
+        }
+        .onboarding-step.step-2::before {
+            background: var(--accent-gold);
+            box-shadow: 0 0 15px var(--accent-gold);
+        }
+        
+        /* Det Runde Nummer-badge */
+        .step-badge { 
+            background: rgba(0,0,0,0.5); 
+            color: var(--accent-cyan); 
+            width: 36px; height: 36px; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 900; font-size: 1.1rem; flex-shrink: 0; 
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+        
+        /* Guld badge til trin 2 */
+        .onboarding-step.step-2 .step-badge {
+            color: var(--accent-gold);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(251, 185, 0, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -223,7 +270,7 @@
              ========================================== -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px;" alt="Smyril Line Logo">
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; opacity:0.95;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna Hub</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--accent-cyan); font-weight: 600; letter-spacing: 1px;">OPERATIONS PORTAL</p>
             </div>
@@ -232,26 +279,32 @@
                 <img src="https://www.smyrilline.dk/wp-content/uploads/2025/04/Norrona.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--glass-border);" alt="M/F Norröna">
                 
                 <div style="padding: 24px;">
-                    <h2 style="margin-bottom: 15px; font-size: 1.4rem;">Required Onboarding</h2>
+                    <h2 style="margin-bottom: 20px; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; justify-content:flex-start;">
+                        Required Onboarding
+                    </h2>
                     
-                    <!-- TRIN 1: HÅNDBOG -->
-                    <div class="action-box">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <!-- TRIN 1: HÅNDBOG (CYAN LED) -->
+                    <div class="onboarding-step">
+                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
                             <div class="step-badge">1</div>
-                            <div style="font-weight:bold; font-size:1.1rem; color: #fff;">Read the Handbook</div>
+                            <div style="font-weight:800; font-size:1.15rem; color: #fff; letter-spacing: 0.5px;">Read the Handbook</div>
                         </div>
-                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px; margin-left:44px;">Review the safety guidelines and rules for your department.</p>
-                        <button class="btn btn-outline" style="border-color:var(--accent-gold); color:var(--accent-gold); margin-bottom:0;" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Open Handbook</button>
+                        <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:18px; margin-left:51px; line-height: 1.5;">Review the safety guidelines and rules for your department.</p>
+                        <button class="btn btn-outline" style="border-color:var(--accent-cyan); color:var(--accent-cyan); background: rgba(0, 229, 255, 0.05); margin-bottom:0;" onclick="goToView('view-handbook-select')">
+                            <span class="material-icons">menu_book</span> Open Handbook
+                        </button>
                     </div>
 
-                    <!-- TRIN 2: QUIZ -->
-                    <div class="action-box">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <!-- TRIN 2: QUIZ (GOLD LED) -->
+                    <div class="onboarding-step step-2">
+                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
                             <div class="step-badge">2</div>
-                            <div style="font-weight:bold; font-size:1.1rem; color: #fff;">Clearance Assessment</div>
+                            <div style="font-weight:800; font-size:1.15rem; color: #fff; letter-spacing: 0.5px;">Clearance Assessment</div>
                         </div>
-                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px; margin-left:44px;">Prove you have understood the handbook to get cleared for duty.</p>
-                        <button class="btn btn-primary" style="margin-bottom:0;" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Take Assessment</button>
+                        <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:18px; margin-left:51px; line-height: 1.5;">Prove you have understood the handbook to get cleared for duty.</p>
+                        <button class="btn btn-primary" style="margin-bottom:0;" onclick="openQuestionnaire()">
+                            <span class="material-icons">fact_check</span> Take Assessment
+                        </button>
                     </div>
                 </div>
             </div>
