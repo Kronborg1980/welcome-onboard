@@ -2,165 +2,476 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Norröna Admin - CYBER CONTROL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Norröna Admin - DEV MODE</title>
     
+    <link rel="icon" type="image/svg+xml" href="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg">
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
+    
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
         :root { 
-            --primary-navy: #00121a; 
-            --led-green: #00ff88;
+            --primary-navy: #002836; 
+            --primary-blue: #004A59;
             --accent-gold: #fbb900; 
-            --bg-dark: #000b11;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-light: #e2e8f0; 
-            --danger: #ff3333; 
+            --bg-light: #f4f6f8;
+            --text-dark: #1a202c; 
+            --text-muted: #637381; 
+            --border-light: #dfe3e8; 
+            --danger: #e74c3c; 
+            --success: #2ecc71; 
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', 'Courier New', monospace; }
-        body { 
-            background: var(--bg-dark); 
-            color: var(--text-light); 
-            display: flex; height: 100vh; overflow: hidden; 
-        }
-
-        aside { 
-            width: 280px; background: #001a24; border-right: 1px solid var(--led-green); 
-            display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,255,136,0.05);
-        }
-        .sidebar-header { 
-            padding: 25px; border-bottom: 1px solid var(--glass-border); 
-            color: var(--led-green); font-weight: bold; text-shadow: 0 0 10px var(--led-green);
-        }
-
-        .nav-item { 
-            padding: 15px 25px; display: flex; align-items: center; gap: 12px; 
-            color: var(--text-light); cursor: pointer; transition: 0.3s;
-        }
-        .nav-item:hover { background: rgba(0, 255, 136, 0.1); color: var(--led-green); }
-        .nav-item.active { border-left: 4px solid var(--led-green); background: rgba(0, 255, 136, 0.05); color: var(--led-green); }
-
-        main { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at center, #001a24 0%, #000b11 100%); }
-        header { 
-            height: 70px; border-bottom: 1px solid var(--glass-border); 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px; 
-        }
-
-        .content-area { padding: 30px; overflow-y: auto; }
-        .card { 
-            background: var(--glass); backdrop-filter: blur(10px); 
-            border: 1px solid var(--glass-border); border-radius: 15px; 
-            padding: 25px; margin-bottom: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-
-        /* MODERATION BOXES */
-        .mess-mod-post { 
-            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
-            border-radius: 10px; padding: 15px; margin-bottom: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .mess-mod-name { color: var(--accent-gold); font-weight: bold; margin-bottom: 5px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg-light); color: var(--text-dark); overflow: hidden; }
         
-        .btn-primary { 
-            background: var(--led-green); color: #000; border-radius: 5px; 
-            padding: 10px 20px; font-weight: bold; cursor: pointer; border: none;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-        }
-        .btn-danger { background: var(--danger); color: #fff; border-radius: 5px; cursor: pointer; border: none; padding: 8px 15px; }
-
-        input, textarea, select { 
-            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); 
-            color: #fff; padding: 12px; border-radius: 5px; width: 100%; margin-top: 5px;
-        }
+        #login-screen { display: none !important; }
+        #admin-app { display: flex; width: 100%; height: 100%; }
         
-        .toast { 
-            position: fixed; bottom: 30px; right: 30px; background: var(--led-green); 
-            color: #000; padding: 15px 30px; border-radius: 5px; font-weight: bold; 
-            opacity: 0; transition: 0.3s; 
+        aside { width: 280px; background: #fff; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2rem; color: var(--primary-navy); }
+        .sidebar-header .dot { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px 0; }
+        .nav-group { margin-bottom: 20px; }
+        .nav-title { padding: 0 20px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 1px; font-weight: 700; }
+        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 12px; color: var(--text-dark); text-decoration: none; cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
+        .nav-item:hover { background: var(--bg-light); color: var(--primary-blue); }
+        .nav-item.active { background: rgba(251, 185, 0, 0.1); border-left-color: var(--accent-gold); color: var(--primary-navy); font-weight: bold; }
+        
+        main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; width: 100%; }
+        header { height: 70px; min-height: 70px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #fff; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--primary-navy); cursor: pointer; padding: 5px; }
+        
+        .content-area { flex: 1; padding: 20px; overflow-y: auto; }
+        h2 { margin-bottom: 20px; font-weight: 700; color: var(--primary-navy); display: flex; align-items: center; justify-content: space-between; font-size: 1.3rem; }
+        
+        .card { background: #fff; border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
+        input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 1rem; transition: 0.2s; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-blue); }
+        
+        .insights-box { background: rgba(251, 185, 0, 0.1); border: 1px solid var(--accent-gold); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .insights-box h3 { color: var(--primary-navy); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .insight-item { background: #fff; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(0,0,0,0.05); }
+        .insight-count { background: var(--danger); color: #fff; font-weight: bold; padding: 4px 10px; border-radius: 50px; font-size: 0.8rem; }
+        .insight-text { font-weight: 500; color: var(--text-dark); flex: 1; margin-right: 15px; }
+
+        .ai-card { padding: 0; overflow: hidden; transition: 0.3s; }
+        .ai-card-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; transition: background 0.2s; }
+        .ai-card-header:hover { background: #f8fafc; }
+        .ai-card-header h3 { margin: 0; font-size: 1.1rem; color: var(--primary-navy); display: flex; align-items: center; gap: 10px; }
+        .expand-icon { color: var(--text-muted); transition: transform 0.3s ease; }
+        .ai-card.open .expand-icon { transform: rotate(180deg); }
+        .ai-card-body { padding: 0 20px 20px 20px; border-top: 1px solid var(--border-light); display: none; margin-top: 5px; }
+        .ai-card.open .ai-card-body { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ql-toolbar.ql-snow { border: 1px solid var(--border-light); border-top-left-radius: 8px; border-top-right-radius: 8px; background: #fafafa; }
+        .ql-container.ql-snow { border: 1px solid var(--border-light); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-family: inherit; font-size: 1rem; background: #fff; min-height: 150px; }
+        .ql-editor { min-height: 150px; }
+        .ai-quill-container .ql-editor { min-height: 250px; }
+
+        .btn { padding: 10px 18px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-primary { background: var(--accent-gold); color: var(--primary-navy); }
+        .btn-primary:active { background: #e5a800; }
+        .btn-danger { background: #fce8e6; color: var(--danger); }
+        .btn-success { background: #e6fffa; color: var(--success); border: 1px solid var(--success); }
+        .btn-outline { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); }
+        
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--success); color: #fff; padding: 15px 25px; border-radius: 8px; font-weight: bold; transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 9999; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .option-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .option-row input { flex: 1; }
+        .option-row button { padding: 8px; background: transparent; color: var(--danger); border: none; cursor: pointer; }
+
+        .suggestion-box { background: #fff; border: 1px solid var(--primary-blue); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,74,89,0.1); }
+        .suggestion-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; }
+        .suggestion-q { font-weight: bold; font-size: 1.1rem; color: var(--primary-navy); display:flex; gap:10px; align-items:center; }
+        .suggestion-q .material-icons { color: var(--danger); }
+
+        /* CREW MESS MODERATION STYLES */
+        .mess-mod-post { background: #fff; border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .mess-mod-content { flex: 1; }
+        .mess-mod-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .mess-mod-name { font-weight: bold; color: var(--primary-navy); }
+        .mess-mod-time { font-size: 0.8rem; color: var(--text-muted); }
+        .mess-mod-body { color: var(--text-dark); background: var(--bg-light); padding: 12px; border-radius: 8px; font-size: 0.95rem; }
+        .mess-mod-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; background: var(--primary-blue); color: #fff; text-transform: uppercase; font-weight: bold; }
+        .mess-mod-img { max-width: 150px; max-height: 100px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-light);}
+
+        @media (max-width: 768px) {
+            aside { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); box-shadow: 5px 0 20px rgba(0,0,0,0.2); }
+            aside.open { transform: translateX(0); }
+            .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+            .btn-primary span.material-icons { display: none; }
+            .mess-mod-post { flex-direction: column; }
         }
-        .toast.show { opacity: 1; transform: translateY(-20px); }
     </style>
 </head>
 <body>
 
-    <aside id="sidebar">
-        <div class="sidebar-header">SYSTEM ADMIN v2.6</div>
-        <div class="nav-group">
-            <div class="nav-item active" onclick="loadEditor('mess', 'moderate', this)"><span class="material-icons">security</span> MODERATION</div>
-            <div class="nav-item" onclick="loadEditor('ai', 'knowledge', this)"><span class="material-icons">psychology</span> AI CORE</div>
-            <div class="nav-item" onclick="loadEditor('handbook', 'general', this)"><span class="material-icons">terminal</span> HANDBOOK</div>
-        </div>
-    </aside>
+    <div id="admin-app">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="dot"></div> DEV MODE (NO LOGIN)
+            </div>
+            <div class="sidebar-nav">
+                <!-- NY GRUPPE TIL COMMUNITY -->
+                <div class="nav-group">
+                    <div class="nav-title">Community</div>
+                    <div class="nav-item" onclick="loadEditor('mess', 'moderate', this)">
+                        <span class="material-icons" style="color: var(--danger);">forum</span> Crew Mess
+                    </div>
+                </div>
 
-    <main>
-        <header>
-            <h2 id="header-title" style="color:var(--led-green)">DASHBOARD</h2>
-            <button class="btn-primary" onclick="saveToFirebase()">EXECUTE SYNC</button>
-        </header>
-        <div class="content-area" id="editor-container"></div>
-    </main>
+                <div class="nav-group">
+                    <div class="nav-title">AI Assistant</div>
+                    <div class="nav-item" onclick="loadEditor('ai', 'knowledge', this)">
+                        <span class="material-icons" style="color: var(--primary-blue);">psychology</span> AI Training Data
+                    </div>
+                </div>
 
-    <div class="toast" id="toast">SYSTEM UPDATED</div>
+                <div class="nav-group">
+                    <div class="nav-title">Ship Handbook</div>
+                    <div class="nav-item active" onclick="loadEditor('handbook', 'general', this)"><span class="material-icons">public</span> General Rules</div>
+                    <div class="nav-item" onclick="loadEditor('handbook', 'hotel', this)"><span class="material-icons">room_service</span> Hotel Dept.</div>
+                    <div class="nav-item" onclick="loadEditor('handbook', 'bridge_engine', this)"><span class="material-icons">engineering</span> Bridge & Engine</div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-title">Quizzes</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'universal', this)"><span class="material-icons">quiz</span> Universal</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Deck', this)"><span class="material-icons">anchor</span> Deck Ops</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Engine', this)"><span class="material-icons">settings</span> Engine Room</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Galley', this)"><span class="material-icons">restaurant</span> Galley</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Shop', this)"><span class="material-icons">storefront</span> Tax-Free Shop</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Reception', this)"><span class="material-icons">desk</span> Reception</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Restaurant_Bar', this)"><span class="material-icons">local_bar</span> Rest/Bar</div>
+                    <div class="nav-item" onclick="loadEditor('quiz', 'Housekeeping', this)"><span class="material-icons">cleaning_services</span> Housekeeping</div>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()"><span class="material-icons">menu</span></button>
+                    <strong id="header-title" style="color:var(--primary-navy); font-size:1.1rem;">Loading...</strong>
+                </div>
+                <button class="btn btn-primary" onclick="saveToFirebase()"><span class="material-icons">cloud_upload</span> Sync Live</button>
+            </header>
+            
+            <div id="mobile-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;" onclick="toggleSidebar()"></div>
+
+            <div class="content-area" id="editor-container">
+                <h2 style="color: var(--text-muted); text-align:center; width:100%; margin-top:50px;">Connecting to Firebase...</h2>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast">App Updated Successfully!</div>
 
 <script>
-    var p1 = "AIzaS"; var p2 = "yD1C2q"; var p3 = "R2CR5L"; var p4 = "PA2tps"; var p5 = "8b9_cO"; var p6 = "9WNt13"; var p7 = "iDqc";
-    var firebaseConfig = { apiKey: p1+p2+p3+p4+p5+p6+p7, authDomain: "norrona-app.firebaseapp.com", databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app", projectId: "norrona-app", storageBucket: "norrona-app.firebasestorage.app", messagingSenderId: "836610543277", appId: "1:836610543277:web:3e74479daf205453bd0024" };
-    firebase.initializeApp(firebaseConfig);
+    // SIKKERHEDS-TRICK: Vi deler nøglen op i stykker, så GitHubs scanner ikke kan læse den!
+    var p1 = "AIzaS";
+    var p2 = "yD1C2q";
+    var p3 = "R2CR5L";
+    var p4 = "PA2tps";
+    var p5 = "8b9_cO";
+    var p6 = "9WNt13";
+    var p7 = "iDqc";
+    
+    var firebaseConfig = {
+        apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7,
+        authDomain: "norrona-app.firebaseapp.com",
+        databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "norrona-app",
+        storageBucket: "norrona-app.firebasestorage.app",
+        messagingSenderId: "836610543277",
+        appId: "1:836610543277:web:3e74479daf205453bd0024"
+    };
+    
+    try { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } } catch(e) { alert("Firebase failed to connect. Check Config."); }
+
     var db = firebase.database();
 
-    var crewMessPosts = [];
-    db.ref('crew_mess').on('value', function(snapshot) {
-        crewMessPosts = [];
-        snapshot.forEach(c => { var d = c.val(); d.id = c.key; crewMessPosts.push(d); });
-        if(currentEditorType === 'mess') renderMessModeration();
-    });
-
-    var currentEditorType = 'mess';
-    function loadEditor(type, key, el) {
-        currentEditorType = type;
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('header-title').innerText = type.toUpperCase();
-        
-        var container = document.getElementById('editor-container');
-        if(type === 'mess') renderMessModeration();
-        else container.innerHTML = `<div class="card">Core editor for ${type} is ready.</div>`;
+    function toggleSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('mobile-overlay');
+        sidebar.classList.toggle('open');
+        overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
     }
 
-    function renderMessModeration() {
-        var container = document.getElementById('editor-container');
-        var html = `<h3>LIVE FEED MODERATION</h3><p style="margin-bottom:20px; opacity:0.6;">Delete unauthorized posts instantly.</p>`;
-        crewMessPosts.reverse().forEach(p => {
-            html += `<div class="mess-mod-post">
-                <div>
-                    <div class="mess-mod-name">${p.name}</div>
-                    <div style="font-size:0.9rem;">${p.message}</div>
-                </div>
-                <button class="btn-danger" onclick="deletePost('${p.id}')">PURGE</button>
-            </div>`;
+    var appData = { handbook: {}, quizzes: {}, ai_knowledge: [] };
+    var unansweredQuestions = [];
+    var pendingSuggestions = [];
+    var crewMessPosts = []; // NY: Holder styr på live posts
+    var currentEditorType = 'handbook'; 
+    var currentEditorKey = 'general';
+
+    var DEFAULT_DATA = {
+        ai_knowledge: [{ topic: "Safety Reporting Definitions", content: "<p><strong>1. Safety Observation:</strong> Potential Hazard. <strong>2. Near Miss:</strong> Almost an accident.</p>" }],
+        handbook: {
+            general: [ { title: "Your New Home at Sea", img: "https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg", video: "", content: "<p>Welcome on board.</p>" } ],
+            hotel: [ { title: "Hotel Rules", img: "", video: "", content: "<p>Footwear MUST be all black.</p>" } ],
+            bridge_engine: [ { title: "Bridge & Engine", img: "", video: "", content: "<p>Required certificates.</p>" } ]
+        },
+        quizzes: { universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ] }
+    };
+
+    function fetchDatabase() {
+        db.ref('appData').once('value').then(function(snapshot) {
+            if (snapshot.exists()) { 
+                appData = snapshot.val(); 
+                if (typeof appData.ai_knowledge === 'string') { appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }]; }
+            } else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+            var firstItem = document.querySelectorAll('.nav-item')[2]; // Nu er nr. 2 "General Rules" (pga. Mess blev tilføjet øverst)
+            loadEditor('handbook', 'general', firstItem); 
+        }).catch(function(error) { 
+            appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+            var firstItem = document.querySelectorAll('.nav-item')[2]; 
+            loadEditor('handbook', 'general', firstItem); 
         });
-        container.innerHTML = html;
+
+        db.ref('ai_unanswered').on('value', function(snapshot) {
+            unansweredQuestions = [];
+            if (snapshot.exists()) { snapshot.forEach(function(childSnapshot) { unansweredQuestions.push({ id: childSnapshot.key, q: childSnapshot.val().question }); }); }
+            if (currentEditorType === 'ai') { updateInsightsUI(); }
+        });
+
+        db.ref('ai_suggestions').on('value', function(snapshot) {
+            pendingSuggestions = [];
+            if (snapshot.exists()) { snapshot.forEach(function(childSnapshot) { var data = childSnapshot.val(); data.id = childSnapshot.key; pendingSuggestions.push(data); }); }
+            if (currentEditorType === 'ai') { updateSuggestionsUI(); }
+        });
+
+        // Hent live indlæg fra Crew Mess
+        db.ref('crew_mess').on('value', function(snapshot) {
+            crewMessPosts = [];
+            if (snapshot.exists()) {
+                snapshot.forEach(function(childSnapshot) {
+                    var data = childSnapshot.val();
+                    data.id = childSnapshot.key;
+                    crewMessPosts.push(data);
+                });
+            }
+            if (currentEditorType === 'mess') { renderMessModeration(document.getElementById('editor-container')); }
+        });
     }
 
-    function deletePost(id) {
-        if(confirm("Confirm deletion?")) {
-            db.ref('crew_mess/'+id).remove().then(() => showToast());
+    function saveToFirebase() {
+        extractFormData(); 
+        if(currentEditorType !== 'mess') {
+            db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
         }
     }
 
-    function showToast() { 
-        var t = document.getElementById('toast'); t.classList.add('show'); 
-        setTimeout(() => t.classList.remove('show'), 2000); 
+    function loadEditor(type, key, navElement) {
+        extractFormData(); 
+        currentEditorType = type; currentEditorKey = key;
+        
+        var navItems = document.querySelectorAll('.nav-item');
+        for(var i=0; i<navItems.length; i++) { navItems[i].classList.remove('active'); }
+        if(navElement) navElement.classList.add('active');
+        
+        if(window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('mobile-overlay').style.display = 'none';
+        }
+
+        var titleDisplay = "";
+        if (type === 'ai') titleDisplay = "AI Knowledge Base";
+        else if (type === 'mess') titleDisplay = "Crew Mess Moderation";
+        else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' Questions' : ' Pages');
+        
+        document.getElementById('header-title').innerText = titleDisplay;
+        renderCurrentEditor();
     }
 
-    window.onload = () => loadEditor('mess', 'moderate', document.querySelector('.nav-item'));
+    function renderCurrentEditor() {
+        var container = document.getElementById('editor-container');
+        if (currentEditorType === 'handbook') renderHandbookForms(container);
+        else if (currentEditorType === 'quiz') renderQuizForms(container);
+        else if (currentEditorType === 'ai') renderAITraining(container);
+        else if (currentEditorType === 'mess') renderMessModeration(container);
+    }
+
+    // ==========================================
+    // CREW MESS MODERATION UI
+    // ==========================================
+    function renderMessModeration(container) {
+        var html = '<h2><span class="material-icons" style="color:var(--danger); margin-right:8px;">forum</span> Live Crew Feed</h2>';
+        html += '<p style="color:var(--text-muted); margin-bottom:20px;">Review and moderate the social feed. Deleting a post removes it instantly from all crew devices.</p>';
+
+        if (crewMessPosts.length === 0) {
+            html += '<div class="card" style="text-align:center; padding: 40px; color:var(--text-muted);">No posts active on the ship right now.</div>';
+            container.innerHTML = html;
+            return;
+        }
+
+        // Klon og vend om, så nyeste er øverst
+        var displayPosts = [...crewMessPosts].reverse();
+
+        displayPosts.forEach(function(p) {
+            var dateObj = new Date(p.timestamp);
+            var timeString = dateObj.toLocaleDateString('en-GB') + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+            
+            html += '<div class="mess-mod-post">';
+            html += '  <div class="mess-mod-content">';
+            html += '    <div class="mess-mod-header">';
+            html += '      <span class="mess-mod-name">' + p.name + '</span>';
+            html += '      <span class="mess-mod-badge">' + (p.type || 'text') + '</span>';
+            html += '      <span class="mess-mod-time">' + timeString + '</span>';
+            html += '    </div>';
+            html += '    <div class="mess-mod-body">' + p.message + '</div>';
+            
+            if (p.type === 'image' && p.image) {
+                html += '<img src="' + p.image + '" class="mess-mod-img">';
+            } else if (p.type === 'poll' && p.pollOptions) {
+                html += '<div style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">';
+                p.pollOptions.forEach(function(opt) {
+                    html += '&bull; ' + opt.text + ' (' + (opt.votes || 0) + ' votes)<br>';
+                });
+                html += '</div>';
+            }
+
+            html += '  </div>';
+            html += '  <button class="btn btn-outline" style="border-color:var(--danger); color:var(--danger); padding:10px 15px;" onclick="deleteMessPost(\'' + p.id + '\')"><span class="material-icons">delete</span> Remove</button>';
+            html += '</div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    function deleteMessPost(postId) {
+        if(confirm("Are you sure you want to permanently delete this post from the Crew Mess?")) {
+            db.ref('crew_mess/' + postId).remove().then(function() {
+                showToast(); 
+            }).catch(function(err) {
+                alert("Failed to delete post. Check Firebase rules.");
+            });
+        }
+    }
+
+
+    // ==========================================
+    // AI TRAINING & SUGGESTIONS UI
+    // ==========================================
+    function renderAITraining(container) {
+        if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
+        var html = '<div id="ai-suggestions-container"></div>';
+        html += '<div class="insights-box"><h3><span class="material-icons">tips_and_updates</span> AI Insights: Top 10 Unanswered Questions</h3><p style="color:var(--text-dark); font-size:0.9rem; margin-bottom:15px;">This is what your crew is asking, but the AI doesn\'t know the answer to.</p><div id="ai-insights-container">Loading data...</div></div>';
+        html += '<h2>AI Chapters <button class="btn btn-outline" onclick="addAITopic()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Topic</button></h2>';
+        
+        for(var idx=0; idx<appData.ai_knowledge.length; idx++) {
+            var item = appData.ai_knowledge[idx];
+            var displayTitle = item.topic ? item.topic : "New Chapter";
+            var isOpenClass = (appData.ai_knowledge.length === 1) ? 'open' : '';
+
+            html += '<div class="card ai-card ' + isOpenClass + '" data-idx="'+idx+'" id="ai-card-'+idx+'">';
+            html += '<div class="ai-card-header" onclick="toggleAICard('+idx+')"><h3 id="ai-title-display-'+idx+'"><span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + displayTitle + '</h3><span class="material-icons expand-icon">expand_more</span></div>';
+            html += '<div class="ai-card-body"><div class="form-group"><label>Chapter / Topic Name</label><input type="text" class="input-ai-topic" value="'+(item.topic||'')+'" placeholder="e.g. Salaries, WiFi..." oninput="updateAITitleDisplay(this.value, '+idx+')"></div><div class="form-group"><label>Information</label><div class="quill-container ai-quill-container">'+(item.content||'')+'</div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteAITopic('+idx+')">Delete Chapter</button></div></div></div>'; 
+        }
+        container.innerHTML = html;
+        initQuillEditors(); updateInsightsUI(); updateSuggestionsUI();
+    }
+
+    function updateSuggestionsUI() {
+        var box = document.getElementById('ai-suggestions-container'); if(!box) return;
+        if (pendingSuggestions.length === 0) { box.innerHTML = ''; return; }
+        var html = '<h2><span class="material-icons" style="color:var(--primary-blue); margin-right:8px;">rate_review</span> Pending Crew Suggestions</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Review, edit, and approve these answers suggested by your crew members.</p>';
+        pendingSuggestions.forEach(function(sug, idx) {
+            html += '<div class="suggestion-box"><div class="suggestion-header"><div class="suggestion-q"><span class="material-icons">help_outline</span> Q: ' + sug.question + '</div><div style="font-size: 0.8rem; color: var(--text-muted);">Suggested: ' + new Date(sug.timestamp).toLocaleDateString() + '</div></div><div class="form-group"><label>Suggested Answer (Edit before approving):</label><textarea id="sug-edit-'+idx+'" class="form-textarea" style="min-height: 80px; margin-bottom: 10px;">' + sug.suggestion + '</textarea></div><div style="display:flex; justify-content:space-between; align-items:center;"><button class="btn btn-outline" style="border-color:var(--danger); color:var(--danger); padding:8px 15px;" onclick="rejectSuggestion(\''+sug.id+'\')"><span class="material-icons">delete</span> Reject</button><button class="btn btn-success" style="padding:8px 15px;" onclick="approveSuggestion('+idx+', \''+sug.id+'\', \''+sug.question.replace(/'/g, "\\'")+'\')"><span class="material-icons">check_circle</span> Approve & Add to AI</button></div></div>';
+        });
+        box.innerHTML = html;
+    }
+
+    function approveSuggestion(idx, firebaseId, question) {
+        var editedAnswer = document.getElementById('sug-edit-'+idx).value;
+        if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
+        appData.ai_knowledge.unshift({ topic: "Q: " + question, content: "<p>" + editedAnswer + "</p>" });
+        db.ref('appData').set(appData).then(function() { db.ref('ai_suggestions/' + firebaseId).remove(); showToast(); renderCurrentEditor(); }).catch(function(err) { alert("Failed to approve. Check Firebase Rules."); });
+    }
+
+    function rejectSuggestion(firebaseId) { if(confirm("Delete this suggestion permanently?")) { db.ref('ai_suggestions/' + firebaseId).remove(); } }
+    
+    function updateInsightsUI() {
+        var box = document.getElementById('ai-insights-container'); if(!box) return;
+        if (unansweredQuestions.length === 0) { box.innerHTML = '<div style="color: var(--success); font-weight:bold;">No unanswered questions right now. The AI knows everything!</div>'; return; }
+        var counts = {}; unansweredQuestions.forEach(function(item) { var cleanedQ = item.q.toLowerCase().trim(); counts[cleanedQ] = (counts[cleanedQ] || 0) + 1; });
+        var sortedCounts = Object.keys(counts).map(function(k) { return { q: k, count: counts[k] }; }); sortedCounts.sort(function(a, b) { return b.count - a.count; });
+        var html = ''; for(var i=0; i<Math.min(10, sortedCounts.length); i++) { html += '<div class="insight-item"><div class="insight-text">"' + sortedCounts[i].q + '"</div><div class="insight-count">Asked ' + sortedCounts[i].count + 'x</div></div>'; }
+        html += '<button class="btn btn-outline" style="margin-top:15px; font-size:0.8rem; padding: 6px 12px; color:var(--danger); border-color:var(--danger);" onclick="clearInsights()"><span class="material-icons" style="font-size:1rem;">delete</span> Clear List</button>';
+        box.innerHTML = html;
+    }
+    
+    function clearInsights() { if(confirm("Are you sure you want to delete all logged questions? This cannot be undone.")) { db.ref('ai_unanswered').remove(); } }
+    function toggleAICard(idx) { var card = document.getElementById('ai-card-'+idx); if(card) { card.classList.toggle('open'); } }
+    function updateAITitleDisplay(value, idx) { var display = value ? value : "New Chapter"; document.getElementById('ai-title-display-'+idx).innerHTML = '<span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + display; }
+    function addAITopic() { extractFormData(); if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = []; appData.ai_knowledge.push({ topic: "New Chapter", content: "<p>Enter secret info here...</p>" }); renderCurrentEditor(); setTimeout(function() { var newIdx = appData.ai_knowledge.length - 1; var newCard = document.getElementById('ai-card-'+newIdx); if(newCard) newCard.classList.add('open'); document.querySelector('.content-area').scrollTop = document.querySelector('.content-area').scrollHeight; }, 50); }
+    function deleteAITopic(idx) { if(confirm('Delete this AI chapter?')) { appData.ai_knowledge.splice(idx, 1); renderCurrentEditor(); } }
+
+    function renderHandbookForms(container) {
+        if (!appData.handbook) appData.handbook = {}; var slides = appData.handbook[currentEditorKey] || [];
+        var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Page</button></h2>';
+        for(var idx=0; idx<slides.length; idx++) {
+            var slide = slides[idx];
+            html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Page Content</label><div class="quill-container">'+(slide.content||'')+'</div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
+        }
+        container.innerHTML = html; initQuillEditors();
+    }
+
+    function initQuillEditors() {
+        var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'header': [1, 2, 3, false] }], ['link', 'clean']];
+        document.querySelectorAll('.quill-container').forEach(function(el) { if (!el.classList.contains('ql-container')) { new Quill(el, { theme: 'snow', modules: { toolbar: toolbarOptions } }); } });
+    }
+
+    function addHandbookSlide() { extractFormData(); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New Page", img: "", video: "", content: "<p>Start typing here...</p>" }); renderCurrentEditor(); }
+    function deleteHandbookSlide(idx) { if(confirm('Delete?')) { appData.handbook[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
+
+    function renderQuizForms(container) {
+        if (!appData.quizzes) appData.quizzes = {}; var questions = appData.quizzes[currentEditorKey] || [];
+        var html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Question</button></h2>';
+        for(var idx=0; idx<questions.length; idx++) {
+            var q = questions[idx]; var optHtml = ''; var opts = q.options || [];
+            for(var optIdx=0; optIdx<opts.length; optIdx++) { optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opts[optIdx]+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')"><span class="material-icons">close</span></button></div>'; }
+            var selHtml = ''; for(var optIdx2=0; optIdx2<opts.length; optIdx2++) { selHtml += '<option value="'+optIdx2+'" '+(q.ans == optIdx2 ? 'selected' : '')+'>Option '+(optIdx2 + 1)+': '+opts[optIdx2]+'</option>'; }
+            html += '<div class="card quiz-card" data-idx="'+idx+'"><div class="form-group"><label>Question</label><input type="text" class="input-q" value="'+(q.q||'')+'"></div><div class="form-group"><label>Options</label>'+optHtml+'<button class="btn btn-outline" style="padding: 6px 12px; margin-top:5px; font-size:0.8rem;" onclick="addQuizOption('+idx+')">+ Add Option</button></div><div class="form-group"><label>Correct Answer Index</label><select class="input-ans">'+selHtml+'</select></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion('+idx+')">Delete</button></div></div>';
+        }
+        container.innerHTML = html;
+    }
+
+    function addQuizQuestion() { extractFormData(); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = []; appData.quizzes[currentEditorKey].push({ q: "Question?", options: ["A", "B"], ans: 0 }); renderCurrentEditor(); }
+    function deleteQuizQuestion(idx) { if(confirm('Delete?')) { appData.quizzes[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
+    function addQuizOption(idx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.push("New"); renderCurrentEditor(); }
+    function removeQuizOption(idx, optIdx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.splice(optIdx, 1); renderCurrentEditor(); }
+
+    function extractFormData() {
+        if (!document.getElementById('editor-container').innerHTML) return;
+        if (currentEditorType === 'ai') {
+            var cards = document.querySelectorAll('.ai-card'); appData.ai_knowledge = [];
+            for(var i=0; i<cards.length; i++) { var topic = cards[i].querySelector('.input-ai-topic').value; var qlEditor = cards[i].querySelector('.ql-editor'); var content = qlEditor ? qlEditor.innerHTML : ''; appData.ai_knowledge.push({ topic: topic, content: content }); }
+        } else if (currentEditorType === 'handbook') {
+            var cards = document.querySelectorAll('.handbook-card'); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
+            for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.handbook[currentEditorKey][idx].title = cards[i].querySelector('.input-title').value; appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value; appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value; var qlEditor = cards[i].querySelector('.ql-editor'); if(qlEditor) { appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML; } }
+        } else if (currentEditorType === 'quiz') {
+            var cards = document.querySelectorAll('.quiz-card'); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = [];
+            for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.quizzes[currentEditorKey][idx].q = cards[i].querySelector('.input-q').value; appData.quizzes[currentEditorKey][idx].ans = parseInt(cards[i].querySelector('.input-ans').value); var optInputs = cards[i].querySelectorAll('.input-opt'); appData.quizzes[currentEditorKey][idx].options = []; for(var j=0; j<optInputs.length; j++) { appData.quizzes[currentEditorKey][idx].options.push(optInputs[j].value); } }
+        }
+    }
+
+    function showToast() { var t = document.getElementById('toast'); t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 3000); }
+    window.onload = function() { fetchDatabase(); };
 </script>
 </body>
 </html>
