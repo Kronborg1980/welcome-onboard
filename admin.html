@@ -30,10 +30,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { display: flex; height: 100vh; background-color: var(--bg-light); color: var(--text-dark); overflow: hidden; }
         
-        /* LOGIN UI HIDDEN PERMANENTLY FOR TESTING */
         #login-screen { display: none !important; }
-        
-        /* ADMIN APP FORCED VISIBLE FOR TESTING */
         #admin-app { display: flex; width: 100%; height: 100%; }
         
         aside { width: 280px; background: #fff; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 1000; }
@@ -97,17 +94,27 @@
         .option-row input { flex: 1; }
         .option-row button { padding: 8px; background: transparent; color: var(--danger); border: none; cursor: pointer; }
 
-        /* NYT STYLING TIL FORSLAG */
         .suggestion-box { background: #fff; border: 1px solid var(--primary-blue); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,74,89,0.1); }
         .suggestion-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; }
         .suggestion-q { font-weight: bold; font-size: 1.1rem; color: var(--primary-navy); display:flex; gap:10px; align-items:center; }
         .suggestion-q .material-icons { color: var(--danger); }
+
+        /* CREW MESS MODERATION STYLES */
+        .mess-mod-post { background: #fff; border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .mess-mod-content { flex: 1; }
+        .mess-mod-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .mess-mod-name { font-weight: bold; color: var(--primary-navy); }
+        .mess-mod-time { font-size: 0.8rem; color: var(--text-muted); }
+        .mess-mod-body { color: var(--text-dark); background: var(--bg-light); padding: 12px; border-radius: 8px; font-size: 0.95rem; }
+        .mess-mod-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; background: var(--primary-blue); color: #fff; text-transform: uppercase; font-weight: bold; }
+        .mess-mod-img { max-width: 150px; max-height: 100px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-light);}
 
         @media (max-width: 768px) {
             aside { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); box-shadow: 5px 0 20px rgba(0,0,0,0.2); }
             aside.open { transform: translateX(0); }
             .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
             .btn-primary span.material-icons { display: none; }
+            .mess-mod-post { flex-direction: column; }
         }
     </style>
 </head>
@@ -119,6 +126,14 @@
                 <div class="dot"></div> DEV MODE (NO LOGIN)
             </div>
             <div class="sidebar-nav">
+                <!-- NY GRUPPE TIL COMMUNITY -->
+                <div class="nav-group">
+                    <div class="nav-title">Community</div>
+                    <div class="nav-item" onclick="loadEditor('mess', 'moderate', this)">
+                        <span class="material-icons" style="color: var(--danger);">forum</span> Crew Mess
+                    </div>
+                </div>
+
                 <div class="nav-group">
                     <div class="nav-title">AI Assistant</div>
                     <div class="nav-item" onclick="loadEditor('ai', 'knowledge', this)">
@@ -167,24 +182,10 @@
     <div class="toast" id="toast">App Updated Successfully!</div>
 
 <script>
-    // BASE64 Firebase Nøgle - Skjult for GitHubs Scanner!
     var encFb = "QUl6YVN5RDFDMnFSMkNSNUxQQTJ0cHM4YjlfY085V050MTNpRHFj";
+    var firebaseConfig = { apiKey: atob(encFb), authDomain: "norrona-app.firebaseapp.com", databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app", projectId: "norrona-app", storageBucket: "norrona-app.firebasestorage.app", messagingSenderId: "836610543277", appId: "1:836610543277:web:3e74479daf205453bd0024" };
     
-    var firebaseConfig = {
-        apiKey: atob(encFb),
-        authDomain: "norrona-app.firebaseapp.com",
-        databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "norrona-app",
-        storageBucket: "norrona-app.firebasestorage.app",
-        messagingSenderId: "836610543277",
-        appId: "1:836610543277:web:3e74479daf205453bd0024"
-    };
-    
-    try {
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    } catch(e) {
-        alert("Firebase failed to connect. Check Config.");
-    }
+    try { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } } catch(e) { alert("Firebase failed to connect. Check Config."); }
 
     var db = firebase.database();
 
@@ -197,70 +198,66 @@
 
     var appData = { handbook: {}, quizzes: {}, ai_knowledge: [] };
     var unansweredQuestions = [];
-    var pendingSuggestions = []; // For at holde styr på forslag
+    var pendingSuggestions = [];
+    var crewMessPosts = []; // NY: Holder styr på live posts
     var currentEditorType = 'handbook'; 
     var currentEditorKey = 'general';
 
     var DEFAULT_DATA = {
-        ai_knowledge: [
-            { topic: "Safety Reporting Definitions", content: "<p><strong>1. Safety Observation:</strong> Potential Hazard. <strong>2. Near Miss:</strong> Almost an accident.</p>" }
-        ],
+        ai_knowledge: [{ topic: "Safety Reporting Definitions", content: "<p><strong>1. Safety Observation:</strong> Potential Hazard. <strong>2. Near Miss:</strong> Almost an accident.</p>" }],
         handbook: {
             general: [ { title: "Your New Home at Sea", img: "https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg", video: "", content: "<p>Welcome on board.</p>" } ],
             hotel: [ { title: "Hotel Rules", img: "", video: "", content: "<p>Footwear MUST be all black.</p>" } ],
             bridge_engine: [ { title: "Bridge & Engine", img: "", video: "", content: "<p>Required certificates.</p>" } ]
         },
-        quizzes: {
-            universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ]
-        }
+        quizzes: { universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ] }
     };
 
     function fetchDatabase() {
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { 
                 appData = snapshot.val(); 
-                if (typeof appData.ai_knowledge === 'string') {
-                    appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }];
-                }
-            } else { 
-                appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); 
-            }
-            var firstItem = document.querySelectorAll('.nav-item')[1]; 
+                if (typeof appData.ai_knowledge === 'string') { appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }]; }
+            } else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+            var firstItem = document.querySelectorAll('.nav-item')[2]; // Nu er nr. 2 "General Rules" (pga. Mess blev tilføjet øverst)
             loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { 
-            alert("Firebase Error: " + error.message + "\n\n(If you see 'Permission Denied', your Firebase rules are blocking unauthenticated users. Set your rules to 'true' to test without logging in.)"); 
             appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-            var firstItem = document.querySelectorAll('.nav-item')[1]; 
+            var firstItem = document.querySelectorAll('.nav-item')[2]; 
             loadEditor('handbook', 'general', firstItem); 
         });
 
         db.ref('ai_unanswered').on('value', function(snapshot) {
             unansweredQuestions = [];
-            if (snapshot.exists()) {
-                snapshot.forEach(function(childSnapshot) {
-                    unansweredQuestions.push({ id: childSnapshot.key, q: childSnapshot.val().question });
-                });
-            }
+            if (snapshot.exists()) { snapshot.forEach(function(childSnapshot) { unansweredQuestions.push({ id: childSnapshot.key, q: childSnapshot.val().question }); }); }
             if (currentEditorType === 'ai') { updateInsightsUI(); }
         });
 
-        // Hent forslag fra databasen
         db.ref('ai_suggestions').on('value', function(snapshot) {
             pendingSuggestions = [];
+            if (snapshot.exists()) { snapshot.forEach(function(childSnapshot) { var data = childSnapshot.val(); data.id = childSnapshot.key; pendingSuggestions.push(data); }); }
+            if (currentEditorType === 'ai') { updateSuggestionsUI(); }
+        });
+
+        // Hent live indlæg fra Crew Mess
+        db.ref('crew_mess').on('value', function(snapshot) {
+            crewMessPosts = [];
             if (snapshot.exists()) {
                 snapshot.forEach(function(childSnapshot) {
                     var data = childSnapshot.val();
                     data.id = childSnapshot.key;
-                    pendingSuggestions.push(data);
+                    crewMessPosts.push(data);
                 });
             }
-            if (currentEditorType === 'ai') { updateSuggestionsUI(); }
+            if (currentEditorType === 'mess') { renderMessModeration(document.getElementById('editor-container')); }
         });
     }
 
     function saveToFirebase() {
         extractFormData(); 
-        db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed. Permission Denied? Check Firebase Rules."); });
+        if(currentEditorType !== 'mess') {
+            db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
+        }
     }
 
     function loadEditor(type, key, navElement) {
@@ -278,7 +275,7 @@
 
         var titleDisplay = "";
         if (type === 'ai') titleDisplay = "AI Knowledge Base";
-        else if (type === 'system') titleDisplay = "System Settings";
+        else if (type === 'mess') titleDisplay = "Crew Mess Moderation";
         else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' Questions' : ' Pages');
         
         document.getElementById('header-title').innerText = titleDisplay;
@@ -290,20 +287,74 @@
         if (currentEditorType === 'handbook') renderHandbookForms(container);
         else if (currentEditorType === 'quiz') renderQuizForms(container);
         else if (currentEditorType === 'ai') renderAITraining(container);
+        else if (currentEditorType === 'mess') renderMessModeration(container);
     }
 
+    // ==========================================
+    // CREW MESS MODERATION UI
+    // ==========================================
+    function renderMessModeration(container) {
+        var html = '<h2><span class="material-icons" style="color:var(--danger); margin-right:8px;">forum</span> Live Crew Feed</h2>';
+        html += '<p style="color:var(--text-muted); margin-bottom:20px;">Review and moderate the social feed. Deleting a post removes it instantly from all crew devices.</p>';
+
+        if (crewMessPosts.length === 0) {
+            html += '<div class="card" style="text-align:center; padding: 40px; color:var(--text-muted);">No posts active on the ship right now.</div>';
+            container.innerHTML = html;
+            return;
+        }
+
+        // Klon og vend om, så nyeste er øverst
+        var displayPosts = [...crewMessPosts].reverse();
+
+        displayPosts.forEach(function(p) {
+            var dateObj = new Date(p.timestamp);
+            var timeString = dateObj.toLocaleDateString('en-GB') + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+            
+            html += '<div class="mess-mod-post">';
+            html += '  <div class="mess-mod-content">';
+            html += '    <div class="mess-mod-header">';
+            html += '      <span class="mess-mod-name">' + p.name + '</span>';
+            html += '      <span class="mess-mod-badge">' + (p.type || 'text') + '</span>';
+            html += '      <span class="mess-mod-time">' + timeString + '</span>';
+            html += '    </div>';
+            html += '    <div class="mess-mod-body">' + p.message + '</div>';
+            
+            if (p.type === 'image' && p.image) {
+                html += '<img src="' + p.image + '" class="mess-mod-img">';
+            } else if (p.type === 'poll' && p.pollOptions) {
+                html += '<div style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">';
+                p.pollOptions.forEach(function(opt) {
+                    html += '&bull; ' + opt.text + ' (' + (opt.votes || 0) + ' votes)<br>';
+                });
+                html += '</div>';
+            }
+
+            html += '  </div>';
+            html += '  <button class="btn btn-outline" style="border-color:var(--danger); color:var(--danger); padding:10px 15px;" onclick="deleteMessPost(\'' + p.id + '\')"><span class="material-icons">delete</span> Remove</button>';
+            html += '</div>';
+        });
+
+        container.innerHTML = html;
+    }
+
+    function deleteMessPost(postId) {
+        if(confirm("Are you sure you want to permanently delete this post from the Crew Mess?")) {
+            db.ref('crew_mess/' + postId).remove().then(function() {
+                showToast(); // Viser "App updated" toast
+            }).catch(function(err) {
+                alert("Failed to delete post. Check Firebase rules.");
+            });
+        }
+    }
+
+
+    // ==========================================
+    // AI TRAINING & SUGGESTIONS UI
+    // ==========================================
     function renderAITraining(container) {
         if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
-        var html = '';
-        
-        html += '<div id="ai-suggestions-container"></div>';
-
-        html += '<div class="insights-box">';
-        html += '<h3><span class="material-icons">tips_and_updates</span> AI Insights: Top 10 Unanswered Questions</h3>';
-        html += '<p style="color:var(--text-dark); font-size:0.9rem; margin-bottom:15px;">This is what your crew is asking, but the AI doesn\'t know the answer to.</p>';
-        html += '<div id="ai-insights-container">Loading data...</div>';
-        html += '</div>';
-
+        var html = '<div id="ai-suggestions-container"></div>';
+        html += '<div class="insights-box"><h3><span class="material-icons">tips_and_updates</span> AI Insights: Top 10 Unanswered Questions</h3><p style="color:var(--text-dark); font-size:0.9rem; margin-bottom:15px;">This is what your crew is asking, but the AI doesn\'t know the answer to.</p><div id="ai-insights-container">Loading data...</div></div>';
         html += '<h2>AI Chapters <button class="btn btn-outline" onclick="addAITopic()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Topic</button></h2>';
         
         for(var idx=0; idx<appData.ai_knowledge.length; idx++) {
@@ -312,195 +363,71 @@
             var isOpenClass = (appData.ai_knowledge.length === 1) ? 'open' : '';
 
             html += '<div class="card ai-card ' + isOpenClass + '" data-idx="'+idx+'" id="ai-card-'+idx+'">';
-            html += '<div class="ai-card-header" onclick="toggleAICard('+idx+')">';
-            html += '  <h3 id="ai-title-display-'+idx+'"><span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + displayTitle + '</h3>';
-            html += '  <span class="material-icons expand-icon">expand_more</span>';
-            html += '</div>';
-            html += '<div class="ai-card-body">';
-            html += '  <div class="form-group">';
-            html += '    <label>Chapter / Topic Name</label>';
-            html += '    <input type="text" class="input-ai-topic" value="'+(item.topic||'')+'" placeholder="e.g. Salaries, WiFi..." oninput="updateAITitleDisplay(this.value, '+idx+')">';
-            html += '  </div>';
-            html += '  <div class="form-group">';
-            html += '    <label>Information</label>';
-            html += '    <div class="quill-container ai-quill-container">'+(item.content||'')+'</div>';
-            html += '  </div>';
-            html += '  <div style="text-align:right;"><button class="btn btn-danger" onclick="deleteAITopic('+idx+')">Delete Chapter</button></div>';
-            html += '</div>';
-            html += '</div>'; 
+            html += '<div class="ai-card-header" onclick="toggleAICard('+idx+')"><h3 id="ai-title-display-'+idx+'"><span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + displayTitle + '</h3><span class="material-icons expand-icon">expand_more</span></div>';
+            html += '<div class="ai-card-body"><div class="form-group"><label>Chapter / Topic Name</label><input type="text" class="input-ai-topic" value="'+(item.topic||'')+'" placeholder="e.g. Salaries, WiFi..." oninput="updateAITitleDisplay(this.value, '+idx+')"></div><div class="form-group"><label>Information</label><div class="quill-container ai-quill-container">'+(item.content||'')+'</div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteAITopic('+idx+')">Delete Chapter</button></div></div></div>'; 
         }
         container.innerHTML = html;
-        initQuillEditors();
-        updateInsightsUI(); 
-        updateSuggestionsUI();
+        initQuillEditors(); updateInsightsUI(); updateSuggestionsUI();
     }
 
     function updateSuggestionsUI() {
-        var box = document.getElementById('ai-suggestions-container');
-        if(!box) return;
-
-        if (pendingSuggestions.length === 0) {
-            box.innerHTML = ''; 
-            return;
-        }
-
-        var html = '<h2><span class="material-icons" style="color:var(--primary-blue); margin-right:8px;">rate_review</span> Pending Crew Suggestions</h2>';
-        html += '<p style="color:var(--text-muted); margin-bottom: 20px;">Review, edit, and approve these answers suggested by your crew members.</p>';
-
+        var box = document.getElementById('ai-suggestions-container'); if(!box) return;
+        if (pendingSuggestions.length === 0) { box.innerHTML = ''; return; }
+        var html = '<h2><span class="material-icons" style="color:var(--primary-blue); margin-right:8px;">rate_review</span> Pending Crew Suggestions</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Review, edit, and approve these answers suggested by your crew members.</p>';
         pendingSuggestions.forEach(function(sug, idx) {
-            html += '<div class="suggestion-box">';
-            html += '  <div class="suggestion-header">';
-            html += '    <div class="suggestion-q"><span class="material-icons">help_outline</span> Q: ' + sug.question + '</div>';
-            html += '    <div style="font-size: 0.8rem; color: var(--text-muted);">Suggested: ' + new Date(sug.timestamp).toLocaleDateString() + '</div>';
-            html += '  </div>';
-            html += '  <div class="form-group">';
-            html += '    <label>Suggested Answer (Edit before approving):</label>';
-            html += '    <textarea id="sug-edit-'+idx+'" class="form-textarea" style="min-height: 80px; margin-bottom: 10px;">' + sug.suggestion + '</textarea>';
-            html += '  </div>';
-            html += '  <div style="display:flex; justify-content:space-between; align-items:center;">';
-            html += '    <button class="btn btn-outline" style="border-color:var(--danger); color:var(--danger); padding:8px 15px;" onclick="rejectSuggestion(\''+sug.id+'\')"><span class="material-icons">delete</span> Reject</button>';
-            html += '    <button class="btn btn-success" style="padding:8px 15px;" onclick="approveSuggestion('+idx+', \''+sug.id+'\', \''+sug.question.replace(/'/g, "\\'")+'\')"><span class="material-icons">check_circle</span> Approve & Add to AI</button>';
-            html += '  </div>';
-            html += '</div>';
+            html += '<div class="suggestion-box"><div class="suggestion-header"><div class="suggestion-q"><span class="material-icons">help_outline</span> Q: ' + sug.question + '</div><div style="font-size: 0.8rem; color: var(--text-muted);">Suggested: ' + new Date(sug.timestamp).toLocaleDateString() + '</div></div><div class="form-group"><label>Suggested Answer (Edit before approving):</label><textarea id="sug-edit-'+idx+'" class="form-textarea" style="min-height: 80px; margin-bottom: 10px;">' + sug.suggestion + '</textarea></div><div style="display:flex; justify-content:space-between; align-items:center;"><button class="btn btn-outline" style="border-color:var(--danger); color:var(--danger); padding:8px 15px;" onclick="rejectSuggestion(\''+sug.id+'\')"><span class="material-icons">delete</span> Reject</button><button class="btn btn-success" style="padding:8px 15px;" onclick="approveSuggestion('+idx+', \''+sug.id+'\', \''+sug.question.replace(/'/g, "\\'")+'\')"><span class="material-icons">check_circle</span> Approve & Add to AI</button></div></div>';
         });
-
         box.innerHTML = html;
     }
 
     function approveSuggestion(idx, firebaseId, question) {
         var editedAnswer = document.getElementById('sug-edit-'+idx).value;
-        
         if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
-        appData.ai_knowledge.unshift({ 
-            topic: "Q: " + question, 
-            content: "<p>" + editedAnswer + "</p>" 
-        });
-
-        db.ref('appData').set(appData).then(function() {
-            db.ref('ai_suggestions/' + firebaseId).remove();
-            showToast();
-            renderCurrentEditor();
-        }).catch(function(err) {
-            alert("Failed to approve. Check Firebase Rules.");
-        });
+        appData.ai_knowledge.unshift({ topic: "Q: " + question, content: "<p>" + editedAnswer + "</p>" });
+        db.ref('appData').set(appData).then(function() { db.ref('ai_suggestions/' + firebaseId).remove(); showToast(); renderCurrentEditor(); }).catch(function(err) { alert("Failed to approve. Check Firebase Rules."); });
     }
 
-    function rejectSuggestion(firebaseId) {
-        if(confirm("Delete this suggestion permanently?")) {
-            db.ref('ai_suggestions/' + firebaseId).remove();
-        }
-    }
-
+    function rejectSuggestion(firebaseId) { if(confirm("Delete this suggestion permanently?")) { db.ref('ai_suggestions/' + firebaseId).remove(); } }
     function updateInsightsUI() {
-        var box = document.getElementById('ai-insights-container');
-        if(!box) return;
-
-        if (unansweredQuestions.length === 0) {
-            box.innerHTML = '<div style="color: var(--success); font-weight:bold;">No unanswered questions right now. The AI knows everything!</div>';
-            return;
-        }
-
-        var counts = {};
-        unansweredQuestions.forEach(function(item) {
-            var cleanedQ = item.q.toLowerCase().trim();
-            counts[cleanedQ] = (counts[cleanedQ] || 0) + 1;
-        });
-        
-        var sortedCounts = Object.keys(counts).map(function(k) { return { q: k, count: counts[k] }; });
-        sortedCounts.sort(function(a, b) { return b.count - a.count; });
-
-        var html = '';
-        for(var i=0; i<Math.min(10, sortedCounts.length); i++) {
-            html += '<div class="insight-item">';
-            html += '<div class="insight-text">"' + sortedCounts[i].q + '"</div>';
-            html += '<div class="insight-count">Asked ' + sortedCounts[i].count + 'x</div>';
-            html += '</div>';
-        }
-        
+        var box = document.getElementById('ai-insights-container'); if(!box) return;
+        if (unansweredQuestions.length === 0) { box.innerHTML = '<div style="color: var(--success); font-weight:bold;">No unanswered questions right now. The AI knows everything!</div>'; return; }
+        var counts = {}; unansweredQuestions.forEach(function(item) { var cleanedQ = item.q.toLowerCase().trim(); counts[cleanedQ] = (counts[cleanedQ] || 0) + 1; });
+        var sortedCounts = Object.keys(counts).map(function(k) { return { q: k, count: counts[k] }; }); sortedCounts.sort(function(a, b) { return b.count - a.count; });
+        var html = ''; for(var i=0; i<Math.min(10, sortedCounts.length); i++) { html += '<div class="insight-item"><div class="insight-text">"' + sortedCounts[i].q + '"</div><div class="insight-count">Asked ' + sortedCounts[i].count + 'x</div></div>'; }
         html += '<button class="btn btn-outline" style="margin-top:15px; font-size:0.8rem; padding: 6px 12px; color:var(--danger); border-color:var(--danger);" onclick="clearInsights()"><span class="material-icons" style="font-size:1rem;">delete</span> Clear List</button>';
         box.innerHTML = html;
     }
-
-    function clearInsights() {
-        if(confirm("Are you sure you want to delete all logged questions? This cannot be undone.")) {
-            db.ref('ai_unanswered').remove();
-        }
-    }
-
-    function toggleAICard(idx) {
-        var card = document.getElementById('ai-card-'+idx);
-        if(card) { card.classList.toggle('open'); }
-    }
-
-    function updateAITitleDisplay(value, idx) {
-        var display = value ? value : "New Chapter";
-        document.getElementById('ai-title-display-'+idx).innerHTML = '<span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + display;
-    }
-
-    function addAITopic() {
-        extractFormData();
-        if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
-        appData.ai_knowledge.push({ topic: "New Chapter", content: "<p>Enter secret info here...</p>" });
-        renderCurrentEditor();
-        setTimeout(function() {
-            var newIdx = appData.ai_knowledge.length - 1;
-            var newCard = document.getElementById('ai-card-'+newIdx);
-            if(newCard) newCard.classList.add('open');
-            document.querySelector('.content-area').scrollTop = document.querySelector('.content-area').scrollHeight;
-        }, 50);
-    }
-
-    function deleteAITopic(idx) {
-        if(confirm('Delete this AI chapter?')) {
-            appData.ai_knowledge.splice(idx, 1);
-            renderCurrentEditor();
-        }
-    }
+    function clearInsights() { if(confirm("Are you sure you want to delete all logged questions? This cannot be undone.")) { db.ref('ai_unanswered').remove(); } }
+    function toggleAICard(idx) { var card = document.getElementById('ai-card-'+idx); if(card) { card.classList.toggle('open'); } }
+    function updateAITitleDisplay(value, idx) { var display = value ? value : "New Chapter"; document.getElementById('ai-title-display-'+idx).innerHTML = '<span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + display; }
+    function addAITopic() { extractFormData(); if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = []; appData.ai_knowledge.push({ topic: "New Chapter", content: "<p>Enter secret info here...</p>" }); renderCurrentEditor(); setTimeout(function() { var newIdx = appData.ai_knowledge.length - 1; var newCard = document.getElementById('ai-card-'+newIdx); if(newCard) newCard.classList.add('open'); document.querySelector('.content-area').scrollTop = document.querySelector('.content-area').scrollHeight; }, 50); }
+    function deleteAITopic(idx) { if(confirm('Delete this AI chapter?')) { appData.ai_knowledge.splice(idx, 1); renderCurrentEditor(); } }
 
     function renderHandbookForms(container) {
-        if (!appData.handbook) appData.handbook = {};
-        var slides = appData.handbook[currentEditorKey] || [];
+        if (!appData.handbook) appData.handbook = {}; var slides = appData.handbook[currentEditorKey] || [];
         var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Page</button></h2>';
         for(var idx=0; idx<slides.length; idx++) {
             var slide = slides[idx];
             html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Page Content</label><div class="quill-container">'+(slide.content||'')+'</div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
         }
-        container.innerHTML = html;
-        initQuillEditors();
+        container.innerHTML = html; initQuillEditors();
     }
 
     function initQuillEditors() {
-        var toolbarOptions = [
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'header': [1, 2, 3, false] }],
-            ['link', 'clean']
-        ];
-        document.querySelectorAll('.quill-container').forEach(function(el) {
-            if (!el.classList.contains('ql-container')) {
-                new Quill(el, { theme: 'snow', modules: { toolbar: toolbarOptions } });
-            }
-        });
+        var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'header': [1, 2, 3, false] }], ['link', 'clean']];
+        document.querySelectorAll('.quill-container').forEach(function(el) { if (!el.classList.contains('ql-container')) { new Quill(el, { theme: 'snow', modules: { toolbar: toolbarOptions } }); } });
     }
 
     function addHandbookSlide() { extractFormData(); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New Page", img: "", video: "", content: "<p>Start typing here...</p>" }); renderCurrentEditor(); }
     function deleteHandbookSlide(idx) { if(confirm('Delete?')) { appData.handbook[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
 
     function renderQuizForms(container) {
-        if (!appData.quizzes) appData.quizzes = {};
-        var questions = appData.quizzes[currentEditorKey] || [];
+        if (!appData.quizzes) appData.quizzes = {}; var questions = appData.quizzes[currentEditorKey] || [];
         var html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()" style="font-size:0.8rem; padding: 8px 12px;">+ Add Question</button></h2>';
         for(var idx=0; idx<questions.length; idx++) {
-            var q = questions[idx];
-            var optHtml = '';
-            var opts = q.options || [];
-            for(var optIdx=0; optIdx<opts.length; optIdx++) {
-                optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opts[optIdx]+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')"><span class="material-icons">close</span></button></div>';
-            }
-            var selHtml = '';
-            for(var optIdx2=0; optIdx2<opts.length; optIdx2++) {
-                selHtml += '<option value="'+optIdx2+'" '+(q.ans == optIdx2 ? 'selected' : '')+'>Option '+(optIdx2 + 1)+': '+opts[optIdx2]+'</option>';
-            }
+            var q = questions[idx]; var optHtml = ''; var opts = q.options || [];
+            for(var optIdx=0; optIdx<opts.length; optIdx++) { optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opts[optIdx]+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')"><span class="material-icons">close</span></button></div>'; }
+            var selHtml = ''; for(var optIdx2=0; optIdx2<opts.length; optIdx2++) { selHtml += '<option value="'+optIdx2+'" '+(q.ans == optIdx2 ? 'selected' : '')+'>Option '+(optIdx2 + 1)+': '+opts[optIdx2]+'</option>'; }
             html += '<div class="card quiz-card" data-idx="'+idx+'"><div class="form-group"><label>Question</label><input type="text" class="input-q" value="'+(q.q||'')+'"></div><div class="form-group"><label>Options</label>'+optHtml+'<button class="btn btn-outline" style="padding: 6px 12px; margin-top:5px; font-size:0.8rem;" onclick="addQuizOption('+idx+')">+ Add Option</button></div><div class="form-group"><label>Correct Answer Index</label><select class="input-ans">'+selHtml+'</select></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion('+idx+')">Delete</button></div></div>';
         }
         container.innerHTML = html;
@@ -513,51 +440,20 @@
 
     function extractFormData() {
         if (!document.getElementById('editor-container').innerHTML) return;
-        
         if (currentEditorType === 'ai') {
-            var cards = document.querySelectorAll('.ai-card');
-            appData.ai_knowledge = [];
-            for(var i=0; i<cards.length; i++) {
-                var topic = cards[i].querySelector('.input-ai-topic').value;
-                var qlEditor = cards[i].querySelector('.ql-editor');
-                var content = qlEditor ? qlEditor.innerHTML : '';
-                appData.ai_knowledge.push({ topic: topic, content: content });
-            }
-        }
-        else if (currentEditorType === 'handbook') {
-            var cards = document.querySelectorAll('.handbook-card');
-            if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
-            for(var i=0; i<cards.length; i++) {
-                var idx = cards[i].getAttribute('data-idx');
-                appData.handbook[currentEditorKey][idx].title = cards[i].querySelector('.input-title').value;
-                appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value;
-                appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value;
-                
-                var qlEditor = cards[i].querySelector('.ql-editor');
-                if(qlEditor) { appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML; }
-            }
+            var cards = document.querySelectorAll('.ai-card'); appData.ai_knowledge = [];
+            for(var i=0; i<cards.length; i++) { var topic = cards[i].querySelector('.input-ai-topic').value; var qlEditor = cards[i].querySelector('.ql-editor'); var content = qlEditor ? qlEditor.innerHTML : ''; appData.ai_knowledge.push({ topic: topic, content: content }); }
+        } else if (currentEditorType === 'handbook') {
+            var cards = document.querySelectorAll('.handbook-card'); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
+            for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.handbook[currentEditorKey][idx].title = cards[i].querySelector('.input-title').value; appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value; appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value; var qlEditor = cards[i].querySelector('.ql-editor'); if(qlEditor) { appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML; } }
         } else if (currentEditorType === 'quiz') {
-            var cards = document.querySelectorAll('.quiz-card');
-            if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = [];
-            for(var i=0; i<cards.length; i++) {
-                var idx = cards[i].getAttribute('data-idx');
-                appData.quizzes[currentEditorKey][idx].q = cards[i].querySelector('.input-q').value;
-                appData.quizzes[currentEditorKey][idx].ans = parseInt(cards[i].querySelector('.input-ans').value);
-                var optInputs = cards[i].querySelectorAll('.input-opt');
-                appData.quizzes[currentEditorKey][idx].options = [];
-                for(var j=0; j<optInputs.length; j++) {
-                    appData.quizzes[currentEditorKey][idx].options.push(optInputs[j].value);
-                }
-            }
+            var cards = document.querySelectorAll('.quiz-card'); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = [];
+            for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.quizzes[currentEditorKey][idx].q = cards[i].querySelector('.input-q').value; appData.quizzes[currentEditorKey][idx].ans = parseInt(cards[i].querySelector('.input-ans').value); var optInputs = cards[i].querySelectorAll('.input-opt'); appData.quizzes[currentEditorKey][idx].options = []; for(var j=0; j<optInputs.length; j++) { appData.quizzes[currentEditorKey][idx].options.push(optInputs[j].value); } }
         }
     }
 
     function showToast() { var t = document.getElementById('toast'); t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 3000); }
-
-    window.onload = function() {
-        fetchDatabase();
-    };
-
+    window.onload = function() { fetchDatabase(); };
 </script>
 </body>
 </html>
