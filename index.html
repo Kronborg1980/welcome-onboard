@@ -74,28 +74,19 @@
         
         .btn-dept { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); justify-content: flex-start; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .btn-dept .material-icons { color: var(--primary-blue); font-size: 28px;}
-        
-        .btn-back { background: transparent; border: none; padding: 5px 0 15px 0; justify-content: flex-start; color: var(--primary-navy); font-size: 1rem; width: auto; margin-bottom: 0; }
-        .btn-back .material-icons { font-size: 1.2rem; }
 
-        .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 15px; border-left: 2px solid var(--border-light); margin-left: 20px; margin-bottom: 10px;}
-        .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
-        .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
-
-        /* Form Inputs for Reporting */
+        /* Form Inputs */
         .form-label { display: block; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px; font-size: 0.95rem; }
         .form-input, .form-select, .form-textarea { width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; margin-bottom: 20px; background: #fff; color: var(--text-dark); font-family: inherit;}
         .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0,74,89,0.1); }
         .form-textarea { min-height: 120px; resize: vertical; }
-        
-        .photo-upload-box { border: 2px dashed var(--border-light); border-radius: 12px; padding: 25px 20px; text-align: center; cursor: pointer; background: #fafbfc; margin-bottom: 20px; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
-        .photo-upload-box:active { background: #f0f4f8; }
-        
-        .photo-preview-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; }
-        .photo-thumbnail-wrapper { position: relative; width: 80px; height: 80px; border-radius: 8px; border: 1px solid var(--border-light); overflow: hidden; background: #000; }
-        .photo-thumbnail { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
-        .photo-remove-btn { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 10;}
-        .photo-remove-btn .material-icons { font-size: 16px; }
+
+        /* CREW MESS (SOCIAL FEED) STYLES */
+        .mess-post { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .mess-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--bg-light); padding-bottom: 10px; }
+        .mess-name { font-weight: bold; color: var(--primary-navy); font-size: 1.05rem; }
+        .mess-time { font-size: 0.8rem; color: var(--text-muted); }
+        .mess-body { color: var(--text-dark); line-height: 1.5; font-size: 1rem; }
 
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
         .progress-step { flex: 1; height: 6px; background: var(--border-light); border-radius: 3px; transition: 0.3s;}
@@ -112,33 +103,33 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 250px; z-index: 1; margin-bottom: 20px; }
-        #map { width: 100%; height: 100%; background: #001a24; border-radius: 16px; border: 1px solid var(--border-light); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 1;}
-        
-        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
-        .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
-        .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 800; width: 100%; text-align: center; }
-        .grid-item .value { font-size: 1.6rem; font-weight: 800; color: var(--primary-navy); display: flex; align-items: baseline; justify-content: center; width: 100%; text-align: center;}
+        /* VOYAGE STYLES */
+        #view-voyage { background: var(--primary-navy); min-height: 100vh; padding: 0; }
+        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
+        #map { width: 100%; height: 100%; background: #001e29; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8); z-index: 1; }
+        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-light)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
+        .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--bg-light); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); min-height: 60vh; }
+        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 800; width: 100%; text-align: center; }
+        .grid-item .value { font-size: 1.5rem; font-weight: 800; color: var(--primary-navy); display: flex; align-items: baseline; justify-content: center; width: 100%; text-align: center;}
         .grid-item .value .unit { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; text-transform: lowercase; }
         .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--border-light); margin: 0 8px; }
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center;}
-        .wind-dir-badge { background: rgba(251, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; border: 1px solid rgba(251, 185, 0, 0.3); }
-
-        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
+        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .weather-left { display: flex; align-items: center; gap: 15px; }
-        .weather-left img { width: 50px; height: 50px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
         .weather-temp { font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); line-height: 1; }
         .weather-desc { font-size: 0.85rem; color: var(--primary-blue); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
         .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
-        
-        #ship-status-bar { background: var(--primary-navy); color: #fff; text-align: center; padding: 12px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        #ship-status-bar { background: rgba(0, 0, 0, 0.4); color: #fff; text-align: center; padding: 10px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 50px; margin: 0 auto 10px auto; width: max-content; border: 1px solid rgba(252, 185, 0, 0.25); box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+        .status-dot { display: inline-block; width: 8px; height: 8px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulseDot 2s infinite; margin-right: 8px; vertical-align: middle;}
+        @keyframes pulseDot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
         /* AI CHAT WIDGET STYLES */
         .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 20px rgba(0,40,54,0.4); cursor: pointer; z-index: 9999; transition: 0.3s; border: 2px solid var(--accent-gold); }
         .chat-fab:active { transform: scale(0.95); }
         .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: var(--border-light); color: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .chat-minimized-tab { position: fixed; bottom: 35px; right: 0; width: 40px; height: 40px; background: var(--primary-navy); border-radius: 20px 0 0 20px; display: none; align-items: center; justify-content: center; color: var(--accent-gold); cursor: pointer; z-index: 9999; box-shadow: -2px 2px 10px rgba(0,0,0,0.2); border: 1px solid var(--accent-gold); border-right: none; }
-        
         .chat-panel { position: fixed; bottom: 100px; right: 25px; width: 350px; max-width: calc(100vw - 50px); height: 500px; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 9998; display: none; flex-direction: column; border: 1px solid var(--border-light); overflow: hidden; animation: slideUp 0.3s ease; }
         .chat-panel.active { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -147,9 +138,13 @@
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
         .msg.ai { background: #fff; border: 1px solid var(--border-light); color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 2px; }
         .msg.user { background: var(--primary-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-input-area { display: flex; border-top: 1px solid var(--border-light); background: #fff; padding: 10px; }
+        
+        .chat-input-area { display: flex; border-top: 1px solid var(--border-light); background: #fff; padding: 10px; align-items: center; gap: 5px;}
         .chat-input-area input { flex: 1; border: none; padding: 10px; font-size: 1rem; outline: none; background: transparent; }
-        .chat-input-area button { background: var(--accent-gold); color: var(--primary-navy); border: none; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .chat-input-area .btn-icon { background: transparent; color: var(--primary-navy); border: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: 0.2s;}
+        .chat-input-area .btn-icon.active-mic { color: var(--danger); animation: pulseDot 1s infinite; background: rgba(229, 62, 62, 0.1); }
+        .chat-input-area .btn-send { background: var(--accent-gold); color: var(--primary-navy); border: none; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        
         .typing-indicator { font-size: 0.8rem; color: var(--text-muted); align-self: flex-start; margin-left: 5px; display: none; }
     </style>
 </head>
@@ -168,6 +163,8 @@
 
     <div id="nav-overlay">
         <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Dashboard</a>
+        <!-- NYT MENUPUNKT: CREW MESS -->
+        <a href="#" class="nav-link" onclick="openCrewMess()"><span class="material-icons">forum</span> Crew Mess</a>
         <a href="#" class="nav-link" onclick="openVoyage()"><span class="material-icons">explore</span> Voyage & Ship Status</a>
         <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook</a>
         <a href="#" class="nav-link" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Clearance Assessment</a>
@@ -197,10 +194,33 @@
                     <h2 style="border-bottom: none; margin-bottom: 10px;">Welcome Aboard</h2>
                     <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
                     <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
-                    <button class="btn btn-outline" onclick="openQuestionnaire()">Take Clearance Assessment</button>
+                    <!-- KNAP TIL CREW MESS -->
+                    <button class="btn btn-outline" style="border-color: var(--primary-blue); color: var(--primary-blue);" onclick="openCrewMess()"><span class="material-icons">forum</span> Check Crew Mess</button>
                     <button class="btn btn-danger-outline" style="margin-top: 10px;" onclick="openReporting()"><span class="material-icons">report_problem</span> Report Safety Issue</button>
                 </div>
             </div>
+        </div>
+
+        <!-- ==========================================
+             NYT VIEW: CREW MESS
+             ========================================== -->
+        <div id="view-crew-mess" class="view">
+            <h2 style="display:flex; align-items:center; gap:10px;"><span class="material-icons" style="color:var(--primary-blue); font-size:2rem;">forum</span> Crew Mess</h2>
+            <p>Internal noticeboard. Ask for shift swaps, announce events, or just say hi!</p>
+
+            <div class="card" style="background: rgba(0, 74, 89, 0.05); border: 1px solid rgba(0, 74, 89, 0.2);">
+                <input type="text" id="mess-name" class="form-input" placeholder="Your Name & Dept (e.g. John - Deck)" style="margin-bottom: 10px;">
+                <textarea id="mess-text" class="form-textarea" placeholder="What's happening?..." style="min-height: 80px; margin-bottom: 10px;"></textarea>
+                <button class="btn btn-primary" style="margin-bottom:0;" onclick="submitCrewPost()">Post Message</button>
+            </div>
+
+            <div id="crew-mess-feed">
+                <!-- Posts will be injected here -->
+            </div>
+            
+            <button class="btn btn-outline" style="margin-top: 30px; width: 100%;" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
         </div>
 
         <div id="view-reporting" class="view">
@@ -224,16 +244,6 @@
 
                 <label class="form-label">Did you take any immediate action?</label>
                 <input type="text" class="form-input" id="report-action" placeholder="e.g. Cleaned up spill, warned others...">
-
-                <label class="form-label">Attach Photos (Optional)</label>
-                
-                <div id="photo-preview-grid" class="photo-preview-grid"></div>
-
-                <div class="photo-upload-box" onclick="document.getElementById('report-photo').click()">
-                    <span class="material-icons" style="font-size: 32px; color: var(--primary-blue); margin-bottom: 5px;">add_a_photo</span>
-                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-navy);">Tap to Add Photo</span>
-                </div>
-                <input type="file" id="report-photo" accept="image/*" capture="environment" style="display:none;" onchange="previewReportPhoto(event)">
             </div>
 
             <button class="btn btn-primary" onclick="submitSafetyReport()" style="background: var(--danger); color: #fff;">
@@ -255,20 +265,21 @@
             </div>
         </div>
 
-        <div id="view-voyage" class="view" style="padding: 0;">
+        <div id="view-voyage" class="view">
             <div style="padding: 12px 12px 0 12px;">
-                <div id="ship-status-bar">Locating Ship...</div>
+                <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
                 
                 <div class="voyage-map-container">
                     <div id="map"></div>
+                    <div class="map-gradient"></div>
                 </div>
             </div>
             
-            <div style="padding: 0 20px 20px 20px;">
+            <div class="voyage-sheet">
                 <div class="weather-strip">
                     <div class="weather-left">
                         <img id="weather-icon" src="" alt="" style="display:none;">
-                        <div>
+                        <div class="weather-details">
                             <div class="weather-temp" id="weather-temp">--°C</div>
                             <div class="weather-desc" id="weather-description">Loading...</div>
                         </div>
@@ -319,7 +330,7 @@
                     </div>
                 </div>
                 
-                <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')">
+                <button class="btn btn-outline" style="margin-top: 30px; width: 100%; border-radius: 12px;" onclick="goToView('view-home')">
                     <span class="material-icons">arrow_back</span> Return to Dashboard
                 </button>
             </div>
@@ -403,6 +414,7 @@
     </main>
 </div>
 
+<!-- Chat Widget -->
 <div class="chat-fab" id="chat-fab" onclick="toggleChat()">
     <div class="chat-minimize-btn" onclick="minimizeChatTab(event)">
         <span class="material-icons" style="font-size: 14px;">close</span>
@@ -424,8 +436,10 @@
     </div>
     <div class="typing-indicator" id="chat-typing">AI is thinking...</div>
     <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Ask about rules, uniforms..." onkeypress="handleChatEnter(event)">
-        <button onclick="sendChatMessage()"><span class="material-icons">send</span></button>
+        <!-- NYT: MIKROFON KNAP TIL WALKIE-TALKIE -->
+        <button class="btn-icon" id="mic-btn" onclick="toggleVoiceRecording()" title="Hold to speak"><span class="material-icons">mic</span></button>
+        <input type="text" id="chat-input" placeholder="Ask or speak..." onkeypress="handleChatEnter(event)">
+        <button class="btn-send" onclick="sendChatMessage()"><span class="material-icons">send</span></button>
     </div>
 </div>
 
@@ -444,7 +458,6 @@
     };
 
     var DYNAMIC_GEMINI_KEY = ""; 
-    
     var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [] };
     var firebaseActive = false;
 
@@ -461,23 +474,16 @@
         });
 
         db.ref('systemSettings/geminiKey').once('value').then(function(snapshot) {
-            if (snapshot.exists()) { 
-                DYNAMIC_GEMINI_KEY = snapshot.val(); 
-            }
+            if (snapshot.exists()) { DYNAMIC_GEMINI_KEY = snapshot.val(); }
         });
-
-    } catch(e) {
-        goToView('view-home'); 
-    }
+    } catch(e) { goToView('view-home'); }
 
     function toggleMenu() { 
         var nav = document.getElementById('nav-overlay');
         nav.classList.toggle('active'); 
         document.getElementById('menu-icon').innerText = nav.classList.contains('active') ? 'close' : 'menu'; 
     }
-    
     function toggleSubMenu(id) { document.getElementById(id).classList.toggle('active'); }
-    
     function goToView(viewId) {
         var views = document.querySelectorAll('.view');
         for(var i=0; i<views.length; i++) { views[i].classList.remove('active'); }
@@ -487,251 +493,184 @@
     }
 
     // ==========================================
+    // CREW MESS LOGIC (SOCIAL FEED)
+    // ==========================================
+    function openCrewMess() {
+        goToView('view-crew-mess');
+        if (!firebaseActive) {
+            document.getElementById('crew-mess-feed').innerHTML = '<p>Offline mode. Cannot load messages.</p>';
+            return;
+        }
+
+        db.ref('crew_mess').on('value', function(snapshot) {
+            var feed = document.getElementById('crew-mess-feed');
+            feed.innerHTML = '';
+            var posts = [];
+            
+            if (snapshot.exists()) {
+                snapshot.forEach(function(child) {
+                    posts.push(child.val());
+                });
+            }
+
+            if (posts.length === 0) {
+                feed.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No messages yet. Be the first to post!</p>';
+                return;
+            }
+
+            posts.reverse(); // Vis nyeste indlæg øverst
+            
+            posts.forEach(function(p) {
+                var dateObj = new Date(p.timestamp);
+                var timeString = dateObj.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+                
+                var postHtml = '<div class="mess-post">';
+                postHtml += '<div class="mess-header">';
+                postHtml += '<div class="mess-name">' + (p.name || 'Anonymous') + '</div>';
+                postHtml += '<div class="mess-time">' + timeString + '</div>';
+                postHtml += '</div>';
+                postHtml += '<div class="mess-body">' + p.message + '</div>';
+                postHtml += '</div>';
+                
+                feed.innerHTML += postHtml;
+            });
+        });
+    }
+
+    function submitCrewPost() {
+        if(!firebaseActive) { alert("Cannot connect to server."); return; }
+        
+        var nameInput = document.getElementById('mess-name');
+        var msgInput = document.getElementById('mess-text');
+        
+        var name = nameInput.value.trim();
+        var msg = msgInput.value.trim();
+
+        if (msg === "") {
+            alert("Please write a message first.");
+            return;
+        }
+
+        var postData = {
+            name: name !== "" ? name : "Crew Member",
+            message: msg,
+            timestamp: new Date().toISOString()
+        };
+
+        db.ref('crew_mess').push(postData).then(function() {
+            msgInput.value = ''; // Ryd kun beskedfeltet, gem navnet til næste gang
+        }).catch(function(error) {
+            alert("Security Error: Database is locked. Please check your Firebase Rules for 'crew_mess'.");
+        });
+    }
+
+
+    // ==========================================
     // MULTI-PHOTO SAFETY REPORTING LOGIC
     // ==========================================
-    var capturedPhotos = []; 
-
     function openReporting() {
         document.getElementById('report-type').selectedIndex = 0;
         document.getElementById('report-location').value = "";
         document.getElementById('report-desc').value = "";
         document.getElementById('report-action').value = "";
-        capturedPhotos = [];
-        renderPhotoPreviews();
         goToView('view-reporting');
-    }
-
-    function previewReportPhoto(event) {
-        var file = event.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = new Image();
-                img.onload = function() {
-                    var canvas = document.createElement('canvas');
-                    var MAX_WIDTH = 800; 
-                    var scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-                    var ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    var base64 = canvas.toDataURL('image/jpeg', 0.7); 
-                    capturedPhotos.push(base64);
-                    renderPhotoPreviews();
-                }
-                img.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-            event.target.value = ''; 
-        }
-    }
-
-    function renderPhotoPreviews() {
-        var container = document.getElementById('photo-preview-grid');
-        container.innerHTML = ""; 
-        
-        capturedPhotos.forEach(function(photoBase64, index) {
-            var wrapper = document.createElement('div');
-            wrapper.className = "photo-thumbnail-wrapper";
-            
-            var imgEl = document.createElement('img');
-            imgEl.className = "photo-thumbnail";
-            imgEl.src = photoBase64;
-            
-            var deleteBtn = document.createElement('div');
-            deleteBtn.className = "photo-remove-btn";
-            deleteBtn.innerHTML = "<span class='material-icons'>close</span>";
-            
-            deleteBtn.onclick = function() {
-                capturedPhotos.splice(index, 1);
-                renderPhotoPreviews();
-            };
-            
-            wrapper.appendChild(imgEl);
-            wrapper.appendChild(deleteBtn);
-            container.appendChild(wrapper);
-        });
     }
 
     function submitSafetyReport() {
         if(!firebaseActive) { alert("Cannot connect to server."); return; }
-        
         var type = document.getElementById('report-type').value;
         var loc = document.getElementById('report-location').value.trim();
         var desc = document.getElementById('report-desc').value.trim();
         var action = document.getElementById('report-action').value.trim();
+        if (loc === "" || desc === "") { alert("Please fill in Location and Description."); return; }
 
-        if (loc === "" || desc === "") {
-            alert("Please fill in the Location and Description before sending.");
-            return;
-        }
-
-        var reportData = {
-            timestamp: new Date().toISOString(),
-            type: type,
-            location: loc,
-            description: desc,
-            immediateAction: action,
-            photos: capturedPhotos 
-        };
-
+        var reportData = { timestamp: new Date().toISOString(), type: type, location: loc, description: desc, immediateAction: action };
         document.getElementById("loading-msg").innerText = "Transmitting to Bridge...";
         document.getElementById("loading-sub").innerText = "Securely sending report to Captain.";
         goToView('view-sending');
 
-        db.ref('reports').push(reportData).then(function() {
-            setTimeout(function() {
-                goToView('view-report-success');
-            }, 1500); 
-        }).catch(function(error) {
-            console.error("Firebase write blocked:", error);
-            alert("Security Error: Database is locked. Please check your Firebase Security Rules.");
-            goToView('view-reporting');
-        });
+        db.ref('reports').push(reportData).then(function() { setTimeout(function() { goToView('view-report-success'); }, 1500); 
+        }).catch(function(error) { alert("Database is locked. Check Rules."); goToView('view-reporting'); });
     }
 
     // ==========================================
     // HANDBOOK RENDERER
     // ==========================================
-    var handbookFlow = [];
-    var currentHbIdx = 0;
-
+    var handbookFlow = []; var currentHbIdx = 0;
     function openHandbook(dept) {
-        if(!firebaseActive || !LIVE_DATA.handbook) { alert("Error: Could not connect to Database."); return; }
+        if(!firebaseActive || !LIVE_DATA.handbook) return;
         handbookFlow = [];
         if (LIVE_DATA.handbook.general) handbookFlow = handbookFlow.concat(LIVE_DATA.handbook.general);
         if (LIVE_DATA.handbook[dept]) handbookFlow = handbookFlow.concat(LIVE_DATA.handbook[dept]);
-        if(handbookFlow.length === 0) { alert("No handbook data found."); return; }
-        
-        currentHbIdx = 0;
-        renderHandbookPage();
-        goToView('view-handbook-reader');
+        if(handbookFlow.length === 0) return;
+        currentHbIdx = 0; renderHandbookPage(); goToView('view-handbook-reader');
     }
-
     function renderHandbookPage() {
-        var slide = handbookFlow[currentHbIdx];
-        
-        var progressHtml = '';
-        for(var i=0; i<handbookFlow.length; i++) {
-            progressHtml += '<div class="progress-step ' + (i === currentHbIdx ? 'active' : (i < currentHbIdx ? 'completed' : '')) + '"></div>';
-        }
+        var slide = handbookFlow[currentHbIdx]; var progressHtml = '';
+        for(var i=0; i<handbookFlow.length; i++) { progressHtml += '<div class="progress-step ' + (i === currentHbIdx ? 'active' : (i < currentHbIdx ? 'completed' : '')) + '"></div>'; }
         document.getElementById('handbook-progress').innerHTML = progressHtml;
-        
         var html = '';
         if (slide.img) html += '<img src="'+slide.img+'" class="hero-img">';
         html += '<div style="padding: 24px;">';
         if (slide.title) html += '<h2>'+slide.title+'</h2>';
-        if (slide.video && slide.video.trim() !== '') {
-            html += '<div class="video-container"><iframe src="'+slide.video+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
-        }
-        if (slide.content) html += slide.content;
-        html += '</div>';
-
+        if (slide.video && slide.video.trim() !== '') { html += '<div class="video-container"><iframe src="'+slide.video+'" frameborder="0" allowfullscreen></iframe></div>'; }
+        if (slide.content) html += slide.content; html += '</div>';
         document.getElementById('handbook-content').innerHTML = html;
         document.getElementById('btn-hb-back').style.display = currentHbIdx === 0 ? 'none' : 'block';
-        
         var nextBtn = document.getElementById('btn-hb-next');
-        if (currentHbIdx === handbookFlow.length - 1) {
-            nextBtn.innerText = 'Finish Reading';
-            nextBtn.onclick = function() { goToView('view-handbook-select'); };
-        } else {
-            nextBtn.innerText = 'Next Page';
-            nextBtn.onclick = nextHandbook;
-        }
+        if (currentHbIdx === handbookFlow.length - 1) { nextBtn.innerText = 'Finish Reading'; nextBtn.onclick = function() { goToView('view-handbook-select'); }; } else { nextBtn.innerText = 'Next Page'; nextBtn.onclick = nextHandbook; }
         window.scrollTo(0,0);
     }
-
     function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
     // ==========================================
     // QUIZ LOGIC
     // ==========================================
-    var activeQuiz = [];
-    var currentQuizIdx = 0;
-    var selectedQuizAns = null;
-    var selectedDeptName = "";
-
+    var activeQuiz = []; var currentQuizIdx = 0; var selectedQuizAns = null; var selectedDeptName = "";
     function openQuestionnaire() {
-        if(!firebaseActive) { alert("Error: Could not connect to Database."); return; }
+        if(!firebaseActive) return;
         if (localStorage.getItem('norrona_quiz_completed')) {
-            alert("You have already passed the clearance assessment! Loading your digital boarding pass...");
-            document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed');
-            goToView('view-success');
-        } else {
-            goToView('view-q-select');
-        }
+            alert("Assessment already completed! Loading pass...");
+            document.getElementById('pass-dept').innerText = localStorage.getItem('norrona_quiz_completed'); goToView('view-success');
+        } else { goToView('view-q-select'); }
     }
-
     function startQuiz(dept) {
-        selectedDeptName = dept;
-        activeQuiz = [];
+        selectedDeptName = dept; activeQuiz = [];
         if (LIVE_DATA.quizzes.universal) activeQuiz = activeQuiz.concat(LIVE_DATA.quizzes.universal);
         if (LIVE_DATA.quizzes[dept]) activeQuiz = activeQuiz.concat(LIVE_DATA.quizzes[dept]);
-        if(activeQuiz.length === 0) { alert("No quiz questions loaded."); return; }
-
+        if(activeQuiz.length === 0) return;
         activeQuiz.sort(function() { return Math.random() - 0.5; });
         document.getElementById('quiz-title').innerText = dept.replace('_', ' ') + ' Assessment';
-        document.getElementById('quiz-total').innerText = activeQuiz.length;
-        currentQuizIdx = 0;
-        
-        renderQuizQuestion();
-        goToView('view-quiz-active');
+        document.getElementById('quiz-total').innerText = activeQuiz.length; currentQuizIdx = 0; renderQuizQuestion(); goToView('view-quiz-active');
     }
-
     function renderQuizQuestion() {
         var q = activeQuiz[currentQuizIdx];
-        document.getElementById('quiz-curr').innerText = currentQuizIdx + 1;
-        document.getElementById('quiz-q').innerText = q.q;
-        
-        var optsHtml = '';
-        var opts = q.options || [];
-        for(var i=0; i<opts.length; i++) {
-            optsHtml += '<button class="quiz-option" onclick="selectQuizOption(this, '+i+')">'+opts[i]+'</button>';
-        }
-        document.getElementById('quiz-options').innerHTML = optsHtml;
-        
-        document.getElementById('quiz-feedback').style.display = 'none';
-        selectedQuizAns = null;
-        document.getElementById('btn-quiz-submit').style.display = 'flex';
+        document.getElementById('quiz-curr').innerText = currentQuizIdx + 1; document.getElementById('quiz-q').innerText = q.q;
+        var optsHtml = ''; var opts = q.options || [];
+        for(var i=0; i<opts.length; i++) { optsHtml += '<button class="quiz-option" onclick="selectQuizOption(this, '+i+')">'+opts[i]+'</button>'; }
+        document.getElementById('quiz-options').innerHTML = optsHtml; document.getElementById('quiz-feedback').style.display = 'none';
+        selectedQuizAns = null; document.getElementById('btn-quiz-submit').style.display = 'flex';
     }
-
     function selectQuizOption(btn, idx) {
         var btns = document.querySelectorAll('.quiz-option');
         for(var i=0; i<btns.length; i++) { btns[i].classList.remove('selected'); }
-        btn.classList.add('selected');
-        selectedQuizAns = idx;
-        document.getElementById('quiz-feedback').style.display = 'none';
+        btn.classList.add('selected'); selectedQuizAns = idx; document.getElementById('quiz-feedback').style.display = 'none';
     }
-
     function submitQuizAnswer() {
         var feedback = document.getElementById('quiz-feedback');
-        if (selectedQuizAns === null) { feedback.innerText = "Please select an answer."; feedback.className = "quiz-feedback feedback-error"; return; }
-
+        if (selectedQuizAns === null) { feedback.innerText = "Select an answer."; feedback.className = "quiz-feedback feedback-error"; return; }
         var q = activeQuiz[currentQuizIdx];
         if (selectedQuizAns == q.ans) {
-            feedback.innerText = "Correct! ✅"; feedback.className = "quiz-feedback feedback-success";
-            document.getElementById('btn-quiz-submit').style.display = 'none';
+            feedback.innerText = "Correct! ✅"; feedback.className = "quiz-feedback feedback-success"; document.getElementById('btn-quiz-submit').style.display = 'none';
             setTimeout(function() {
                 currentQuizIdx++;
                 if (currentQuizIdx >= activeQuiz.length) {
-                    document.getElementById("loading-msg").innerText = "Processing...";
-                    document.getElementById("loading-sub").innerText = "Transmitting your results to the Department Leader.";
-                    goToView('view-sending');
-                    setTimeout(function() {
-                        localStorage.setItem('norrona_quiz_completed', selectedDeptName.replace('_', ' ')); 
-                        document.getElementById('pass-dept').innerText = selectedDeptName.replace('_', ' ');
-                        goToView('view-success');
-                    }, 2500);
-                } else {
-                    renderQuizQuestion();
-                }
+                    document.getElementById("loading-msg").innerText = "Processing..."; document.getElementById("loading-sub").innerText = "Transmitting results..."; goToView('view-sending');
+                    setTimeout(function() { localStorage.setItem('norrona_quiz_completed', selectedDeptName.replace('_', ' ')); document.getElementById('pass-dept').innerText = selectedDeptName.replace('_', ' '); goToView('view-success'); }, 2500);
+                } else { renderQuizQuestion(); }
             }, 1000);
-        } else {
-            feedback.innerText = "Incorrect. Please check the Ship Handbook and try again!";
-            feedback.className = "quiz-feedback feedback-error";
-        }
+        } else { feedback.innerText = "Incorrect. Check Handbook and try again!"; feedback.className = "quiz-feedback feedback-error"; }
     }
 
     // ==========================================
@@ -752,121 +691,159 @@
         }, 350); 
     }
 
+    const destinationMap = { 
+        torshavn: { name: "Tórshavn", lat: 62.0080, lon: -6.7705 }, 
+        hirtshals: { name: "Hirtshals", lat: 57.5915, lon: 9.9620 }, 
+        seydisfjord: { name: "Seyðisfjörður", lat: 65.2595, lon: -14.0090 } 
+    };
+
     function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
-    function haversineDistance(e,t,o,a){var n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-    function formatETA(e) { if (!e) return null; try { var t = new Date(e); if (isNaN(t.getTime())) return null; var o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }); var a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a }; } catch (err) { return null; } }
-    function getWindDirection(degrees) { var directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']; return directions[Math.round(degrees / 45) % 8]; }
+    function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
+    function formatETA(e) { if (!e) return null; try { const t = new Date(e); if (isNaN(t.getTime())) return null; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }); const a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a }; } catch (err) { return null; } }
+    function getWindDirection(degrees) { const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']; return directions[Math.round(degrees / 45) % 8]; }
+    function getWeatherDetails(wCode) { const codeMap = { 0:{desc:'Clear',icon:'01d'}, 1:{desc:'Mainly clear',icon:'02d'}, 2:{desc:'Partly cloudy',icon:'03d'}, 3:{desc:'Overcast',icon:'04d'}, 45:{desc:'Fog',icon:'50d'}, 48:{desc:'Rime fog',icon:'50d'}, 51:{desc:'Light drizzle',icon:'09d'}, 53:{desc:'Drizzle',icon:'09d'}, 55:{desc:'Dense drizzle',icon:'09d'}, 61:{desc:'Slight rain',icon:'10d'}, 63:{desc:'Rain',icon:'10d'}, 65:{desc:'Heavy rain',icon:'10d'}, 71:{desc:'Light snow',icon:'13d'}, 73:{desc:'Snow',icon:'13d'}, 75:{desc:'Heavy snow',icon:'13d'}, 80:{desc:'Light showers',icon:'09d'}, 81:{desc:'Showers',icon:'09d'}, 82:{desc:'Violent showers',icon:'09d'}, 95:{desc:'Thunderstorm',icon:'11d'} }; return codeMap[wCode] || { desc: 'Unknown', icon: '01d' }; }
     
     function updateClock() {
-        var el = document.getElementById("onboard-time");
+        const el = document.getElementById("onboard-time");
         if(el) el.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(updateClock, 1000); updateClock();
 
-    var destinationMap = { torshavn: { name: "Tórshavn", lat: 62.0080, lon: -6.7705 }, hirtshals: { name: "Hirtshals", lat: 57.5915, lon: 9.9620 }, seydisfjord: { name: "Seyðisfjörður", lat: 65.2595, lon: -14.0090 } };
+    const pinIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+    });
+
+    const createShipIcon = (course) => {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>`;
+        return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px;">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
+    };
+
+    async function fetchMarineData(lat, lon) {
+        try {
+            const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height&hourly=wave_height&timeformat=unixtime`;
+            const response = await fetch(url);
+            if (!response.ok) return; 
+            const data = await response.json();
+            
+            let waveHeight = data.current?.wave_height;
+            if ((waveHeight === null || waveHeight === undefined) && data.hourly?.wave_height) {
+                const now = Math.floor(Date.now() / 1000);
+                let closestIndex = 0; let minDiff = Infinity;
+                for (let i = 0; i < data.hourly.time.length; i++) {
+                    const diff = Math.abs(data.hourly.time[i] - now);
+                    if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+                }
+                waveHeight = data.hourly.wave_height[closestIndex];
+            }
+            const elWave = document.getElementById('wave-height');
+            if(elWave) elWave.innerText = (waveHeight !== null && waveHeight !== undefined) ? Number(waveHeight).toFixed(1) : "--";
+        } catch(e) { console.log("Marine data error", e); }
+    }
+
+    async function fetchShipWeather(lat, lon) {
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms`;
+            const response = await fetch(url); 
+            if (!response.ok) return; 
+            const data = await response.json();
+
+            const windMs = data.current.wind_speed_10m;
+            const windDir = data.current.wind_direction_10m;
+            if(document.getElementById('wind-ms') && windMs !== null) {
+                document.getElementById('wind-ms').innerText = Math.round(windMs);
+                document.getElementById('wind-knots').innerText = Math.round(windMs * 1.94384);
+                document.getElementById('wind-dir-text').innerText = getWindDirection(windDir);
+            }
+        } catch(e) { console.log("Ship weather error", e); }
+    }
+
+    async function fetchDestWeather(lat, lon) {
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto`;
+            const response = await fetch(url); 
+            if (!response.ok) return;
+            const data = await response.json();
+            
+            const temp = Math.round(data.current.temperature_2m);
+            const wCode = data.current.weathercode;
+            const { desc, icon } = getWeatherDetails(wCode);
+            
+            document.getElementById("weather-temp").textContent = `${temp}°C`;
+            document.getElementById("weather-description").textContent = desc;
+            document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+            document.getElementById("weather-icon").style.display = "block";
+        } catch (e) { console.log("Dest weather error", e); }
+    }
     
     async function updateShipData() {
         try {
-            var response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
-            var data = await response.json();
-            var norrona = null;
-            
-            for(var i=0; i<data.length; i++) {
-                if(data[i].vesselName && (data[i].vesselName.toUpperCase() === 'NORRONA' || data[i].vesselName.toUpperCase() === 'NORRÖNA')) { 
-                    norrona = data[i]; break; 
-                }
-            }
+            const response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
+            const data = await response.json();
+            const norrona = data.find(v => v.vesselName?.toUpperCase() === 'NORRONA' || v.vesselName?.toUpperCase() === 'NORRÖNA');
             if (!norrona) return;
 
-            var speedKnots = norrona.position && norrona.position.speed ? norrona.position.speed : 0;
-            var speedKmh = speedKnots * 1.852;
-            var course = norrona.position && norrona.position.course ? Math.round(norrona.position.course) : 0;
+            const speedKnots = norrona.position?.speed || 0;
+            const course = Math.round(norrona.position?.course || 0);
             
-            var destString = norrona.destinationFromAIS ? norrona.destinationFromAIS.split(",")[0].trim() : "torshavn";
-            var currentDestKey = normalizeDestinationName(destString);
-            var currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
+            const destString = norrona.destinationFromAIS ? norrona.destinationFromAIS.split(",")[0].trim() : "torshavn";
+            const currentDestKey = normalizeDestinationName(destString);
+            const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
             
-            var dist = 0;
-            if(norrona.position && norrona.position.latitude) {
-                dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
-            }
-            var isInPort = speedKnots < 1.0 && dist < 2.0;
+            const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
+            const isInPort = speedKnots < 1.0 && dist < 2.0;
 
-            if(document.getElementById("speed-knots")) document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
-            if(document.getElementById("speed-kmh")) document.getElementById("speed-kmh").textContent = speedKmh.toFixed(1); 
-            if(document.getElementById("course-voyage")) document.getElementById("course-voyage").textContent = "Course: " + course + "°";
+            document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
+            document.getElementById("speed-kmh").textContent = (speedKnots * 1.852).toFixed(1); 
+            document.getElementById("course-voyage").textContent = "Course: " + course + "°";
 
-            var topStatusBar = document.getElementById("ship-status-bar");
+            const topStatusBar = document.getElementById("ship-status-bar");
+            const arrivalTime = formatETA(norrona.etaFromAIS);
+            const departureTimeRaw = norrona.scheduledDeparture || norrona.etd;
+            const departureTime = formatETA(departureTimeRaw);
 
             if (isInPort) {
-                if(document.getElementById("distance-label-main")) document.getElementById("distance-label-main").textContent = "Status";
-                if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
-                if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name;
-                if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Current Location";
-                if(document.getElementById("destination-voyage")) document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = "Arrived";
-                if(topStatusBar) topStatusBar.innerHTML = "<span style='color:var(--accent-gold);'>●</span> IN " + currentDestInfo.name.toUpperCase() + " • DOCKED";
+                document.getElementById("distance").textContent = "Docked"; 
+                document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name;
+                document.getElementById("destination-label").textContent = "Current Location";
+                document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                if (departureTime) { document.getElementById("eta-voyage").textContent = "Departs: " + departureTime.day + " " + departureTime.time; }
+                else { document.getElementById("eta-voyage").textContent = "Arrived"; }
+                
+                if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot' style='background-color: var(--success); box-shadow: 0 0 8px var(--success);'></span> IN " + currentDestInfo.name.toUpperCase() + " &bull; DOCKED";
             } else {
-                var arrivalTime = formatETA(norrona.etaFromAIS);
-                if(document.getElementById("distance-label-main")) document.getElementById("distance-label-main").textContent = "Distance Left";
-                if(document.getElementById("distance")) document.getElementById("distance").textContent = Math.round(dist);
-                if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "km left";
-                if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Next Destination";
-                if(document.getElementById("destination-voyage")) document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = arrivalTime ? "ETA: " + arrivalTime.day + " " + arrivalTime.time : '--';
-                if(topStatusBar) topStatusBar.innerHTML = "<span style='color:var(--success);'>●</span> SAILING TO " + currentDestInfo.name.toUpperCase();
+                document.getElementById("distance").textContent = Math.round(dist);
+                document.getElementById("distance-unit").textContent = "km left";
+                document.getElementById("destination-label").textContent = "Next Destination";
+                document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                document.getElementById("eta-voyage").textContent = arrivalTime ? "ETA: " + arrivalTime.day + " " + arrivalTime.time : '--';
+                
+                if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot'></span> SAILING TO " + currentDestInfo.name.toUpperCase();
             }
 
             if(norrona.position) {
-                fetch("https://api.open-meteo.com/v1/forecast?latitude="+norrona.position.latitude+"&longitude="+norrona.position.longitude+"&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms").then(function(r){return r.json()}).then(function(d) {
-                    var ms = d.current.wind_speed_10m;
-                    if(document.getElementById("wind-ms")) document.getElementById("wind-ms").textContent = Math.round(ms);
-                    if(document.getElementById("wind-knots")) document.getElementById("wind-knots").textContent = Math.round(ms * 1.94384);
-                    if(document.getElementById("wind-dir-text")) document.getElementById("wind-dir-text").textContent = getWindDirection(d.current.wind_direction_10m);
-                }).catch(function(e){});
-
-                fetch("https://marine-api.open-meteo.com/v1/marine?latitude="+norrona.position.latitude+"&longitude="+norrona.position.longitude+"&current=wave_height").then(function(r){return r.json()}).then(function(d) {
-                    if(document.getElementById("wave-height")) document.getElementById("wave-height").textContent = d.current.wave_height ? d.current.wave_height.toFixed(1) : "--";
-                }).catch(function(e){});
+                fetchMarineData(norrona.position.latitude, norrona.position.longitude);
+                fetchShipWeather(norrona.position.latitude, norrona.position.longitude);
             }
-
-            fetch("https://api.open-meteo.com/v1/forecast?latitude="+currentDestInfo.lat+"&longitude="+currentDestInfo.lon+"&current=temperature_2m,weathercode").then(function(r){return r.json()}).then(function(d) {
-                if(document.getElementById("weather-temp")) document.getElementById("weather-temp").textContent = Math.round(d.current.temperature_2m) + "°C";
-                var codeMap = { 0:{d:'Clear',i:'01d'}, 1:{d:'Mainly clear',i:'02d'}, 2:{d:'Partly cloudy',i:'03d'}, 3:{d:'Overcast',i:'04d'}, 45:{d:'Fog',i:'50d'}, 51:{d:'Drizzle',i:'09d'}, 61:{d:'Rain',i:'10d'}, 71:{d:'Snow',i:'13d'}, 80:{d:'Showers',i:'09d'}, 95:{d:'Storm',i:'11d'} };
-                var w = codeMap[d.current.weathercode] || {d:'Unknown', i:'01d'};
-                if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = w.d;
-                var iconImg = document.getElementById("weather-icon");
-                if(iconImg) {
-                    iconImg.src = "https://openweathermap.org/img/wn/" + w.i + "@2x.png";
-                    iconImg.style.display = "block"; 
-                }
-            }).catch(function(e){});
+            fetchDestWeather(currentDestInfo.lat, currentDestInfo.lon);
 
             if (map && norrona.position) {
-                var shipPos = [norrona.position.latitude, norrona.position.longitude]; 
-                var destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                if (!map.shipMarker) { 
-                    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>';
-                    var icon = L.divIcon({ className: 'ship-marker-container', html: '<div style="transform: rotate('+course+'deg); width: 30px; height: 30px;">'+svg+'</div>', iconSize: [30, 30], iconAnchor: [15, 15] });
-                    map.shipMarker = L.marker(shipPos, { icon: icon }).addTo(map); 
-                } else { 
-                    map.shipMarker.setLatLng(shipPos);
-                    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>';
-                    var newIcon = L.divIcon({ className: 'ship-marker-container', html: '<div style="transform: rotate('+course+'deg); width: 30px; height: 30px;">'+svg+'</div>', iconSize: [30, 30], iconAnchor: [15, 15] });
-                    map.shipMarker.setIcon(newIcon);
-                }
+                const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
+                const destPos = [currentDestInfo.lat, currentDestInfo.lon];
+                
+                if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); } 
+                else { map.shipMarker.setLatLng(shipPos); map.shipMarker.setIcon(createShipIcon(course)); }
 
                 if (!isInPort) {
-                    var pinIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41], iconAnchor: [12, 41] });
                     if (!map.destMarker) map.destMarker = L.marker(destPos, {icon: pinIcon}).addTo(map); else map.destMarker.setLatLng(destPos);
                     if (liveRouteLine) map.removeLayer(liveRouteLine); 
-                    liveRouteLine = L.polyline([shipPos, destPos], { color: '#004A59', weight: 3, dashArray: '10, 10' }).addTo(map);
+                    liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
                     map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
                 } else {
                     if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
                     if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; }
-                    map.setView(shipPos, 14);
+                    map.setView(shipPos, 15);
                 }
             }
         } catch(e) { console.error("Data error", e); }
@@ -876,14 +853,14 @@
         if(!document.getElementById("map")) return;
         map = L.map("map", { zoomControl: false, attributionControl: false }).setView([62.0, -6.7], 5);
         L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { subdomains: "abcd" }).addTo(map);
-        var route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
+        const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
         L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map);
         updateShipData();
         setInterval(updateShipData, 60000); 
     }
 
     // ==========================================
-    // GOOGLE GEMINI AI CHAT LOGIC (MED FORSLAGS-FUNKTION)
+    // GOOGLE GEMINI AI CHAT LOGIC (MED WALKIE-TALKIE)
     // ==========================================
     function minimizeChatTab(e) {
         e.stopPropagation();
@@ -892,6 +869,7 @@
             document.getElementById('chat-panel').classList.remove('active');
         }
         document.getElementById('chat-minimized-tab').style.display = 'flex';
+        window.speechSynthesis.cancel(); // Stop med at snakke, hvis man lukker!
     }
 
     function restoreChatTab() {
@@ -905,6 +883,7 @@
         if (panel.classList.contains("active")) {
             panel.classList.remove("active");
             icon.innerText = "chat";
+            window.speechSynthesis.cancel(); // Stop med at snakke, hvis chatten lukkes!
         } else {
             panel.classList.add("active");
             icon.innerText = "close";
@@ -916,11 +895,9 @@
                     }
                 } else if (typeof LIVE_DATA.ai_knowledge === 'string') {
                     extraIntel = LIVE_DATA.ai_knowledge;
-                } else {
-                    extraIntel = "No extra data provided.";
                 }
                 
-                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Do not invent information.\n\nCRITICAL RULE: If you do not have the answer in the text below, you MUST reply starting with exactly this tag: [UNANSWERED]. After the tag, politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
+                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Keep answers short and concise. Do not invent information.\n\nCRITICAL RULE: If you do not have the answer in the text below, you MUST reply starting with exactly this tag: [UNANSWERED]. After the tag, politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
                 window.chatHistory = []; 
             }
         }
@@ -931,13 +908,78 @@
     }
 
     var currentUnansweredQuestion = ""; 
+    
+    // --- VOICE TO TEXT LOGIC ---
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = SpeechRecognition ? new SpeechRecognition() : null;
+    var isVoiceRequested = false; // Flag to check if we should read the response out loud
+
+    if (recognition) {
+        recognition.continuous = false;
+        recognition.lang = 'en-US'; // Sæt evt. til 'da-DK' hvis I snakker dansk til den
+        recognition.interimResults = false;
+
+        recognition.onstart = function() {
+            var btn = document.getElementById('mic-btn');
+            btn.classList.add('active-mic');
+            document.getElementById("chat-input").placeholder = "Listening...";
+        };
+
+        recognition.onresult = function(event) {
+            var transcript = event.results[0][0].transcript;
+            document.getElementById('chat-input').value = transcript;
+            isVoiceRequested = true; 
+            sendChatMessage(); // Send automatisk når man er færdig med at tale
+        };
+
+        recognition.onerror = function(e) {
+            console.error("Speech error", e);
+            resetVoiceUI();
+        };
+
+        recognition.onend = function() {
+            resetVoiceUI();
+        }
+    }
+
+    function resetVoiceUI() {
+        var btn = document.getElementById('mic-btn');
+        btn.classList.remove('active-mic');
+        document.getElementById("chat-input").placeholder = "Ask or speak...";
+    }
+
+    function toggleVoiceRecording() {
+        if (!recognition) { 
+            alert('Voice recognition is not supported in your browser (Use Chrome or Safari).'); 
+            return; 
+        }
+        var btn = document.getElementById('mic-btn');
+        if (btn.classList.contains('active-mic')) {
+            recognition.stop();
+        } else {
+            window.speechSynthesis.cancel(); // Stop igangværende tale
+            recognition.start();
+        }
+    }
+
+    function speakAIResponse(text) {
+        if ('speechSynthesis' in window && isVoiceRequested) {
+            // Fjern HTML-tags som <strong> før oplæsning
+            var cleanText = text.replace(/<[^>]*>?/gm, '');
+            var utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'en-US'; 
+            utterance.rate = 1.0; 
+            window.speechSynthesis.speak(utterance);
+            isVoiceRequested = false; // Nulstil flag
+        }
+    }
+    // ----------------------------
 
     async function sendChatMessage() {
         var inputEl = document.getElementById("chat-input");
         var msgText = inputEl.value.trim();
         if (!msgText) return;
 
-        // TJEK OM DETTE ER ET FORSLAG FRA BRUGEREN
         if (currentUnansweredQuestion !== "") {
             addMessage("You", "My suggestion: " + msgText, "user");
             inputEl.value = "";
@@ -951,10 +993,9 @@
                     timestamp: new Date().toISOString()
                 }).then(function() {
                     document.getElementById("chat-typing").style.display = "none";
-                    addMessage("Assistant", "Thank you! I have sent your suggestion to the Admin for approval. I will remember it once it's verified.", "ai");
-                    
+                    addMessage("Assistant", "Thank you! I have sent your suggestion to the Admin for approval.", "ai");
                     currentUnansweredQuestion = ""; 
-                    inputEl.placeholder = "Ask about rules, uniforms...";
+                    inputEl.placeholder = "Ask or speak...";
                     document.getElementById("chat-typing").innerText = "AI is thinking...";
                 }).catch(function(err) {
                     console.error("Firebase write blocked:", err);
@@ -967,17 +1008,12 @@
         addMessage("You", msgText, "user");
         inputEl.value = "";
         document.getElementById("chat-typing").style.display = "block";
-
         window.chatHistory.push({ "role": "user", "parts": [{ "text": msgText }] });
 
         try {
             var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + DYNAMIC_GEMINI_KEY, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "system_instruction": { "parts": { "text": window.aiContext } },
-                    "contents": window.chatHistory
-                })
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "system_instruction": { "parts": { "text": window.aiContext } }, "contents": window.chatHistory })
             });
 
             var data = await response.json();
@@ -987,32 +1023,23 @@
                 addMessage("System", "AI Error: " + data.error.message, "ai");
             } else {
                 var aiReply = data.candidates[0].content.parts[0].text;
-                
                 var lowerReply = aiReply.toLowerCase();
-                var isUnanswered = aiReply.includes('[UNANSWERED]') || 
-                                   lowerReply.includes("i don't have that information") || 
-                                   lowerReply.includes("i do not have that information") ||
-                                   lowerReply.includes("not mentioned in the handbook") ||
-                                   lowerReply.includes("not provided");
+                var isUnanswered = aiReply.includes('[UNANSWERED]') || lowerReply.includes("i don't have that information") || lowerReply.includes("not mentioned in the handbook");
                 
                 if (isUnanswered) {
-                    if (firebaseActive) {
-                        db.ref('ai_unanswered').push({
-                            question: msgText,
-                            timestamp: new Date().toISOString()
-                        });
-                    }
-                    
+                    if (firebaseActive) { db.ref('ai_unanswered').push({ question: msgText, timestamp: new Date().toISOString() }); }
                     currentUnansweredQuestion = msgText;
                     inputEl.placeholder = "Do you know the answer? Type it here...";
                     aiReply = "I'm sorry, I don't have that information in my training data. If you happen to know the answer, please type it below so I can suggest it to the Admin!";
                 } else {
-                    // Hvis AI'en rent faktisk KUNNE svare, skal vi fjerne [UNANSWERED] tagget for en sikkerheds skyld
                     aiReply = aiReply.replace(/\[UNANSWERED\]/gi, '').trim();
                 }
 
                 addMessage("Assistant", aiReply, "ai");
                 window.chatHistory.push({ "role": "model", "parts": [{ "text": aiReply }] });
+                
+                // LÆS SVARET HØJT, HVIS DET BLEV SPURGT VIA VOICE
+                speakAIResponse(aiReply);
             }
         } catch (error) {
             document.getElementById("chat-typing").style.display = "none";
@@ -1024,9 +1051,7 @@
         var container = document.getElementById("chat-messages");
         var msgDiv = document.createElement("div");
         msgDiv.className = "msg " + type;
-        
         var formattedText = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-        
         msgDiv.innerHTML = formattedText;
         container.appendChild(msgDiv);
         container.scrollTop = container.scrollHeight;
