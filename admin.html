@@ -232,7 +232,6 @@
     <div class="toast" id="toast">SYSTEM UPDATED SUCCESSFULLY!</div>
 
 <script>
-    // SIKKERHEDS-TRICK: Vi deler nøglen op i stykker, så GitHubs scanner ikke kan læse den!
     var p1 = "AIzaS";
     var p2 = "yD1C2q";
     var p3 = "R2CR5L";
@@ -241,7 +240,6 @@
     var p6 = "9WNt13";
     var p7 = "iDqc";
     
-    // Her er nøglen samlet igen! Nu virker knappen.
     var firebaseConfig = {
         apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7,
         authDomain: "norrona-app.firebaseapp.com",
@@ -319,10 +317,15 @@
         });
     }
 
+    // OPDATERET GEM-FUNKTION (Viser præcis fejlbesked)
     function saveToFirebase() {
         extractFormData(); 
         if(currentEditorType !== 'mess') {
-            db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
+            db.ref('appData').set(appData).then(function() { 
+                showToast(); 
+            }).catch(function(err) { 
+                alert("Save failed! Fejlbesked fra serveren: \n" + err.message + "\n\n(Tjek at dine Firebase Rules for 'appData' er sat til '.write': true)"); 
+            });
         } else {
             showToast();
         }
@@ -358,9 +361,6 @@
         else if (currentEditorType === 'mess') renderMessModeration(container);
     }
 
-    // ==========================================
-    // CREW MESS MODERATION UI
-    // ==========================================
     function renderMessModeration(container) {
         var html = '<h2><span class="material-icons" style="color:var(--danger); margin-right:12px;">forum</span> Live Crew Feed</h2>';
         html += '<p style="color:var(--text-muted); margin-bottom:25px;">Review and moderate the social feed. Deleting a post removes it instantly from all crew devices.</p>';
@@ -414,9 +414,6 @@
         }
     }
 
-    // ==========================================
-    // AI TRAINING & SUGGESTIONS UI
-    // ==========================================
     function renderAITraining(container) {
         if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
         var html = '<div id="ai-suggestions-container"></div>';
