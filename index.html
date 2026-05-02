@@ -430,7 +430,7 @@
 </div>
 
 <script>
-    // API KEY SPLIT FOR GITHUB
+    // API KEY SPLIT FOR GITHUB (Kun Firebase)
     var firebaseConfig = {
         apiKey: "AIzaSy" + "D1C2qR2CR5LPA2tps8b9_cO9WNt13iDqc",  
         authDomain: "norrona-app.firebaseapp.com",
@@ -441,7 +441,8 @@
         appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
 
-    var GEMINI_API_KEY = "AIzaSyDOJoZwPM0DSxEkNqJDTVcLRs1WV8NyZ8I"; 
+    // Tom variabel, der bliver udfyldt af Firebase
+    var DYNAMIC_GEMINI_KEY = ""; 
     
     var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [] };
     var firebaseActive = false;
@@ -450,6 +451,7 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         var db = firebase.database();
         
+        // Hent Data fra Firebase
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { LIVE_DATA = snapshot.val(); }
             firebaseActive = true;
@@ -457,6 +459,14 @@
         }).catch(function(error) {
             goToView('view-home'); 
         });
+
+        // HENT GEMINI NØGLEN FRA FIREBASE (Usynligt for GitHub)
+        db.ref('systemSettings/geminiKey').once('value').then(function(snapshot) {
+            if (snapshot.exists()) { 
+                DYNAMIC_GEMINI_KEY = snapshot.val(); 
+            }
+        });
+
     } catch(e) {
         goToView('view-home'); 
     }
@@ -933,7 +943,8 @@
         window.chatHistory.push({ "role": "user", "parts": [{ "text": msgText }] });
 
         try {
-            var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY, {
+            // KALDER GEMINI MED NØGLEN FRA FIREBASE (DYNAMIC_GEMINI_KEY)
+            var response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + DYNAMIC_GEMINI_KEY, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -979,7 +990,7 @@
             }
         } catch (error) {
             document.getElementById("chat-typing").style.display = "none";
-            addMessage("System", "Failed to connect to AI.", "ai");
+            addMessage("System", "Failed to connect to AI. Missing API Key from Database?", "ai");
         }
     }
 
