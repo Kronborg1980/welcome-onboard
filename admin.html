@@ -241,6 +241,7 @@
     var p6 = "9WNt13";
     var p7 = "iDqc";
     
+    // Her er nøglen samlet igen! Nu virker knappen.
     var firebaseConfig = {
         apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7,
         authDomain: "norrona-app.firebaseapp.com",
@@ -322,6 +323,8 @@
         extractFormData(); 
         if(currentEditorType !== 'mess') {
             db.ref('appData').set(appData).then(function() { showToast(); }).catch(function(err) { alert("Save failed."); });
+        } else {
+            showToast();
         }
     }
 
