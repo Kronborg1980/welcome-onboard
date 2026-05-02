@@ -173,10 +173,14 @@
         .chat-input-area { display: flex; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.4); padding: 12px; align-items: center; gap: 8px;}
         .chat-input-area input { flex: 1; border: none; padding: 12px; font-size: 1rem; outline: none; background: rgba(255,255,255,0.05); color: white; border-radius: 12px;}
         .chat-input-area .btn-icon { background: transparent; color: var(--text-muted); border: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: 0.2s;}
-        .chat-input-area .btn-icon.active-mic { color: var(--danger); background: rgba(255, 77, 77, 0.1); }
+        .chat-input-area .btn-icon.active-mic { color: var(--danger); animation: pulseDot 1s infinite; background: rgba(255, 77, 77, 0.1); }
         .chat-input-area .btn-send { background: var(--accent-cyan); color: #000; border: none; border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;}
         
         .typing-indicator { padding: 0 15px 10px 15px; font-size: 0.8rem; color: var(--text-muted); display: none; }
+        
+        /* NEW HOME STYLES */
+        .step-badge { background: var(--accent-gold); color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; flex-shrink: 0; box-shadow: 0 0 10px rgba(251, 185, 0, 0.3);}
+        .action-box { border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: inset 0 0 15px rgba(255,255,255,0.02);}
     </style>
 </head>
 <body>
@@ -210,23 +214,46 @@
             </div>
         </div>
 
+        <!-- ==========================================
+             HOME / ONBOARDING VIEW
+             ========================================== -->
         <div id="view-home" class="view">
-            <div style="text-align: center; padding: 20px 20px 30px 20px;">
-                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 90px; margin-bottom: 15px; filter: brightness(0) invert(1); opacity:0.8;" alt="Smyril Line Logo">
+            <div style="text-align: center; padding: 10px 20px 25px 20px;">
+                <img src="https://www.smyrilline.com/wp-content/themes/lunnar-smyrilline/images/logo.svg" style="height: 70px; margin-bottom: 15px; filter: brightness(0) invert(1); opacity:0.8;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna Hub</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--accent-cyan); font-weight: 600; letter-spacing: 1px;">OPERATIONS PORTAL</p>
             </div>
 
             <div class="card" style="padding:0; overflow:hidden; border:1px solid var(--glass-border);">
-                <img src="https://www.smyrilline.dk/wp-content/uploads/2025/04/Norrona.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid var(--glass-border);" alt="M/F Norröna">
+                <img src="https://www.smyrilline.dk/wp-content/uploads/2025/04/Norrona.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--glass-border);" alt="M/F Norröna">
                 
                 <div style="padding: 24px;">
-                    <h2 style="margin-bottom: 10px;">Welcome Aboard</h2>
-                    <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
-                    <button class="btn btn-outline" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="openCrewMess()"><span class="material-icons">forum</span> Check Crew Mess</button>
-                    <button class="btn btn-danger-outline" style="margin-top: 10px;" onclick="openReporting()"><span class="material-icons">report_problem</span> Report Safety Issue</button>
+                    <h2 style="margin-bottom: 15px; font-size: 1.4rem;">Required Onboarding</h2>
+                    
+                    <!-- TRIN 1: HÅNDBOG -->
+                    <div class="action-box">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                            <div class="step-badge">1</div>
+                            <div style="font-weight:bold; font-size:1.1rem; color: #fff;">Read the Handbook</div>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px; margin-left:44px;">Review the safety guidelines and rules for your department.</p>
+                        <button class="btn btn-outline" style="border-color:var(--accent-gold); color:var(--accent-gold); margin-bottom:0;" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Open Handbook</button>
+                    </div>
+
+                    <!-- TRIN 2: QUIZ -->
+                    <div class="action-box">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                            <div class="step-badge">2</div>
+                            <div style="font-weight:bold; font-size:1.1rem; color: #fff;">Clearance Assessment</div>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px; margin-left:44px;">Prove you have understood the handbook to get cleared for duty.</p>
+                        <button class="btn btn-primary" style="margin-bottom:0;" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Take Assessment</button>
+                    </div>
                 </div>
+            </div>
+            
+            <div style="text-align:center; padding-top:10px;">
+                <button class="btn btn-danger-outline" onclick="openReporting()"><span class="material-icons">report_problem</span> Report Safety Issue</button>
             </div>
         </div>
 
@@ -237,7 +264,6 @@
             <h2 style="display:flex; align-items:center; gap:12px; margin-bottom: 5px;"><span class="material-icons" style="color:var(--accent-cyan); font-size:2.4rem;">forum</span> Crew Mess</h2>
             <p style="margin-bottom: 25px;">Internal noticeboard. Ask for shift swaps, announce events, or start a poll!</p>
 
-            <!-- COMPOSER -->
             <div class="card" style="border: 1px solid var(--accent-cyan); padding: 20px; box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1);">
                 <input type="text" id="mess-name" class="form-input" placeholder="Your Name (e.g. John - Deck)" style="margin-bottom: 15px; font-weight:bold;">
 
@@ -309,12 +335,33 @@
             </div>
         </div>
 
+        <!-- ==========================================
+             VOYAGE DASHBOARD (MED PROGRESS BAR)
+             ========================================== -->
         <div id="view-voyage" class="view">
             <div style="padding: 12px 12px 0 12px;">
                 <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
                 <div class="voyage-map-container"><div id="map"></div><div class="map-gradient"></div></div>
             </div>
             <div class="voyage-sheet">
+                
+                <!-- NYT VOYAGE PROGRESS PANEL (FRA DIT BILLEDE) -->
+                <div class="card" style="background: rgba(0,0,0,0.6); padding: 25px 20px; border-color: var(--glass-border); margin-bottom: 25px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+                    <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">Voyage Progress</div>
+                    <div style="text-align: center; font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; text-transform: uppercase;" id="prog-dest">--</div>
+                    <div style="text-align: center; font-size: 0.95rem; color: var(--accent-cyan); font-weight: 700; margin-bottom: 20px;" id="prog-eta">Arrival: --</div>
+                    
+                    <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 10px;">
+                        <div id="prog-bar-fill" style="height: 100%; width: 0%; background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan); transition: width 1s ease-out;"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700;">
+                        <span id="prog-dist" style="color: #fff;">-- km</span>
+                        <span id="prog-time" style="color: var(--text-muted);">In: --h --m</span>
+                    </div>
+                </div>
+                <!-- SLUT PÅ PROGRESS PANEL -->
+
                 <div class="weather-strip">
                     <div class="weather-left">
                         <img id="weather-icon" src="" alt="" style="display:none; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));">
@@ -323,12 +370,17 @@
                     <div class="weather-label">Dest.<br>Weather</div>
                 </div>
                 <div class="voyage-grid">
-                    <div class="grid-item"><div class="label">Speed & Course</div><div class="value"><span id="speed-knots">--</span> <span class="unit">kn</span></div><div class="sub-value" id="course-voyage">Course: --°</div></div>
+                    <div class="grid-item"><div class="label">Speed & Course</div><div class="value"><span id="speed-knots">--</span> <span class="unit">kn</span><span class="separator" style="display:none;">|</span><span id="speed-kmh" style="display:none;">--</span></div><div class="sub-value" id="course-voyage">Course: --°</div></div>
                     <div class="grid-item"><div class="label">Time (Tórshavn)</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">GMT</div></div>
                     <div class="grid-item"><div class="label">Wind (Here)</div><div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div><div class="sub-value"><span id="wind-knots">--</span> kn <span style="opacity:0.25; margin:0 4px;">|</span><span id="wind-dir-text" style="color:var(--accent-gold); font-weight:bold;">--</span></div></div>
                     <div class="grid-item"><div class="label">Wave Height</div><div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div><div class="sub-value">Significant</div></div>
-                    <div class="grid-item"><div class="label" id="distance-label-main">Distance Left</div><div class="value" id="distance" style="font-size:1.6rem;">--</div><div class="sub-value" id="distance-unit">km</div></div>
-                    <div class="grid-item"><div class="label" id="destination-label">Next Destination</div><div class="value" id="destination-voyage" style="font-size:1.5rem; color: var(--accent-cyan);">--</div><div class="sub-value" id="eta-voyage">--</div></div>
+                    
+                    <!-- HIDDEN GRID ELEMENTS FOR JS COMPATIBILITY -->
+                    <span id="distance" style="display:none;"></span>
+                    <span id="distance-unit" style="display:none;"></span>
+                    <span id="destination-label" style="display:none;"></span>
+                    <span id="destination-voyage" style="display:none;"></span>
+                    <span id="eta-voyage" style="display:none;"></span>
                 </div>
                 <button class="btn btn-outline" style="margin-top: 30px; width: 100%; border-radius: 14px;" onclick="goToView('view-home')"><span class="material-icons">arrow_back</span> Return to Dashboard</button>
             </div>
@@ -400,7 +452,7 @@
             </div>
         </div>
 
-        <!-- MANGLENDE SUCCES SKÆRM (TILFØJET) -->
+        <!-- SUCCES SKÆRM -->
         <div id="view-success" class="view">
             <div class="card" style="text-align: center; padding: 50px 20px; border: 1px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,229,255,0.2);">
                 <span class="material-icons" style="font-size: 80px; color: var(--accent-cyan); margin-bottom: 20px; text-shadow: 0 0 20px rgba(0,229,255,0.5);">task_alt</span>
@@ -707,7 +759,7 @@
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
     // ==========================================
-    // QUIZ LOGIC (NU 100% FUNKTIONEL IGEN)
+    // QUIZ LOGIC
     // ==========================================
     var activeQuiz = []; var currentQuizIdx = 0; var selectedQuizAns = null; var selectedDeptName = "";
     function openQuestionnaire() {
@@ -763,7 +815,7 @@
     }
 
     // ==========================================
-    // VOYAGE API LOGIC
+    // VOYAGE API LOGIC MED PROGRESS BAR
     // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
@@ -831,17 +883,66 @@
             const currentDestKey = normalizeDestinationName(destString); const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
             const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon); const isInPort = speedKnots < 1.0 && dist < 2.0;
 
-            document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); document.getElementById("speed-kmh").textContent = (speedKnots * 1.852).toFixed(1); document.getElementById("course-voyage").textContent = "Course: " + course + "°";
-            const topStatusBar = document.getElementById("ship-status-bar"); const arrivalTime = formatETA(norrona.etaFromAIS); const departureTimeRaw = norrona.scheduledDeparture || norrona.etd; const departureTime = formatETA(departureTimeRaw);
+            document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
+            if(document.getElementById("speed-kmh")) document.getElementById("speed-kmh").textContent = (speedKnots * 1.852).toFixed(1); 
+            document.getElementById("course-voyage").textContent = "Course: " + course + "°";
+            
+            const topStatusBar = document.getElementById("ship-status-bar"); 
+            const arrivalTime = formatETA(norrona.etaFromAIS); 
+            const departureTimeRaw = norrona.scheduledDeparture || norrona.etd; 
+            const departureTime = formatETA(departureTimeRaw);
 
+            // --- PROGRESS BAR LOGIK ---
+            let timeRemainingStr = "In: --h --m";
+            if (norrona.etaFromAIS && !isInPort) {
+                let etaDate = new Date(norrona.etaFromAIS);
+                let diffMs = etaDate - new Date();
+                if (diffMs > 0) {
+                    let hrs = Math.floor(diffMs / (1000 * 60 * 60));
+                    let mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                    timeRemainingStr = "In: " + hrs + "h " + mins.toString().padStart(2, '0') + "m";
+                } else {
+                    timeRemainingStr = "Arriving...";
+                }
+            }
+
+            const legDistances = { torshavn: 890, hirtshals: 890, seydisfjord: 550 };
+            let maxDist = legDistances[currentDestKey] || 900;
+            let progPct = Math.max(0, Math.min(100, ((maxDist - dist) / maxDist) * 100));
+            if (isInPort) progPct = 100;
+
+            // Opdater de nye Progress Bar elementer
+            if(document.getElementById("prog-dest")) document.getElementById("prog-dest").textContent = currentDestInfo.name;
+            if(document.getElementById("prog-dist")) document.getElementById("prog-dist").textContent = isInPort ? "0 km" : Math.round(dist) + " km";
+            if(document.getElementById("prog-time")) document.getElementById("prog-time").textContent = isInPort ? "Docked" : timeRemainingStr;
+            if(document.getElementById("prog-bar-fill")) document.getElementById("prog-bar-fill").style.width = progPct + "%";
+
+            // Opdater det gamle grid (skjulte for JS kompatibilitet, men sikret for crashes)
             if (isInPort) {
-                document.getElementById("distance").textContent = "Docked"; document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name; document.getElementById("destination-label").textContent = "Current Location"; document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                if (departureTime) { document.getElementById("eta-voyage").textContent = "Departs: " + departureTime.day + " " + departureTime.time; } else { document.getElementById("eta-voyage").textContent = "Arrived"; }
+                if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
+                if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name; 
+                if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Current Location"; 
+                if(document.getElementById("destination-voyage")) document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                
+                if (departureTime) { 
+                    if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = "Departs: " + departureTime.day + " " + departureTime.time; 
+                    if(document.getElementById("prog-eta")) document.getElementById("prog-eta").textContent = "Departs: " + departureTime.day + " " + departureTime.time;
+                } else { 
+                    if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = "Arrived"; 
+                    if(document.getElementById("prog-eta")) document.getElementById("prog-eta").textContent = "Status: Arrived";
+                }
                 if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot' style='background-color: var(--success); box-shadow: 0 0 8px var(--success);'></span> IN " + currentDestInfo.name.toUpperCase() + " &bull; DOCKED";
             } else {
-                document.getElementById("distance").textContent = Math.round(dist); document.getElementById("distance-unit").textContent = "km left"; document.getElementById("destination-label").textContent = "Next Destination"; document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                document.getElementById("eta-voyage").textContent = arrivalTime ? "ETA: " + arrivalTime.day + " " + arrivalTime.time : '--';
-                if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot'></span> SAILING TO " + currentDestInfo.name.toUpperCase();
+                if(document.getElementById("distance")) document.getElementById("distance").textContent = Math.round(dist); 
+                if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "km left"; 
+                if(document.getElementById("destination-label")) document.getElementById("destination-label").textContent = "Next Destination"; 
+                if(document.getElementById("destination-voyage")) document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                
+                let etaText = arrivalTime ? "ETA: " + arrivalTime.day + " " + arrivalTime.time : '--';
+                if(document.getElementById("eta-voyage")) document.getElementById("eta-voyage").textContent = etaText;
+                if(document.getElementById("prog-eta")) document.getElementById("prog-eta").textContent = arrivalTime ? "Arrival: " + arrivalTime.day + " " + arrivalTime.time : "Arrival: --";
+                
+                if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot' style='background-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);'></span> SAILING TO " + currentDestInfo.name.toUpperCase();
             }
 
             if(norrona.position) { fetchMarineData(norrona.position.latitude, norrona.position.longitude); fetchShipWeather(norrona.position.latitude, norrona.position.longitude); }
