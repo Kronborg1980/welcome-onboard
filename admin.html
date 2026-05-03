@@ -174,7 +174,14 @@
             </div>
             <div class="sidebar-nav">
                 
-                <!-- NY SEKTION TIL SETTINGS / EMAILS -->
+                <!-- ADDED: COMMUNICATIONS SECTION -->
+                <div class="nav-group">
+                    <div class="nav-title">Communications</div>
+                    <div class="nav-item" onclick="loadEditor('comm', 'push', this)">
+                        <span class="material-icons" style="color: var(--accent-cyan);">campaign</span> Push Alerts
+                    </div>
+                </div>
+
                 <div class="nav-group">
                     <div class="nav-title">System Settings</div>
                     <div class="nav-item" onclick="loadEditor('settings', 'email_routing', this)">
@@ -346,8 +353,10 @@
             document.getElementById('mobile-overlay').style.display = 'none';
         }
 
+        // ADDED LOGIC FOR 'comm' type
         var titleDisplay = "";
         if (type === 'ai') titleDisplay = "AI KNOWLEDGE BASE";
+        else if (type === 'comm') titleDisplay = "COMMUNICATIONS & ALERTS";
         else if (type === 'dept') titleDisplay = key.replace('_', ' ').toUpperCase() + " DEPARTMENT";
         else if (type === 'settings') titleDisplay = "EMAIL ROUTING SETTINGS";
         else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' QUESTIONS' : ' PAGES');
@@ -373,10 +382,58 @@
         else if (currentEditorType === 'ai') renderAITraining(container);
         else if (currentEditorType === 'dept') renderDeptManager(container);
         else if (currentEditorType === 'settings') renderEmailSettings(container);
+        else if (currentEditorType === 'comm') renderPushSender(container); // Added line
     }
 
     // ==========================================
-    // EMAIL SETTINGS RENDERER (NEW)
+    // ADDED: PUSH SENDER FUNCTION
+    // ==========================================
+    function renderPushSender(container) {
+        var html = `
+            <h2><span class="material-icons" style="color:var(--accent-cyan); margin-right:12px;">campaign</span> Broadcast Push Alert</h2>
+            <div class="card" style="border-left: 4px solid var(--accent-cyan);">
+                <h3>Send Push Notification</h3>
+                <p style="color:var(--text-muted); margin-bottom:20px;">Send an instant alert to all crew members' devices.</p>
+                <div class="form-group">
+                    <label>Notification Title</label>
+                    <input type="text" id="push-title-input" placeholder="e.g. Schedule Update">
+                </div>
+                <div class="form-group">
+                    <label>Message Body</label>
+                    <textarea id="push-body-input" class="form-textarea" style="height:100px;" placeholder="Write your message..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="executePush()">
+                    <span class="material-icons">send</span> SEND ALERT NOW
+                </button>
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
+    function executePush() {
+        var title = document.getElementById('push-title-input').value;
+        var body = document.getElementById('push-body-input').value;
+        
+        if (!title || !body) {
+            alert("Please enter both title and message.");
+            return;
+        }
+
+        db.ref('notifications').push({
+            title: title,
+            body: body,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => {
+            showToast(); // Viser SUCCESS toast nederst til højre
+            document.getElementById('push-title-input').value = '';
+            document.getElementById('push-body-input').value = '';
+        }).catch(err => {
+            alert("Error sending notification: " + err.message);
+        });
+    }
+
+    // ==========================================
+    // EMAIL SETTINGS RENDERER
     // ==========================================
     function renderEmailSettings(container) {
         if (!appData.emails) appData.emails = DEFAULT_DATA.emails;
