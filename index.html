@@ -13,7 +13,6 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
     <style>
         :root { 
@@ -392,7 +391,7 @@
             color: var(--text-muted);
         }
         
-        .notif-badge { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; display: none; box-shadow: 0 0 5px var(--danger); }
+        .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: var(--accent-gold); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--accent-gold); }
     </style>
 </head>
 <body>
@@ -404,8 +403,9 @@
             <span>Crew</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <div style="position: relative; cursor: pointer;" onclick="requestNotificationPermission()" title="Enable Notifications">
-                <span class="material-icons" id="notif-icon" style="font-size: 1.6rem; color: var(--danger);">notifications_off</span>
+            <!-- IN-APP NOTIFICATION BELL -->
+            <div style="position: relative; cursor: pointer;" onclick="handleBellClick()" title="Notifications">
+                <span class="material-icons" id="notif-icon" style="font-size: 1.6rem; color: var(--text-muted);">notifications</span>
                 <div id="notif-dot" class="notif-badge"></div>
             </div>
             <span class="material-icons" id="theme-toggle" style="font-size: 1.6rem; cursor: pointer; color: var(--text-main);" onclick="toggleTheme()">light_mode</span>
@@ -805,8 +805,7 @@
         authDomain: "norrona-app.firebaseapp.com", 
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app", 
         projectId: "norrona-app", 
-        storageBucket: "norrona-app.firebasestorage.app", 
-        messagingSenderId: "836610543277", 
+        storageBucket: "norrona-app.firebasestorage.app",
         appId: "1:836610543277:web:3e74479daf205453bd0024" 
     };
     
@@ -814,26 +813,21 @@
     var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {} };
     var firebaseActive = false;
     
-    var activeDepartment = null;
+    var activeDepartment = localStorage.getItem('norrona_my_dept') || null;
     var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
     var db = null;
-    var messaging = null;
 
     try {
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         db = firebase.database();
-        
-        try {
-            messaging = firebase.messaging();
-        } catch(e) {
-            console.log("Firebase Messaging not supported or blocked");
-        }
 
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { LIVE_DATA = snapshot.val(); }
             if (!LIVE_DATA.schedules) LIVE_DATA.schedules = {};
-            firebaseActive = true; goToView('view-home');
+            firebaseActive = true; 
+            setupInAppNotifications(); // Start checking for unread items
+            goToView('view-home');
         }).catch(function(error) { goToView('view-home'); });
 
         db.ref('systemSettings/geminiKey').once('value').then(function(snapshot) {
@@ -842,61 +836,42 @@
     } catch(e) { goToView('view-home'); }
 
     // ==========================================
-    // NOTIFICATION LOGIC - DEN SIKRE METODE
+    // IN-APP NOTIFICATION LOGIC (NO FCM)
     // ==========================================
-    function requestNotificationPermission() {
-        Notification.requestPermission().then((permission) => {
-            if (permission === 'granted') {
-                document.getElementById('notif-icon').innerText = 'notifications_active';
-                document.getElementById('notif-icon').style.color = 'var(--success)';
-                document.getElementById('notif-dot').style.display = 'none';
-                setupMessagingToken();
-            } else {
-                alert("Notifications denied. Please enable them in your browser settings.");
+    function setupInAppNotifications() {
+        if (!firebaseActive || !activeDepartment) return;
+        
+        db.ref('crew_mess/' + activeDepartment).limitToLast(1).on('value', function(snapshot) {
+            if (!snapshot.exists()) return;
+            var latestPostTime = 0;
+            snapshot.forEach(function(child) {
+                latestPostTime = new Date(child.val().timestamp).getTime();
+            });
+            
+            var lastSeen = localStorage.getItem('norrona_last_seen_' + activeDepartment) || 0;
+            
+            // Show red dot if there is a new post and we are NOT looking at the department view
+            if (latestPostTime > lastSeen && !document.getElementById('view-department').classList.contains('active')) {
+                document.getElementById('notif-dot').style.display = 'block';
+                document.getElementById('notif-icon').style.color = 'var(--accent-gold)';
             }
         });
     }
 
-    function setupMessagingToken() {
-        const vapidKey = "BA1Aj80LMZQ0NmrBtTC" + "bxCkue86yux73-O_-e9" + "ut49RbabB0gjHJGj_Oi" + "pWUGUj_7jVDzo3ACvBo" + "6ksh7Et2yTc";
-        
-        if (!messaging) {
-            alert("Din browser understøtter ikke Push-beskeder.");
-            return;
-        }
-
-        navigator.serviceWorker.register('./firebase-messaging-sw.js')
-        .then(function(registration) {
-            console.log('Service Worker registreret succesfuldt.');
-            
-            // Vi bruger Firebase's egen metode til at slette gamle tokens, så vi ikke ødelægger noget
-            messaging.deleteToken().then(() => {
-                console.log("Gammel token slettet sikkert.");
-            }).catch((e) => {
-                console.log("Ingen gammel token, fortsætter...", e);
-            }).finally(() => {
-                
-                // Henter et helt nyt, frisk ID
-                messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
-                .then((currentToken) => {
-                    if (currentToken) {
-                        console.log("Device Token fundet!");
-                        db.ref('tokens/' + currentToken.substring(0, 20)).set({
-                            token: currentToken,
-                            lastSeen: new Date().toISOString()
-                        });
-                    }
-                }).catch((err) => {
-                    alert("Kunne ikke oprette notifikations-ID. Fejl: " + err.message);
-                });
-            });
-        });
+    function markDepartmentAsRead() {
+        if (!activeDepartment) return;
+        localStorage.setItem('norrona_last_seen_' + activeDepartment, Date.now());
+        document.getElementById('notif-dot').style.display = 'none';
+        document.getElementById('notif-icon').style.color = 'var(--text-muted)';
     }
 
-    if (messaging) {
-        messaging.onMessage((payload) => {
-            alert(payload.notification.title + "\n" + payload.notification.body);
-        });
+    function handleBellClick() {
+        if (!activeDepartment) {
+            alert("Please select your department first to receive updates.");
+            goToView('view-dept-select');
+        } else {
+            goToDepartment();
+        }
     }
 
     // ==========================================
@@ -934,15 +909,6 @@
             document.body.classList.add('light-mode');
             document.getElementById('theme-toggle').innerText = 'dark_mode';
         }
-        
-        if (Notification.permission === 'granted') {
-            document.getElementById('notif-icon').innerText = 'notifications_active';
-            document.getElementById('notif-icon').style.color = 'var(--success)';
-            document.getElementById('notif-dot').style.display = 'none';
-            setupMessagingToken();
-        } else if (Notification.permission === 'default') {
-            document.getElementById('notif-dot').style.display = 'block';
-        }
     };
 
     function toggleSubMenu(id) { document.getElementById(id).classList.toggle('active'); }
@@ -953,6 +919,10 @@
         document.getElementById(viewId).classList.add('active');
         if(document.getElementById('nav-overlay').classList.contains('active')) toggleMenu();
         window.scrollTo(0,0);
+        
+        if(viewId === 'view-department') {
+            markDepartmentAsRead();
+        }
     }
 
     function openImageModal(src) {
@@ -982,6 +952,8 @@
         document.getElementById('crew-month-select').value = currentScheduleMonth; 
         goToView('view-department');
         switchDeptTab('schedule'); 
+        setupInAppNotifications();
+        markDepartmentAsRead();
     }
 
     function switchDeptTab(tab) {
@@ -993,12 +965,14 @@
             document.getElementById('dept-schedule-view').style.display = 'block';
             document.getElementById('dept-mess-view').style.display = 'none';
             loadDeptSchedule();
-            if(firebaseActive) db.ref('crew_mess/' + activeDepartment).off();
+            if(firebaseActive) db.ref('crew_mess/' + activeDepartment).off('value'); // Don't turn off completely, just the full feed load
+            setupInAppNotifications(); // re-init the limitToLast(1) listener
         } else {
             document.getElementById('dept-schedule-view').style.display = 'none';
             document.getElementById('dept-mess-view').style.display = 'block';
             loadDeptMess();
         }
+        markDepartmentAsRead();
     }
 
     function loadDeptSchedule() {
@@ -1192,6 +1166,7 @@
                     setTimeout(function() { fill.style.width = targetWidth; }, 50);
                 });
             }, 100);
+            markDepartmentAsRead();
         });
     }
 
