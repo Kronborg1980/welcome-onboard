@@ -247,9 +247,6 @@
         body.light-mode header {
             background: rgba(255, 255, 255, 0.95);
         }
-        body.light-mode .logo-container img {
-            filter: none; /* Logoets rigtige farver i Light Mode */
-        }
         body.light-mode h1, body.light-mode h2, body.light-mode h3 {
             color: var(--text-main);
             text-shadow: none;
@@ -320,7 +317,6 @@
             <span>Crew</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <!-- NY KNAP: Tema Skifter -->
             <span class="material-icons" id="theme-toggle" style="font-size: 1.6rem; cursor: pointer; color: var(--text-main);" onclick="toggleTheme()">light_mode</span>
             <button class="menu-toggle" onclick="toggleMenu()">
                 <span class="material-icons" id="menu-icon" style="font-size: 2rem;">menu</span>
@@ -360,7 +356,6 @@
                 <img src="https://www.smyrilline.dk/wp-content/uploads/2025/04/Norrona.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--glass-border);" alt="M/F Norröna">
                 
                 <div style="padding: 24px;">
-                    <!-- OPDATERET OVERSKRIFT -->
                     <h2 style="margin-bottom: 25px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                         <span class="material-icons" style="color: var(--accent-cyan); font-size: 1.8rem; filter: drop-shadow(0 0 10px var(--accent-cyan));">verified_user</span>
                         Required Onboarding
@@ -669,24 +664,18 @@
         document.getElementById('menu-icon').innerText = nav.classList.contains('active') ? 'close' : 'menu'; 
     }
     
-    // NYT FUNKTION TIL TEMA-SKIFT
+    // NYT FUNKTION TIL TEMA-SKIFT (KORREKT)
     function toggleTheme() {
         var body = document.body;
         var icon = document.getElementById('theme-toggle');
-        var mainLogo = document.getElementById('main-logo-img');
-        var frontLogo = document.getElementById('front-logo-img');
         
         if (body.classList.contains('light-mode')) {
             body.classList.remove('light-mode');
             icon.innerText = 'light_mode';
-            if(mainLogo) mainLogo.style.filter = 'brightness(0) invert(1)';
-            if(frontLogo) frontLogo.style.filter = 'brightness(0) invert(1)';
             localStorage.setItem('norrona_theme', 'dark');
         } else {
             body.classList.add('light-mode');
             icon.innerText = 'dark_mode';
-            if(mainLogo) mainLogo.style.filter = 'none';
-            if(frontLogo) frontLogo.style.filter = 'none';
             localStorage.setItem('norrona_theme', 'light');
         }
     }
@@ -696,10 +685,6 @@
         if (localStorage.getItem('norrona_theme') === 'light') {
             document.body.classList.add('light-mode');
             document.getElementById('theme-toggle').innerText = 'dark_mode';
-            var mainLogo = document.getElementById('main-logo-img');
-            var frontLogo = document.getElementById('front-logo-img');
-            if(mainLogo) mainLogo.style.filter = 'none';
-            if(frontLogo) frontLogo.style.filter = 'none';
         }
     };
 
