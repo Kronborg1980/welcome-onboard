@@ -160,7 +160,6 @@
             aside { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
             aside.open { transform: translateX(0); }
             .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
-            .btn-primary span.material-icons { display: none; }
             .mess-mod-post { flex-direction: column; }
         }
     </style>
@@ -174,7 +173,14 @@
             </div>
             <div class="sidebar-nav">
                 
-                <!-- NY SEKTION TIL SETTINGS / EMAILS -->
+                <!-- NY SEKTION: COMMUNICATIONS -->
+                <div class="nav-group">
+                    <div class="nav-title">Communications</div>
+                    <div class="nav-item" onclick="loadEditor('comm', 'push', this)">
+                        <span class="material-icons" style="color: var(--accent-cyan);">campaign</span> Push Alerts
+                    </div>
+                </div>
+
                 <div class="nav-group">
                     <div class="nav-title">System Settings</div>
                     <div class="nav-item" onclick="loadEditor('settings', 'email_routing', this)">
@@ -238,7 +244,7 @@
         </main>
     </div>
 
-    <div class="toast" id="toast">SYSTEM UPDATED SUCCESSFULLY!</div>
+    <div class="toast" id="toast">SYSTEM UPDATED!</div>
 
 <script>
     var p1 = "AIzaS"; var p2 = "yD1C2q"; var p3 = "R2CR5L"; var p4 = "PA2tps"; var p5 = "8b9_cO"; var p6 = "9WNt13"; var p7 = "iDqc";
@@ -269,8 +275,6 @@
     var crewMessPosts = []; 
     var currentEditorType = 'handbook'; 
     var currentEditorKey = 'general';
-    var tempScheduleBase64 = null;
-    
     var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
     var DEFAULT_DATA = {
@@ -278,17 +282,7 @@
         handbook: { general: [ { title: "Welcome", img: "", video: "", content: "<p>Welcome on board.</p>" } ] },
         quizzes: { universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ] },
         schedules: {},
-        emails: {
-            safety_captain: "captain@smyrilline.com",
-            safety_chief: "chief@smyrilline.com",
-            dept_Rest_Bar: "restbar@smyrilline.com",
-            dept_Galley: "galley@smyrilline.com",
-            dept_Shop: "shop@smyrilline.com",
-            dept_Reception: "reception@smyrilline.com",
-            dept_Housekeeping: "housekeeping@smyrilline.com",
-            dept_Deck: "deck@smyrilline.com",
-            dept_Engine: "engine@smyrilline.com"
-        }
+        emails: { safety_captain: "captain@smyrilline.com", safety_chief: "chief@smyrilline.com", dept_Rest_Bar: "restbar@smyrilline.com", dept_Galley: "galley@smyrilline.com", dept_Shop: "shop@smyrilline.com", dept_Reception: "reception@smyrilline.com", dept_Housekeeping: "housekeeping@smyrilline.com", dept_Deck: "deck@smyrilline.com", dept_Engine: "engine@smyrilline.com" }
     };
 
     function fetchDatabase() {
@@ -299,12 +293,7 @@
                 if(!appData.emails) appData.emails = DEFAULT_DATA.emails;
                 if (typeof appData.ai_knowledge === 'string') { appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }]; }
             } else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
-            var firstItem = document.querySelectorAll('.nav-item')[10]; // Starter på Handbook
-            loadEditor('handbook', 'general', firstItem); 
-        }).catch(function(error) { 
-            appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-            var firstItem = document.querySelectorAll('.nav-item')[10]; 
-            loadEditor('handbook', 'general', firstItem); 
+            loadEditor('handbook', 'general', document.querySelectorAll('.nav-item')[11]); 
         });
 
         db.ref('ai_unanswered').on('value', function(snapshot) {
@@ -322,359 +311,180 @@
 
     function saveToFirebase() {
         extractFormData(); 
-        if(currentEditorType !== 'dept') {
-            db.ref('appData').set(appData).then(function() { 
-                showToast(); 
-            }).catch(function(err) { 
-                alert("Save failed! Fejlbesked: \n" + err.message); 
-            });
-        } else {
-            db.ref('appData').set(appData).then(function() { showToast(); });
-        }
+        db.ref('appData').set(appData).then(function() { showToast("SYNC COMPLETE"); });
     }
 
     function loadEditor(type, key, navElement) {
         extractFormData(); 
         currentEditorType = type; currentEditorKey = key;
         
-        var navItems = document.querySelectorAll('.nav-item');
-        for(var i=0; i<navItems.length; i++) { navItems[i].classList.remove('active'); }
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         if(navElement) navElement.classList.add('active');
-        
-        if(window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('mobile-overlay').style.display = 'none';
-        }
 
-        var titleDisplay = "";
-        if (type === 'ai') titleDisplay = "AI KNOWLEDGE BASE";
-        else if (type === 'dept') titleDisplay = key.replace('_', ' ').toUpperCase() + " DEPARTMENT";
-        else if (type === 'settings') titleDisplay = "EMAIL ROUTING SETTINGS";
-        else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' QUESTIONS' : ' PAGES');
-        
-        document.getElementById('header-title').innerText = titleDisplay;
-        
-        if (type === 'dept') {
+        var container = document.getElementById('editor-container');
+        document.getElementById('header-title').innerText = key.replace('_', ' ').toUpperCase();
+
+        if (type === 'comm') renderPushSender(container);
+        else if (type === 'settings') renderEmailSettings(container);
+        else if (type === 'dept') {
             db.ref('crew_mess/' + key).on('value', function(snapshot) {
                 crewMessPosts = [];
                 if (snapshot.exists()) { snapshot.forEach(function(child) { var data = child.val(); data.id = child.key; crewMessPosts.push(data); }); }
-                if (currentEditorType === 'dept' && currentEditorKey === key) { renderDeptManager(document.getElementById('editor-container')); }
+                if (currentEditorType === 'dept' && currentEditorKey === key) { renderDeptManager(container); }
             });
-        } else {
-            db.ref('crew_mess').off(); 
-            renderCurrentEditor();
-        }
+        } 
+        else if (type === 'ai') renderAITraining(container);
+        else if (type === 'handbook') renderHandbookForms(container);
+        else if (type === 'quiz') renderQuizForms(container);
     }
 
-    function renderCurrentEditor() {
-        var container = document.getElementById('editor-container');
-        if (currentEditorType === 'handbook') renderHandbookForms(container);
-        else if (currentEditorType === 'quiz') renderQuizForms(container);
-        else if (currentEditorType === 'ai') renderAITraining(container);
-        else if (currentEditorType === 'dept') renderDeptManager(container);
-        else if (currentEditorType === 'settings') renderEmailSettings(container);
+    function renderPushSender(container) {
+        container.innerHTML = `
+            <h2><span class="material-icons" style="color:var(--accent-cyan); margin-right:12px;">campaign</span> Broadcast Push Alert</h2>
+            <div class="card" style="border-left: 4px solid var(--accent-cyan);">
+                <h3>Send besked til alle ansatte</h3>
+                <div class="form-group"><label>Overskrift</label><input type="text" id="push-title-input" placeholder="F.eks. Nyt skema"></div>
+                <div class="form-group"><label>Besked</label><textarea id="push-body-input" style="height:100px;" placeholder="Skriv din besked..."></textarea></div>
+                <button class="btn btn-primary" onclick="executePush()"><span class="material-icons">send</span> SEND NOTIFIKATION</button>
+            </div>`;
     }
 
-    // ==========================================
-    // EMAIL SETTINGS RENDERER (NEW)
-    // ==========================================
+    function executePush() {
+        const title = document.getElementById('push-title-input').value;
+        const body = document.getElementById('push-body-input').value;
+        if (!title || !body) return alert("Udfyld titel og besked.");
+        db.ref('notifications').push({ title, body, timestamp: firebase.database.ServerValue.TIMESTAMP })
+        .then(() => { showToast("BESKED SENDT!"); document.getElementById('push-title-input').value = ''; document.getElementById('push-body-input').value = ''; });
+    }
+
     function renderEmailSettings(container) {
         if (!appData.emails) appData.emails = DEFAULT_DATA.emails;
-        
-        var html = '<h2><span class="material-icons" style="color:var(--accent-gold); margin-right:12px;">mail_lock</span> Configure App Recipients</h2>';
-        html += '<p style="color:var(--text-muted); margin-bottom:25px;">Define where system reports and assessments should be sent.</p>';
-
-        // Safety Reports
-        html += '<div class="card" style="border-left: 4px solid var(--danger);">';
-        html += '<h3>Safety Hazard Reports</h3>';
-        html += '<p style="font-size:0.9rem; color:var(--text-muted);">These emails will receive all hazard and incident reports submitted by the crew.</p>';
-        html += '<div class="form-group"><label>Captain\'s Email</label><input type="email" class="input-email" id="email_safety_captain" value="'+(appData.emails.safety_captain || '')+'"></div>';
-        html += '<div class="form-group"><label>Chief Officer\'s Email</label><input type="email" class="input-email" id="email_safety_chief" value="'+(appData.emails.safety_chief || '')+'"></div>';
-        html += '</div>';
-
-        // Assessment Reports
-        html += '<div class="card" style="border-left: 4px solid var(--accent-cyan);">';
-        html += '<h3>Department Clearances (Assessments)</h3>';
-        html += '<p style="font-size:0.9rem; color:var(--text-muted);">When a crew member passes their handbook assessment, the result is sent to their respective leader.</p>';
-        html += '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">';
-        html += '<div class="form-group"><label>Rest/Bar Manager</label><input type="email" class="input-email" id="email_dept_Rest_Bar" value="'+(appData.emails.dept_Rest_Bar || '')+'"></div>';
-        html += '<div class="form-group"><label>Galley Head Chef</label><input type="email" class="input-email" id="email_dept_Galley" value="'+(appData.emails.dept_Galley || '')+'"></div>';
-        html += '<div class="form-group"><label>Shop Manager</label><input type="email" class="input-email" id="email_dept_Shop" value="'+(appData.emails.dept_Shop || '')+'"></div>';
-        html += '<div class="form-group"><label>Reception Manager</label><input type="email" class="input-email" id="email_dept_Reception" value="'+(appData.emails.dept_Reception || '')+'"></div>';
-        html += '<div class="form-group"><label>Housekeeping Manager</label><input type="email" class="input-email" id="email_dept_Housekeeping" value="'+(appData.emails.dept_Housekeeping || '')+'"></div>';
-        html += '<div class="form-group"><label>Deck Operations Leader</label><input type="email" class="input-email" id="email_dept_Deck" value="'+(appData.emails.dept_Deck || '')+'"></div>';
-        html += '<div class="form-group"><label>Engine Room Leader (Chief Eng)</label><input type="email" class="input-email" id="email_dept_Engine" value="'+(appData.emails.dept_Engine || '')+'"></div>';
-        html += '</div>';
-        html += '</div>';
-
-        container.innerHTML = html;
+        var html = '<h2>Email Routing</h2><div class="card">';
+        Object.keys(appData.emails).forEach(k => {
+            html += `<div class="form-group"><label>${k.replace('dept_', '')}</label><input type="email" class="input-email" id="email_${k}" value="${appData.emails[k]}"></div>`;
+        });
+        html += '</div>'; container.innerHTML = html;
     }
 
-    // ==========================================
-    // DEPARTMENT MANAGER 
-    // ==========================================
     function renderDeptManager(container) {
-        tempScheduleBase64 = null;
-
-        var html = '<div style="display:grid; grid-template-columns: 1fr; gap:20px;">';
-        
-        // 1. SCHEDULE UPLOAD
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        var monthOptions = '';
-        months.forEach(function(m) {
-            var sel = (m === currentScheduleMonth) ? 'selected' : '';
-            monthOptions += '<option value="'+m+'" '+sel+'>'+m+'</option>';
+        var monthOptions = months.map(m => `<option value="${m}" ${m === currentScheduleMonth ? 'selected' : ''}>${m}</option>`).join('');
+        var html = `<div class="card"><h3>Manage Schedules</h3><select id="admin-month-select" onchange="changeAdminMonth()">${monthOptions}</select>
+            <div class="photo-upload-box" onclick="document.getElementById('schedule-upload').click()"><span class="material-icons">add_photo_alternate</span> Click to upload</div>
+            <input type="file" id="schedule-upload" style="display:none;" onchange="previewScheduleImage(event)">
+            <div id="schedule-preview-container" style="display:none; margin-top:15px;"><img id="schedule-img-preview" style="max-width:100%;"><br><button class="btn btn-danger" onclick="deleteSchedule()">Delete</button></div></div>
+            <h3>Department Noticeboard</h3><div id="posts-container"></div>`;
+        container.innerHTML = html; loadAdminSchedulePreview(); renderMessPosts();
+    }
+
+    function renderMessPosts() {
+        var html = crewMessPosts.length === 0 ? '<div class="card">No posts.</div>' : '';
+        [...crewMessPosts].reverse().forEach(p => {
+            html += `<div class="mess-mod-post"><div><strong>${p.name}</strong><p>${p.message}</p></div><button class="btn btn-danger" onclick="deletePost('${p.id}')">Delete</button></div>`;
         });
-
-        html += '<div class="card">';
-        html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">';
-        html += '<h3 style="margin:0;"><span class="material-icons" style="vertical-align:middle;">calendar_month</span> Manage Schedules</h3>';
-        html += '<select id="admin-month-select" class="form-select" style="width:auto; padding:10px; margin:0;" onchange="changeAdminMonth()">' + monthOptions + '</select>';
-        html += '</div>';
-        
-        html += '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Upload a schedule for <strong id="admin-month-display" style="color:var(--accent-cyan);">'+currentScheduleMonth+'</strong>.</p>';
-        
-        html += '<div class="photo-upload-box" onclick="document.getElementById(\'schedule-upload\').click()">';
-        html += '<span class="material-icons" style="font-size: 32px; color: var(--accent-cyan); margin-bottom:10px;">add_photo_alternate</span>';
-        html += '<span style="font-weight: 700; color: #fff;">Click to upload image</span>';
-        html += '</div>';
-        html += '<input type="file" id="schedule-upload" accept="image/*" style="display:none;" onchange="previewScheduleImage(event)">';
-        
-        html += '<div id="schedule-preview-container" style="display:none; border:1px solid var(--glass-border); padding:10px; border-radius:10px; background:rgba(0,0,0,0.4); text-align:center;">';
-        html += '<div style="color:var(--success); font-weight:bold; margin-bottom:10px; font-size:0.8rem;">ACTIVE SCHEDULE</div>';
-        html += '<img id="schedule-img-preview" src="" style="max-width:100%; max-height:400px; border-radius:8px;">';
-        html += '<br><button class="btn btn-danger" style="margin-top:10px; font-size:0.8rem; padding:8px 12px;" onclick="deleteSchedule()">Delete '+currentScheduleMonth+'</button>';
-        html += '</div>';
-        html += '</div>';
-
-        // 2. CREW MESS MODERATION
-        html += '<div>';
-        html += '<h3><span class="material-icons" style="color:var(--danger); vertical-align:middle;">forum</span> Department Noticeboard</h3>';
-        html += '<p style="color:var(--text-muted); margin-bottom:15px; font-size:0.9rem;">Review and moderate the internal social feed for this department.</p>';
-
-        if (crewMessPosts.length === 0) {
-            html += '<div class="card" style="text-align:center; padding: 40px; color:var(--text-muted);">No posts active in this department right now.</div>';
-        } else {
-            var displayPosts = [...crewMessPosts].reverse();
-            displayPosts.forEach(function(p) {
-                var dateObj = new Date(p.timestamp);
-                var timeString = dateObj.toLocaleDateString('en-GB') + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-                
-                html += '<div class="mess-mod-post">';
-                html += '  <div class="mess-mod-content">';
-                html += '    <div class="mess-mod-header">';
-                html += '      <span class="mess-mod-name">' + p.name + '</span>';
-                html += '      <span class="mess-mod-badge">' + (p.type || 'text') + '</span>';
-                html += '      <span class="mess-mod-time">' + timeString + '</span>';
-                html += '    </div>';
-                html += '    <div class="mess-mod-body">' + p.message + '</div>';
-                
-                if (p.type === 'image' && p.image) {
-                    html += '<img src="' + p.image + '" class="mess-mod-img">';
-                } else if (p.type === 'poll' && p.pollOptions) {
-                    html += '<div style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">';
-                    p.pollOptions.forEach(function(opt) { html += '&bull; ' + opt.text + ' (' + (opt.votes || 0) + ' votes)<br>'; });
-                    html += '</div>';
-                }
-
-                html += '  </div>';
-                html += '  <button class="btn btn-danger" onclick="deleteDeptMessPost(\'' + p.id + '\')"><span class="material-icons" style="font-size:1.2rem;">delete</span> PURGE</button>';
-                html += '</div>';
-            });
-        }
-        html += '</div></div>';
-
-        container.innerHTML = html;
-        loadAdminSchedulePreview();
+        var target = document.getElementById('posts-container'); if(target) target.innerHTML = html;
     }
 
-    function changeAdminMonth() {
-        currentScheduleMonth = document.getElementById('admin-month-select').value;
-        document.getElementById('admin-month-display').innerText = currentScheduleMonth;
-        var btn = document.querySelector('#schedule-preview-container .btn-danger');
-        if(btn) btn.innerText = "Delete " + currentScheduleMonth;
-        loadAdminSchedulePreview();
-    }
-
-    function loadAdminSchedulePreview() {
-        var currentSchedule = appData.schedules && appData.schedules[currentEditorKey] && appData.schedules[currentEditorKey][currentScheduleMonth] ? appData.schedules[currentEditorKey][currentScheduleMonth] : null;
-        var container = document.getElementById('schedule-preview-container');
-        if(currentSchedule) {
-            document.getElementById('schedule-img-preview').src = currentSchedule;
-            container.style.display = 'block';
-        } else {
-            container.style.display = 'none';
-        }
-    }
-
-    function previewScheduleImage(event) {
-        var file = event.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = new Image();
-                img.onload = function() {
-                    var canvas = document.createElement('canvas');
-                    var MAX_WIDTH = 1200; 
-                    var scaleSize = MAX_WIDTH / img.width;
-                    if(scaleSize > 1) scaleSize = 1;
-                    canvas.width = img.width * scaleSize; 
-                    canvas.height = img.height * scaleSize;
-                    var ctx = canvas.getContext('2d'); 
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    var b64 = canvas.toDataURL('image/jpeg', 0.85); 
-                    
-                    if(!appData.schedules) appData.schedules = {};
-                    if(!appData.schedules[currentEditorKey]) appData.schedules[currentEditorKey] = {};
-                    
-                    appData.schedules[currentEditorKey][currentScheduleMonth] = b64;
-                    
-                    loadAdminSchedulePreview();
-                    saveToFirebase();
-                }
-                img.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function deleteSchedule() {
-        if(confirm("Remove the schedule for " + currentScheduleMonth + "?")) {
-            if(appData.schedules && appData.schedules[currentEditorKey]) {
-                appData.schedules[currentEditorKey][currentScheduleMonth] = null;
-                loadAdminSchedulePreview();
-                saveToFirebase();
-            }
-        }
-    }
-
-    function deleteDeptMessPost(postId) {
-        if(confirm("Permanently delete this post from the department board?")) {
-            db.ref('crew_mess/' + currentEditorKey + '/' + postId).remove().then(function() { showToast(); });
-        }
-    }
-
-    // ==========================================
-    // AI TRAINING & SUGGESTIONS UI
-    // ==========================================
     function renderAITraining(container) {
-        if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
-        var html = '<div id="ai-suggestions-container"></div>';
-        html += '<div class="insights-box"><h3><span class="material-icons">tips_and_updates</span> AI Insights: Top 10 Unanswered Questions</h3><p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">This is what your crew is asking, but the AI doesn\'t know the answer to.</p><div id="ai-insights-container">Loading data...</div></div>';
-        html += '<h2>AI Chapters <button class="btn btn-outline" onclick="addAITopic()" style="font-size:0.8rem; padding: 8px 12px; margin-left:15px;">+ Add Topic</button></h2>';
-        
-        for(var idx=0; idx<appData.ai_knowledge.length; idx++) {
-            var item = appData.ai_knowledge[idx];
-            var displayTitle = item.topic ? item.topic : "New Chapter";
-            var isOpenClass = (appData.ai_knowledge.length === 1) ? 'open' : '';
-
-            html += '<div class="card ai-card ' + isOpenClass + '" data-idx="'+idx+'" id="ai-card-'+idx+'">';
-            html += '<div class="ai-card-header" onclick="toggleAICard('+idx+')"><h3 id="ai-title-display-'+idx+'"><span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + displayTitle + '</h3><span class="material-icons expand-icon">expand_more</span></div>';
-            html += '<div class="ai-card-body"><div class="form-group"><label>Chapter / Topic Name</label><input type="text" class="input-ai-topic" value="'+(item.topic||'')+'" placeholder="e.g. Salaries, WiFi..." oninput="updateAITitleDisplay(this.value, '+idx+')"></div><div class="form-group"><label>Information</label><div class="editor-wrapper"><div class="quill-container ai-quill-container">'+(item.content||'')+'</div></div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteAITopic('+idx+')">Delete Chapter</button></div></div></div>'; 
-        }
-        container.innerHTML = html;
-        initQuillEditors(); updateInsightsUI(); updateSuggestionsUI();
-    }
-
-    function updateSuggestionsUI() {
-        var box = document.getElementById('ai-suggestions-container'); if(!box) return;
-        if (pendingSuggestions.length === 0) { box.innerHTML = ''; return; }
-        var html = '<h2 style="margin-top:0;"><span class="material-icons" style="color:var(--accent-cyan); margin-right:12px;">rate_review</span> Pending Crew Suggestions</h2><p style="color:var(--text-muted); margin-bottom: 20px;">Review, edit, and approve these answers suggested by your crew members.</p>';
-        pendingSuggestions.forEach(function(sug, idx) {
-            html += '<div class="suggestion-box"><div class="suggestion-header"><div class="suggestion-q"><span class="material-icons">help_outline</span> Q: ' + sug.question + '</div><div style="font-size: 0.8rem; color: var(--text-muted);">Suggested: ' + new Date(sug.timestamp).toLocaleDateString() + '</div></div><div class="form-group"><label>Suggested Answer (Edit before approving):</label><textarea id="sug-edit-'+idx+'" class="form-textarea" style="min-height: 80px; margin-bottom: 10px;">' + sug.suggestion + '</textarea></div><div style="display:flex; justify-content:space-between; align-items:center;"><button class="btn btn-danger" style="padding:8px 15px;" onclick="rejectSuggestion(\''+sug.id+'\')"><span class="material-icons">delete</span> Reject</button><button class="btn btn-success" style="padding:8px 15px;" onclick="approveSuggestion('+idx+', \''+sug.id+'\', \''+sug.question.replace(/'/g, "\\'")+'\')"><span class="material-icons">check_circle</span> Approve & Add to AI</button></div></div>';
+        var html = '<div id="ai-suggestions-container"></div><div id="ai-insights-container"></div><h2>AI Chapters <button class="btn btn-outline" onclick="addAITopic()">+ Add</button></h2>';
+        appData.ai_knowledge.forEach((item, idx) => {
+            html += `<div class="card ai-card" id="ai-card-${idx}"><div class="ai-card-header" onclick="toggleAICard(${idx})"><h3>${item.topic}</h3></div>
+                <div class="ai-card-body"><input type="text" class="input-ai-topic" value="${item.topic}"><div class="editor-wrapper"><div class="quill-container ai-quill-container">${item.content}</div></div><button class="btn btn-danger" onclick="deleteAITopic(${idx})">Delete</button></div></div>`;
         });
-        box.innerHTML = html;
+        container.innerHTML = html; initQuillEditors(); updateInsightsUI(); updateSuggestionsUI();
     }
-
-    function approveSuggestion(idx, firebaseId, question) {
-        var editedAnswer = document.getElementById('sug-edit-'+idx).value;
-        if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
-        appData.ai_knowledge.unshift({ topic: "Q: " + question, content: "<p>" + editedAnswer + "</p>" });
-        db.ref('appData').set(appData).then(function() { db.ref('ai_suggestions/' + firebaseId).remove(); showToast(); renderCurrentEditor(); }).catch(function(err) { alert("Failed to approve. Check Firebase Rules."); });
-    }
-
-    function rejectSuggestion(firebaseId) { if(confirm("Delete this suggestion permanently?")) { db.ref('ai_suggestions/' + firebaseId).remove(); } }
-    
-    function updateInsightsUI() {
-        var box = document.getElementById('ai-insights-container'); if(!box) return;
-        if (unansweredQuestions.length === 0) { box.innerHTML = '<div style="color: var(--led-green); font-weight:bold;">No unanswered questions right now. The AI knows everything!</div>'; return; }
-        var counts = {}; unansweredQuestions.forEach(function(item) { var cleanedQ = item.q.toLowerCase().trim(); counts[cleanedQ] = (counts[cleanedQ] || 0) + 1; });
-        var sortedCounts = Object.keys(counts).map(function(k) { return { q: k, count: counts[k] }; }); sortedCounts.sort(function(a, b) { return b.count - a.count; });
-        var html = ''; for(var i=0; i<Math.min(10, sortedCounts.length); i++) { html += '<div class="insight-item"><div class="insight-text">"' + sortedCounts[i].q + '"</div><div class="insight-count">Asked ' + sortedCounts[i].count + 'x</div></div>'; }
-        html += '<button class="btn btn-danger" style="margin-top:15px; font-size:0.8rem; padding: 6px 12px;" onclick="clearInsights()"><span class="material-icons" style="font-size:1rem;">delete</span> Clear List</button>';
-        box.innerHTML = html;
-    }
-    
-    function clearInsights() { if(confirm("Are you sure you want to delete all logged questions? This cannot be undone.")) { db.ref('ai_unanswered').remove(); } }
-    function toggleAICard(idx) { var card = document.getElementById('ai-card-'+idx); if(card) { card.classList.toggle('open'); } }
-    function updateAITitleDisplay(value, idx) { var display = value ? value : "New Chapter"; document.getElementById('ai-title-display-'+idx).innerHTML = '<span class="material-icons" style="color: var(--accent-gold);">folder</span> ' + display; }
-    function addAITopic() { extractFormData(); if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = []; appData.ai_knowledge.push({ topic: "New Chapter", content: "<p>Enter secret info here...</p>" }); renderCurrentEditor(); setTimeout(function() { var newIdx = appData.ai_knowledge.length - 1; var newCard = document.getElementById('ai-card-'+newIdx); if(newCard) newCard.classList.add('open'); document.querySelector('.content-area').scrollTop = document.querySelector('.content-area').scrollHeight; }, 50); }
-    function deleteAITopic(idx) { if(confirm('Delete this AI chapter?')) { appData.ai_knowledge.splice(idx, 1); renderCurrentEditor(); } }
 
     function renderHandbookForms(container) {
-        if (!appData.handbook) appData.handbook = {}; var slides = appData.handbook[currentEditorKey] || [];
-        var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()" style="font-size:0.8rem; padding: 8px 12px; margin-left:15px;">+ Add Page</button></h2>';
-        for(var idx=0; idx<slides.length; idx++) {
-            var slide = slides[idx];
-            html += '<div class="card handbook-card" data-idx="'+idx+'"><div class="form-group"><label>Page Title</label><input type="text" class="input-title" value="'+(slide.title||'')+'"></div><div class="form-group"><label>Header Image URL</label><input type="url" class="input-img" value="'+(slide.img||'')+'"></div><div class="form-group"><label>YouTube Embed Link</label><input type="url" class="input-video" value="'+(slide.video||'')+'"></div><div class="form-group"><label>Page Content</label><div class="editor-wrapper"><div class="quill-container">'+(slide.content||'')+'</div></div></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteHandbookSlide('+idx+')">Delete</button></div></div>';
-        }
+        var slides = appData.handbook[currentEditorKey] || [];
+        var html = '<h2>Manage Pages <button class="btn btn-outline" onclick="addHandbookSlide()">+ Add Page</button></h2>';
+        slides.forEach((slide, idx) => {
+            html += `<div class="card handbook-card" data-idx="${idx}">
+                <div class="form-group"><label>Title</label><input type="text" class="input-title" value="${slide.title||''}"></div>
+                <div class="form-group"><label>Image URL</label><input type="url" class="input-img" value="${slide.img||''}"></div>
+                <div class="form-group"><label>Content</label><div class="editor-wrapper"><div class="quill-container">${slide.content||''}</div></div></div>
+                <button class="btn btn-danger" onclick="deleteHandbookSlide(${idx})">Delete</button></div>`;
+        });
         container.innerHTML = html; initQuillEditors();
     }
 
-    function initQuillEditors() {
-        var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'header': [1, 2, 3, false] }], ['link', 'clean']];
-        document.querySelectorAll('.quill-container').forEach(function(el) { if (!el.classList.contains('ql-container')) { new Quill(el, { theme: 'snow', modules: { toolbar: toolbarOptions } }); } });
-    }
-
-    function addHandbookSlide() { extractFormData(); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New Page", img: "", video: "", content: "<p>Start typing here...</p>" }); renderCurrentEditor(); }
-    function deleteHandbookSlide(idx) { if(confirm('Delete?')) { appData.handbook[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
-
     function renderQuizForms(container) {
-        if (!appData.quizzes) appData.quizzes = {}; var questions = appData.quizzes[currentEditorKey] || [];
-        var html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()" style="font-size:0.8rem; padding: 8px 12px; margin-left:15px;">+ Add Question</button></h2>';
-        for(var idx=0; idx<questions.length; idx++) {
-            var q = questions[idx]; var optHtml = ''; var opts = q.options || [];
-            for(var optIdx=0; optIdx<opts.length; optIdx++) { optHtml += '<div class="option-row"><input type="text" class="input-opt" value="'+opts[optIdx]+'"><button onclick="removeQuizOption('+idx+', '+optIdx+')"><span class="material-icons">close</span></button></div>'; }
-            var selHtml = ''; for(var optIdx2=0; optIdx2<opts.length; optIdx2++) { selHtml += '<option value="'+optIdx2+'" '+(q.ans == optIdx2 ? 'selected' : '')+'>Option '+(optIdx2 + 1)+': '+opts[optIdx2]+'</option>'; }
-            html += '<div class="card quiz-card" data-idx="'+idx+'"><div class="form-group"><label>Question</label><input type="text" class="input-q" value="'+(q.q||'')+'"></div><div class="form-group"><label>Options</label>'+optHtml+'<button class="btn btn-outline" style="padding: 8px 15px; margin-top:10px; font-size:0.8rem;" onclick="addQuizOption('+idx+')">+ Add Option</button></div><div class="form-group"><label>Correct Answer Index</label><select class="input-ans">'+selHtml+'</select></div><div style="text-align:right;"><button class="btn btn-danger" onclick="deleteQuizQuestion('+idx+')">Delete</button></div></div>';
-        }
+        var questions = appData.quizzes[currentEditorKey] || [];
+        var html = '<h2>Questions <button class="btn btn-outline" onclick="addQuizQuestion()">+ Add</button></h2>';
+        questions.forEach((q, idx) => {
+            var opts = (q.options || []).map((o, oi) => `<div class="option-row"><input type="text" class="input-opt" value="${o}"><button onclick="removeQuizOption(${idx}, ${oi})">X</button></div>`).join('');
+            html += `<div class="card quiz-card" data-idx="${idx}"><input type="text" class="input-q" value="${q.q}"><div class="form-group">${opts}<button class="btn btn-outline" onclick="addQuizOption(${idx})">+ Option</button></div>
+                <select class="input-ans">${(q.options||[]).map((o, oi) => `<option value="${oi}" ${q.ans == oi ? 'selected' : ''}>Option ${oi+1}</option>`).join('')}</select>
+                <button class="btn btn-danger" onclick="deleteQuizQuestion(${idx})">Delete</button></div>`;
+        });
         container.innerHTML = html;
     }
 
-    function addQuizQuestion() { extractFormData(); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = []; appData.quizzes[currentEditorKey].push({ q: "Question?", options: ["A", "B"], ans: 0 }); renderCurrentEditor(); }
-    function deleteQuizQuestion(idx) { if(confirm('Delete?')) { appData.quizzes[currentEditorKey].splice(idx, 1); renderCurrentEditor(); } }
-    function addQuizOption(idx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.push("New"); renderCurrentEditor(); }
-    function removeQuizOption(idx, optIdx) { extractFormData(); appData.quizzes[currentEditorKey][idx].options.splice(optIdx, 1); renderCurrentEditor(); }
+    // --- HELPER FUNCTIONS ---
+    function initQuillEditors() { document.querySelectorAll('.quill-container').forEach(el => { if (!el.classList.contains('ql-container')) { new Quill(el, { theme: 'snow' }); } }); }
+    function changeAdminMonth() { currentScheduleMonth = document.getElementById('admin-month-select').value; loadAdminSchedulePreview(); }
+    function loadAdminSchedulePreview() {
+        var s = appData.schedules[currentEditorKey] && appData.schedules[currentEditorKey][currentScheduleMonth];
+        var c = document.getElementById('schedule-preview-container'); if(c) { c.style.display = s ? 'block' : 'none'; if(s) document.getElementById('schedule-img-preview').src = s; }
+    }
+    function previewScheduleImage(e) {
+        var f = e.target.files[0]; if(f) {
+            var r = new FileReader(); r.onload = function(ev) {
+                if(!appData.schedules[currentEditorKey]) appData.schedules[currentEditorKey] = {};
+                appData.schedules[currentEditorKey][currentScheduleMonth] = ev.target.result;
+                loadAdminSchedulePreview(); saveToFirebase();
+            }; r.readAsDataURL(f);
+        }
+    }
+    function deleteSchedule() { if(confirm("Slet?")) { appData.schedules[currentEditorKey][currentScheduleMonth] = null; loadAdminSchedulePreview(); saveToFirebase(); } }
+    function deletePost(id) { db.ref('crew_mess/' + currentEditorKey + '/' + id).remove(); }
+    function toggleAICard(idx) { document.getElementById('ai-card-'+idx).classList.toggle('open'); }
+    function addAITopic() { appData.ai_knowledge.push({ topic: "New", content: "" }); renderAITraining(document.getElementById('editor-container')); }
+    function deleteAITopic(idx) { appData.ai_knowledge.splice(idx, 1); renderAITraining(document.getElementById('editor-container')); }
+    function addHandbookSlide() { if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = []; appData.handbook[currentEditorKey].push({ title: "New", img: "", content: "" }); renderHandbookForms(document.getElementById('editor-container')); }
+    function deleteHandbookSlide(idx) { appData.handbook[currentEditorKey].splice(idx, 1); renderHandbookForms(document.getElementById('editor-container')); }
+    function addQuizQuestion() { if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = []; appData.quizzes[currentEditorKey].push({ q: "?", options: ["A", "B"], ans: 0 }); renderQuizForms(document.getElementById('editor-container')); }
+    function deleteQuizQuestion(idx) { appData.quizzes[currentEditorKey].splice(idx, 1); renderQuizForms(document.getElementById('editor-container')); }
+    function addQuizOption(idx) { appData.quizzes[currentEditorKey][idx].options.push("New"); renderQuizForms(document.getElementById('editor-container')); }
+    function removeQuizOption(idx, oi) { appData.quizzes[currentEditorKey][idx].options.splice(oi, 1); renderQuizForms(document.getElementById('editor-container')); }
 
     function extractFormData() {
-        if (!document.getElementById('editor-container').innerHTML) return;
-        
-        // Settings Extraction
+        var container = document.getElementById('editor-container'); if(!container.innerHTML) return;
         if (currentEditorType === 'settings') {
-            if(!appData.emails) appData.emails = {};
-            var emailInputs = document.querySelectorAll('.input-email');
-            emailInputs.forEach(function(inp) {
-                var key = inp.id.replace('email_', '');
-                appData.emails[key] = inp.value;
+            document.querySelectorAll('.input-email').forEach(inp => { appData.emails[inp.id.replace('email_', '')] = inp.value; });
+        } else if (currentEditorType === 'ai') {
+            appData.ai_knowledge = Array.from(document.querySelectorAll('.ai-card')).map(card => ({ topic: card.querySelector('.input-ai-topic').value, content: card.querySelector('.ql-editor').innerHTML }));
+        } else if (currentEditorType === 'handbook') {
+            document.querySelectorAll('.handbook-card').forEach(card => {
+                var idx = card.getAttribute('data-idx');
+                appData.handbook[currentEditorKey][idx].title = card.querySelector('.input-title').value;
+                appData.handbook[currentEditorKey][idx].img = card.querySelector('.input-img').value;
+                appData.handbook[currentEditorKey][idx].content = card.querySelector('.ql-editor').innerHTML;
             });
-        } 
-        else if (currentEditorType === 'ai') {
-            var cards = document.querySelectorAll('.ai-card'); appData.ai_knowledge = [];
-            for(var i=0; i<cards.length; i++) { var topic = cards[i].querySelector('.input-ai-topic').value; var qlEditor = cards[i].querySelector('.ql-editor'); var content = qlEditor ? qlEditor.innerHTML : ''; appData.ai_knowledge.push({ topic: topic, content: content }); }
-        } 
-        else if (currentEditorType === 'handbook') {
-            var cards = document.querySelectorAll('.handbook-card'); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
-            for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.handbook[currentEditorKey][idx].title = cards[i].querySelector('.input-title').value; appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value; appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value; var qlEditor = cards[i].querySelector('.ql-editor'); if(qlEditor) { appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML; } }
-        } 
-        else if (currentEditorType === 'quiz') {
-            var cards = document.querySelectorAll('.quiz-card'); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = [];
-            for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.quizzes[currentEditorKey][idx].q = cards[i].querySelector('.input-q').value; appData.quizzes[currentEditorKey][idx].ans = parseInt(cards[i].querySelector('.input-ans').value); var optInputs = cards[i].querySelectorAll('.input-opt'); appData.quizzes[currentEditorKey][idx].options = []; for(var j=0; j<optInputs.length; j++) { appData.quizzes[currentEditorKey][idx].options.push(optInputs[j].value); } }
+        } else if (currentEditorType === 'quiz') {
+            document.querySelectorAll('.quiz-card').forEach(card => {
+                var idx = card.getAttribute('data-idx');
+                appData.quizzes[currentEditorKey][idx].q = card.querySelector('.input-q').value;
+                appData.quizzes[currentEditorKey][idx].ans = parseInt(card.querySelector('.input-ans').value);
+                appData.quizzes[currentEditorKey][idx].options = Array.from(card.querySelectorAll('.input-opt')).map(o => o.value);
+            });
         }
     }
 
-    function showToast() { var t = document.getElementById('toast'); t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 3000); }
-    window.onload = function() { fetchDatabase(); };
+    function updateInsightsUI() {
+        var box = document.getElementById('ai-insights-container'); if(!box) return;
+        var html = '<h3>Unanswered Questions</h3>';
+        unansweredQuestions.forEach(q => { html += `<div class="insight-item">${q.q}</div>`; });
+        box.innerHTML = html;
+    }
+    function updateSuggestionsUI() {
+        var box = document.getElementById('ai-suggestions-container'); if(!box) return;
+        var html = '';
+        pendingSuggestions.forEach(s => { html += `<div class="suggestion-box"><strong>${s.question}</strong><p>${s.suggestion}</p></div>`; });
+        box.innerHTML = html;
+    }
+
+    function showToast(m) { var t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    window.onload = fetchDatabase;
 </script>
 </body>
 </html>
