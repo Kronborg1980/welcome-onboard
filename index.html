@@ -13,6 +13,8 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- ADDED: Firebase Messaging SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
     <style>
         :root { 
@@ -401,6 +403,10 @@
             <span>Crew</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- ADDED: Notification bell with click event -->
+            <div style="position: relative; cursor: pointer;" onclick="requestNotificationPermission()" title="Enable Notifications">
+                <span class="material-icons" id="notif-icon" style="font-size: 1.6rem; color: var(--danger);">notifications_off</span>
+            </div>
             <span class="material-icons" id="theme-toggle" style="font-size: 1.6rem; cursor: pointer; color: var(--text-main);" onclick="toggleTheme()">light_mode</span>
             <button class="menu-toggle" onclick="toggleMenu()">
                 <span class="material-icons" id="menu-icon" style="font-size: 2rem;">menu</span>
@@ -811,9 +817,20 @@
     var activeDepartment = null;
     var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
+    var db = null;
+    var messaging = null;
+
     try {
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        var db = firebase.database();
+        db = firebase.database();
+        
+        // ADDED: Initialize Messaging
+        try {
+            messaging = firebase.messaging();
+        } catch(e) {
+            console.log("Firebase Messaging not supported or blocked");
+        }
+
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { LIVE_DATA = snapshot.val(); }
             if (!LIVE_DATA.schedules) LIVE_DATA.schedules = {};
@@ -825,6 +842,46 @@
         });
     } catch(e) { goToView('view-home'); }
 
+    // ==========================================
+    // ADDED: NOTIFICATION LOGIC
+    // ==========================================
+    function requestNotificationPermission() {
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                document.getElementById('notif-icon').innerText = 'notifications_active';
+                document.getElementById('notif-icon').style.color = 'var(--success)';
+                setupMessagingToken();
+            } else {
+                alert("Notifications denied. Please enable them in your browser settings.");
+            }
+        });
+    }
+
+    function setupMessagingToken() {
+        const vapidKey = 'BA1Aj80LMZQ0NmrBtTCbxCkue86yux73-O_-e9ut49RbabB0gjHJGj_OipWUGUj_7jVDzo3ACvBo6ksh7Et2yTc';
+        if (!messaging) return;
+        messaging.getToken({ vapidKey: vapidKey }).then((currentToken) => {
+            if (currentToken) {
+                console.log("Device Token received");
+                db.ref('tokens/' + currentToken.substring(0, 20)).set({
+                    token: currentToken,
+                    lastSeen: new Date().toISOString()
+                });
+            }
+        }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+        });
+    }
+
+    if (messaging) {
+        messaging.onMessage((payload) => {
+            alert(payload.notification.title + "\n" + payload.notification.body);
+        });
+    }
+
+    // ==========================================
+    // ORIGINAL APP LOGIC
+    // ==========================================
     function getAvatarColor(name) {
         var colors = ['#FF4B4B', '#00E5FF', '#FBB900', '#B070FF', '#00DF89', '#FF8F00'];
         var hash = 0;
@@ -857,6 +914,12 @@
             document.body.classList.add('light-mode');
             document.getElementById('theme-toggle').innerText = 'dark_mode';
         }
+        // Check Notification Permission on load
+        if (Notification.permission === 'granted') {
+            document.getElementById('notif-icon').innerText = 'notifications_active';
+            document.getElementById('notif-icon').style.color = 'var(--success)';
+            setupMessagingToken();
+        }
     };
 
     function toggleSubMenu(id) { document.getElementById(id).classList.toggle('active'); }
@@ -869,9 +932,6 @@
         window.scrollTo(0,0);
     }
 
-    // ==========================================
-    // IMAGE MODAL LOGIC (FULLSCREEN)
-    // ==========================================
     function openImageModal(src) {
         var modal = document.getElementById("imageModal");
         var modalImg = document.getElementById("img01");
@@ -883,9 +943,6 @@
         document.getElementById("imageModal").style.display = "none";
     }
 
-    // ==========================================
-    // DEPARTMENT HUB LOGIC
-    // ==========================================
     function goToDepartment() {
         var savedDept = localStorage.getItem('norrona_my_dept');
         if (savedDept) {
@@ -940,9 +997,6 @@
         }
     }
 
-    // ==========================================
-    // CREW MESS LOGIC 
-    // ==========================================
     var currentMessType = 'text';
     var currentMessImageBase64 = null;
 
@@ -1118,9 +1172,6 @@
         });
     }
 
-    // ==========================================
-    // MULTI-PHOTO SAFETY REPORTING LOGIC
-    // ==========================================
     var currentReportImages = [];
 
     function updateReportDesc() {
@@ -1145,7 +1196,7 @@
         document.getElementById('report-action').value = ""; 
         currentReportImages = [];
         renderReportPhotoPreviews();
-        updateReportDesc(); // Opdater infoboksen med det samme
+        updateReportDesc();
         goToView('view-reporting');
     }
 
@@ -1253,9 +1304,6 @@
         });
     }
 
-    // ==========================================
-    // HANDBOOK RENDERER
-    // ==========================================
     var handbookFlow = []; var currentHbIdx = 0;
     function openHandbook(dept) {
         if(!firebaseActive || !LIVE_DATA.handbook) return;
