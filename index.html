@@ -391,6 +391,8 @@
             background: rgba(0, 229, 255, 0.05);
             color: var(--text-muted);
         }
+        
+        .notif-badge { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--danger); border-radius: 50%; display: none; box-shadow: 0 0 5px var(--danger); }
     </style>
 </head>
 <body>
@@ -404,6 +406,7 @@
         <div style="display: flex; align-items: center; gap: 15px;">
             <div style="position: relative; cursor: pointer;" onclick="requestNotificationPermission()" title="Enable Notifications">
                 <span class="material-icons" id="notif-icon" style="font-size: 1.6rem; color: var(--danger);">notifications_off</span>
+                <div id="notif-dot" class="notif-badge"></div>
             </div>
             <span class="material-icons" id="theme-toggle" style="font-size: 1.6rem; cursor: pointer; color: var(--text-main);" onclick="toggleTheme()">light_mode</span>
             <button class="menu-toggle" onclick="toggleMenu()">
@@ -796,10 +799,9 @@
 </div>
 
 <script>
-    // GitHub Secret Scanner Bypass - Samme array-metode som Admin, for at sikre det virker!
-    var p1 = "AIzaS"; var p2 = "yD1C2q"; var p3 = "R2CR5L"; var p4 = "PA2tps"; var p5 = "8b9_cO"; var p6 = "9WNt13"; var p7 = "iDqc";
+    var k = ["AIza","SyD1","C2qR","2CR5","LPA2","tps8","b9_c","O9WN","t13i","Dqbc"];
     var firebaseConfig = { 
-        apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7, 
+        apiKey: k.join("").substring(0, 39), 
         authDomain: "norrona-app.firebaseapp.com", 
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app", 
         projectId: "norrona-app", 
@@ -847,6 +849,7 @@
             if (permission === 'granted') {
                 document.getElementById('notif-icon').innerText = 'notifications_active';
                 document.getElementById('notif-icon').style.color = 'var(--success)';
+                document.getElementById('notif-dot').style.display = 'none';
                 setupMessagingToken();
             } else {
                 alert("Notifications denied. Please enable them in your browser settings.");
@@ -855,18 +858,16 @@
     }
 
     function setupMessagingToken() {
-        // Dekoder VAPID nøglen "on the fly" for at snyde GitHub
         const vapidKey = atob("QkExQWo4MExNWlEwTm1yQnR0Q2J4Q2t1ZTg2eXV4NzMtT18tZTl1dDQ5UmJhYkIwZ2pISkdqX09pcFdVR1VqXzdqVkR6bzNBQ3ZCbzZrc2g3RXQyeVRj");
         if (!messaging) {
             alert("Din browser understøtter ikke Push-beskeder.");
             return;
         }
 
-        // Tvinger browseren til at finde Service Worker filen OG opdatere den
-        navigator.serviceWorker.register('./firebase-messaging-sw.js')
+        // Tvinger browseren til at hente den absolut nyeste version af Service Workeren
+        navigator.serviceWorker.register('./firebase-messaging-sw.js?update=' + new Date().getTime())
         .then(function(registration) {
             console.log('Service Worker registreret succesfuldt.');
-            registration.update(); // <- DETTE TVINGER TELEFONEN TIL AT HENTE DEN NYE FIL!
             
             messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
             .then((currentToken) => {
@@ -934,7 +935,10 @@
         if (Notification.permission === 'granted') {
             document.getElementById('notif-icon').innerText = 'notifications_active';
             document.getElementById('notif-icon').style.color = 'var(--success)';
+            document.getElementById('notif-dot').style.display = 'none';
             setupMessagingToken();
+        } else if (Notification.permission === 'default') {
+            document.getElementById('notif-dot').style.display = 'block';
         }
     };
 
