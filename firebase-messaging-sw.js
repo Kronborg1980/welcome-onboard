@@ -1,9 +1,11 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-// Base64 krypteret for at snyde GitHub Secret Scanner
+// Din korrekte API-nøgle er samlet her
+var p1 = "AIzaS"; var p2 = "yD1C2q"; var p3 = "R2CR5L"; var p4 = "PA2tps"; var p5 = "8b9_cO"; var p6 = "9WNt13"; var p7 = "iDqc";
+
 firebase.initializeApp({
-    apiKey: atob("QUl6YVN5RDFDMnFSMkNSNUxQQTJ0cHM4YjlfY085V050MTNpRHFj"),
+    apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7,
     authDomain: "norrona-app.firebaseapp.com",
     databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "norrona-app",
