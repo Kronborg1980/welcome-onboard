@@ -53,7 +53,7 @@
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px; 
             border-bottom: 1px solid var(--glass-border); 
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            transition: background 0.3s;
+            transition: background 0.3s, border-color 0.3s;
         }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { height: 35px; opacity: 0.95; transition: filter 0.3s; } 
@@ -74,7 +74,7 @@
         h1, h2, h3 { font-weight: 800; margin-bottom: 15px; line-height: 1.3; color: var(--text-main); text-shadow: 0 2px 10px rgba(0,0,0,0.5); transition: color 0.3s; }
         h1 { font-size: 2rem; letter-spacing: -0.5px; }
         h2 { font-size: 1.4rem; padding-bottom: 10px;}
-        p, li { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; }
+        p, li { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; transition: color 0.3s; }
         
         .card { 
             background: var(--glass-bg); 
@@ -145,9 +145,9 @@
         #view-voyage { background: transparent; min-height: 100vh; padding: 0; }
         .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
         #map { width: 100%; height: 100%; background: #000; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1; transition: filter 0.3s; }
-        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
+        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; transition: background 0.3s;}
         
-        .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; border-top: 1px solid var(--glass-border); }
+        .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; border-top: 1px solid var(--glass-border); transition: background 0.3s, border-color 0.3s;}
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .grid-item { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(255,255,255,0.02);}
         .grid-item .label { font-size: 0.7rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 800; width: 100%; text-align: center; }
@@ -199,6 +199,7 @@
             margin-bottom: 20px; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 229, 255, 0.05);
             overflow: hidden;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
         .onboarding-step::before {
             content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
@@ -223,6 +224,7 @@
             font-weight: 900; font-size: 1.1rem; flex-shrink: 0; 
             border: 2px solid var(--accent-cyan);
             box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            transition: background 0.3s;
         }
         .onboarding-step.step-2 .step-badge {
             color: var(--accent-gold);
@@ -234,16 +236,16 @@
            LIGHT MODE OVERRIDES 
            ========================================== */
         body.light-mode {
-            --bg-dark: #f0f4f8;
-            --text-main: #00121a;
-            --text-muted: #4a5568;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(0, 74, 89, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+            --bg-dark: #eef2f6;
+            --text-main: #0a192f;
+            --text-muted: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(0, 74, 89, 0.15);
+            --glass-shadow: 0 10px 40px 0 rgba(0, 74, 89, 0.08);
             --primary-navy: #ffffff;
         }
         body.light-mode header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
         }
         body.light-mode .logo-container img {
             filter: none; /* Logoets rigtige farver i Light Mode */
@@ -252,16 +254,23 @@
             color: var(--text-main);
             text-shadow: none;
         }
-        body.light-mode .onboarding-step h2 {
-            color: var(--text-main);
+        
+        /* Lyse og lækre onboarding kasser */
+        body.light-mode .onboarding-step {
+            background: linear-gradient(145deg, #ffffff, #f1f8fc);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 74, 89, 0.05), inset 0 0 20px rgba(0, 229, 255, 0.05);
         }
-        body.light-mode .onboarding-step .step-badge {
-            background: rgba(255,255,255,0.8);
+        body.light-mode .onboarding-step.step-2 {
+            background: linear-gradient(145deg, #ffffff, #fffcf0);
+            border: 1px solid rgba(251, 185, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 74, 89, 0.05), inset 0 0 20px rgba(251, 185, 0, 0.05);
         }
-        body.light-mode .onboarding-step p {
-            color: var(--text-muted);
+        body.light-mode .step-badge {
+            background: #ffffff;
         }
-        body.light-mode .mess-post, body.light-mode .card, body.light-mode .onboarding-step {
+
+        body.light-mode .mess-post, body.light-mode .card {
              box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         body.light-mode .voyage-map-container #map {
@@ -273,6 +282,11 @@
         body.light-mode .btn-outline {
             color: var(--primary-blue);
             border-color: var(--primary-blue);
+        }
+        body.light-mode .btn-danger-outline {
+            background: #ffffff;
+            border: 1px solid var(--danger);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.1);
         }
         body.light-mode .btn-dept {
             background: rgba(255,255,255,0.6);
@@ -302,7 +316,7 @@
 <div id="app-shell">
     <header>
         <div class="logo-container" onclick="goToView('view-home')">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" alt="Smyril Line">
+            <img id="main-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" alt="Smyril Line">
             <span>Crew</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
@@ -337,7 +351,7 @@
              ========================================== -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
-                <img id="main-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; opacity:0.95;" alt="Smyril Line Logo">
+                <img id="front-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; opacity:0.95; transition: filter 0.3s;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--accent-cyan); font-weight: 600; letter-spacing: 1px;">CREW PORTAL</p>
             </div>
@@ -346,12 +360,13 @@
                 <img src="https://www.smyrilline.dk/wp-content/uploads/2025/04/Norrona.jpg" onerror="this.onerror=null; this.src='https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg';" style="width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--glass-border);" alt="M/F Norröna">
                 
                 <div style="padding: 24px;">
-                    <h2 style="margin-bottom: 25px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                    <!-- OPDATERET OVERSKRIFT -->
+                    <h2 style="margin-bottom: 25px; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
                         <span class="material-icons" style="color: var(--accent-cyan); font-size: 1.8rem; filter: drop-shadow(0 0 10px var(--accent-cyan));">verified_user</span>
                         Required Onboarding
                     </h2>
                     
-                    <!-- TRIN 1: HÅNDBOG (CYAN LED) -->
+                    <!-- TRIN 1: HÅNDBOG -->
                     <div class="onboarding-step">
                         <div style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
                             <div class="step-badge">1</div>
@@ -363,7 +378,7 @@
                         </button>
                     </div>
 
-                    <!-- TRIN 2: QUIZ (GOLD LED) -->
+                    <!-- TRIN 2: QUIZ -->
                     <div class="onboarding-step step-2">
                         <div style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
                             <div class="step-badge">2</div>
@@ -659,16 +674,19 @@
         var body = document.body;
         var icon = document.getElementById('theme-toggle');
         var mainLogo = document.getElementById('main-logo-img');
+        var frontLogo = document.getElementById('front-logo-img');
         
         if (body.classList.contains('light-mode')) {
             body.classList.remove('light-mode');
             icon.innerText = 'light_mode';
             if(mainLogo) mainLogo.style.filter = 'brightness(0) invert(1)';
+            if(frontLogo) frontLogo.style.filter = 'brightness(0) invert(1)';
             localStorage.setItem('norrona_theme', 'dark');
         } else {
             body.classList.add('light-mode');
             icon.innerText = 'dark_mode';
             if(mainLogo) mainLogo.style.filter = 'none';
+            if(frontLogo) frontLogo.style.filter = 'none';
             localStorage.setItem('norrona_theme', 'light');
         }
     }
@@ -679,7 +697,9 @@
             document.body.classList.add('light-mode');
             document.getElementById('theme-toggle').innerText = 'dark_mode';
             var mainLogo = document.getElementById('main-logo-img');
+            var frontLogo = document.getElementById('front-logo-img');
             if(mainLogo) mainLogo.style.filter = 'none';
+            if(frontLogo) frontLogo.style.filter = 'none';
         }
     };
 
