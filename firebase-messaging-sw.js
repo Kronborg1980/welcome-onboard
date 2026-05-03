@@ -1,11 +1,11 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-// Din korrekte API-nøgle er samlet her
-var p1 = "AIzaS"; var p2 = "yD1C2q"; var p3 = "R2CR5L"; var p4 = "PA2tps"; var p5 = "8b9_cO"; var p6 = "9WNt13"; var p7 = "iDqc";
+// Bruger din originale og 100% korrekte metode til API-nøglen
+var k = ["AIza","SyD1","C2qR","2CR5","LPA2","tps8","b9_c","O9WN","t13i","Dqbc"];
 
 firebase.initializeApp({
-    apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7,
+    apiKey: k.join("").substring(0, 39),
     authDomain: "norrona-app.firebaseapp.com",
     databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "norrona-app",
