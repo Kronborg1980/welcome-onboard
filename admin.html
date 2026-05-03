@@ -96,7 +96,7 @@
         
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        input[type="text"], input[type="url"], textarea, select { 
+        input[type="text"], input[type="url"], input[type="email"], textarea, select { 
             width: 100%; padding: 14px; border: 1px solid var(--glass-border); 
             border-radius: 10px; font-size: 1rem; transition: 0.2s; 
             background: rgba(0,0,0,0.4); color: #fff;
@@ -174,6 +174,14 @@
             </div>
             <div class="sidebar-nav">
                 
+                <!-- NY SEKTION TIL SETTINGS / EMAILS -->
+                <div class="nav-group">
+                    <div class="nav-title">System Settings</div>
+                    <div class="nav-item" onclick="loadEditor('settings', 'email_routing', this)">
+                        <span class="material-icons" style="color: var(--accent-gold);">mail_lock</span> Email Routing
+                    </div>
+                </div>
+
                 <div class="nav-group">
                     <div class="nav-title">Departments (Schedules & Mess)</div>
                     <div class="nav-item" onclick="loadEditor('dept', 'Rest_Bar', this)"><span class="material-icons">local_bar</span> Rest/Bar</div>
@@ -255,7 +263,7 @@
         overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
     }
 
-    var appData = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {} };
+    var appData = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {}, emails: {} };
     var unansweredQuestions = [];
     var pendingSuggestions = [];
     var crewMessPosts = []; 
@@ -263,14 +271,24 @@
     var currentEditorKey = 'general';
     var tempScheduleBase64 = null;
     
-    // NYT: Holder styr på hvilken måned administratoren vil uploade/se til
     var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
     var DEFAULT_DATA = {
         ai_knowledge: [{ topic: "General Info", content: "<p>Basic knowledge here...</p>" }],
         handbook: { general: [ { title: "Welcome", img: "", video: "", content: "<p>Welcome on board.</p>" } ] },
         quizzes: { universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ] },
-        schedules: {}
+        schedules: {},
+        emails: {
+            safety_captain: "captain@smyrilline.com",
+            safety_chief: "chief@smyrilline.com",
+            dept_Rest_Bar: "restbar@smyrilline.com",
+            dept_Galley: "galley@smyrilline.com",
+            dept_Shop: "shop@smyrilline.com",
+            dept_Reception: "reception@smyrilline.com",
+            dept_Housekeeping: "housekeeping@smyrilline.com",
+            dept_Deck: "deck@smyrilline.com",
+            dept_Engine: "engine@smyrilline.com"
+        }
     };
 
     function fetchDatabase() {
@@ -278,13 +296,14 @@
             if (snapshot.exists()) { 
                 appData = snapshot.val(); 
                 if(!appData.schedules) appData.schedules = {};
+                if(!appData.emails) appData.emails = DEFAULT_DATA.emails;
                 if (typeof appData.ai_knowledge === 'string') { appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }]; }
             } else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
-            var firstItem = document.querySelectorAll('.nav-item')[9]; // Starter på Handbook
+            var firstItem = document.querySelectorAll('.nav-item')[10]; // Starter på Handbook
             loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { 
             appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-            var firstItem = document.querySelectorAll('.nav-item')[9]; 
+            var firstItem = document.querySelectorAll('.nav-item')[10]; 
             loadEditor('handbook', 'general', firstItem); 
         });
 
@@ -330,6 +349,7 @@
         var titleDisplay = "";
         if (type === 'ai') titleDisplay = "AI KNOWLEDGE BASE";
         else if (type === 'dept') titleDisplay = key.replace('_', ' ').toUpperCase() + " DEPARTMENT";
+        else if (type === 'settings') titleDisplay = "EMAIL ROUTING SETTINGS";
         else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' QUESTIONS' : ' PAGES');
         
         document.getElementById('header-title').innerText = titleDisplay;
@@ -352,10 +372,46 @@
         else if (currentEditorType === 'quiz') renderQuizForms(container);
         else if (currentEditorType === 'ai') renderAITraining(container);
         else if (currentEditorType === 'dept') renderDeptManager(container);
+        else if (currentEditorType === 'settings') renderEmailSettings(container);
     }
 
     // ==========================================
-    // DEPARTMENT MANAGER (MED MÅNEDLIG DROPDOWN)
+    // EMAIL SETTINGS RENDERER (NEW)
+    // ==========================================
+    function renderEmailSettings(container) {
+        if (!appData.emails) appData.emails = DEFAULT_DATA.emails;
+        
+        var html = '<h2><span class="material-icons" style="color:var(--accent-gold); margin-right:12px;">mail_lock</span> Configure App Recipients</h2>';
+        html += '<p style="color:var(--text-muted); margin-bottom:25px;">Define where system reports and assessments should be sent.</p>';
+
+        // Safety Reports
+        html += '<div class="card" style="border-left: 4px solid var(--danger);">';
+        html += '<h3>Safety Hazard Reports</h3>';
+        html += '<p style="font-size:0.9rem; color:var(--text-muted);">These emails will receive all hazard and incident reports submitted by the crew.</p>';
+        html += '<div class="form-group"><label>Captain\'s Email</label><input type="email" class="input-email" id="email_safety_captain" value="'+(appData.emails.safety_captain || '')+'"></div>';
+        html += '<div class="form-group"><label>Chief Officer\'s Email</label><input type="email" class="input-email" id="email_safety_chief" value="'+(appData.emails.safety_chief || '')+'"></div>';
+        html += '</div>';
+
+        // Assessment Reports
+        html += '<div class="card" style="border-left: 4px solid var(--accent-cyan);">';
+        html += '<h3>Department Clearances (Assessments)</h3>';
+        html += '<p style="font-size:0.9rem; color:var(--text-muted);">When a crew member passes their handbook assessment, the result is sent to their respective leader.</p>';
+        html += '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">';
+        html += '<div class="form-group"><label>Rest/Bar Manager</label><input type="email" class="input-email" id="email_dept_Rest_Bar" value="'+(appData.emails.dept_Rest_Bar || '')+'"></div>';
+        html += '<div class="form-group"><label>Galley Head Chef</label><input type="email" class="input-email" id="email_dept_Galley" value="'+(appData.emails.dept_Galley || '')+'"></div>';
+        html += '<div class="form-group"><label>Shop Manager</label><input type="email" class="input-email" id="email_dept_Shop" value="'+(appData.emails.dept_Shop || '')+'"></div>';
+        html += '<div class="form-group"><label>Reception Manager</label><input type="email" class="input-email" id="email_dept_Reception" value="'+(appData.emails.dept_Reception || '')+'"></div>';
+        html += '<div class="form-group"><label>Housekeeping Manager</label><input type="email" class="input-email" id="email_dept_Housekeeping" value="'+(appData.emails.dept_Housekeeping || '')+'"></div>';
+        html += '<div class="form-group"><label>Deck Operations Leader</label><input type="email" class="input-email" id="email_dept_Deck" value="'+(appData.emails.dept_Deck || '')+'"></div>';
+        html += '<div class="form-group"><label>Engine Room Leader (Chief Eng)</label><input type="email" class="input-email" id="email_dept_Engine" value="'+(appData.emails.dept_Engine || '')+'"></div>';
+        html += '</div>';
+        html += '</div>';
+
+        container.innerHTML = html;
+    }
+
+    // ==========================================
+    // DEPARTMENT MANAGER 
     // ==========================================
     function renderDeptManager(container) {
         tempScheduleBase64 = null;
@@ -472,7 +528,6 @@
                     if(!appData.schedules) appData.schedules = {};
                     if(!appData.schedules[currentEditorKey]) appData.schedules[currentEditorKey] = {};
                     
-                    // GEM TIL SPECIFIK MÅNED
                     appData.schedules[currentEditorKey][currentScheduleMonth] = b64;
                     
                     loadAdminSchedulePreview();
@@ -594,13 +649,25 @@
 
     function extractFormData() {
         if (!document.getElementById('editor-container').innerHTML) return;
-        if (currentEditorType === 'ai') {
+        
+        // Settings Extraction
+        if (currentEditorType === 'settings') {
+            if(!appData.emails) appData.emails = {};
+            var emailInputs = document.querySelectorAll('.input-email');
+            emailInputs.forEach(function(inp) {
+                var key = inp.id.replace('email_', '');
+                appData.emails[key] = inp.value;
+            });
+        } 
+        else if (currentEditorType === 'ai') {
             var cards = document.querySelectorAll('.ai-card'); appData.ai_knowledge = [];
             for(var i=0; i<cards.length; i++) { var topic = cards[i].querySelector('.input-ai-topic').value; var qlEditor = cards[i].querySelector('.ql-editor'); var content = qlEditor ? qlEditor.innerHTML : ''; appData.ai_knowledge.push({ topic: topic, content: content }); }
-        } else if (currentEditorType === 'handbook') {
+        } 
+        else if (currentEditorType === 'handbook') {
             var cards = document.querySelectorAll('.handbook-card'); if(!appData.handbook[currentEditorKey]) appData.handbook[currentEditorKey] = [];
             for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.handbook[currentEditorKey][idx].title = cards[i].querySelector('.input-title').value; appData.handbook[currentEditorKey][idx].img = cards[i].querySelector('.input-img').value; appData.handbook[currentEditorKey][idx].video = cards[i].querySelector('.input-video').value; var qlEditor = cards[i].querySelector('.ql-editor'); if(qlEditor) { appData.handbook[currentEditorKey][idx].content = qlEditor.innerHTML; } }
-        } else if (currentEditorType === 'quiz') {
+        } 
+        else if (currentEditorType === 'quiz') {
             var cards = document.querySelectorAll('.quiz-card'); if(!appData.quizzes[currentEditorKey]) appData.quizzes[currentEditorKey] = [];
             for(var i=0; i<cards.length; i++) { var idx = cards[i].getAttribute('data-idx'); appData.quizzes[currentEditorKey][idx].q = cards[i].querySelector('.input-q').value; appData.quizzes[currentEditorKey][idx].ans = parseInt(cards[i].querySelector('.input-ans').value); var optInputs = cards[i].querySelectorAll('.input-opt'); appData.quizzes[currentEditorKey][idx].options = []; for(var j=0; j<optInputs.length; j++) { appData.quizzes[currentEditorKey][idx].options.push(optInputs[j].value); } }
         }
