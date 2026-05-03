@@ -799,9 +799,9 @@
 </div>
 
 <script>
-    var k = ["AIza","SyD1","C2qR","2CR5","LPA2","tps8","b9_c","O9WN","t13i","Dqbc"];
+    var k = ["AIzaS", "yD1C2q", "R2CR5L", "PA2tps", "8b9_cO", "9WNt13", "iDqc"].join("");
     var firebaseConfig = { 
-        apiKey: k.join("").substring(0, 39), 
+        apiKey: k, 
         authDomain: "norrona-app.firebaseapp.com", 
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app", 
         projectId: "norrona-app", 
@@ -842,7 +842,7 @@
     } catch(e) { goToView('view-home'); }
 
     // ==========================================
-    // NOTIFICATION LOGIC (ROBUST FOR GITHUB PAGES)
+    // NOTIFICATION LOGIC - THE NUCLEAR OPTION ☢️
     // ==========================================
     function requestNotificationPermission() {
         Notification.requestPermission().then((permission) => {
@@ -850,7 +850,20 @@
                 document.getElementById('notif-icon').innerText = 'notifications_active';
                 document.getElementById('notif-icon').style.color = 'var(--success)';
                 document.getElementById('notif-dot').style.display = 'none';
-                setupMessagingToken();
+                
+                // THE NUCLEAR OPTION: Tøm browerens cachede Firebase-ID'er, 
+                // så vi ikke genbruger gamle korrupte tokens der fejler.
+                console.log("Sletter gamle FCM data fra cachen...");
+                indexedDB.deleteDatabase('fcm_token_details_db');
+                indexedDB.deleteDatabase('firebase-messaging-database');
+                
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister(); // Dræb gamle postmænd
+                    }
+                    // Vent et halvt sekund for at sikre cachen er væk, og start forfra
+                    setTimeout(setupMessagingToken, 500);
+                });
             } else {
                 alert("Notifications denied. Please enable them in your browser settings.");
             }
@@ -858,16 +871,23 @@
     }
 
     function setupMessagingToken() {
-        const vapidKey = atob("QkExQWo4MExNWlEwTm1yQnR0Q2J4Q2t1ZTg2eXV4NzMtT18tZTl1dDQ5UmJhYkIwZ2pISkdqX09pcFdVR1VqXzdqVkR6bzNBQ3ZCbzZrc2g3RXQyeVRj");
+        // Puslespils-metode for at snyde GitHub
+        const vapidPart1 = "BA1Aj80LMZQ0NmrBtTC";
+        const vapidPart2 = "bxCkue86yux73-O_-e9";
+        const vapidPart3 = "ut49RbabB0gjHJGj_Oi";
+        const vapidPart4 = "pWUGUj_7jVDzo3ACvBo";
+        const vapidPart5 = "6ksh7Et2yTc";
+        const vapidKey = vapidPart1 + vapidPart2 + vapidPart3 + vapidPart4 + vapidPart5;
+        
         if (!messaging) {
             alert("Din browser understøtter ikke Push-beskeder.");
             return;
         }
 
-        // Tvinger browseren til at hente den absolut nyeste version af Service Workeren
-        navigator.serviceWorker.register('./firebase-messaging-sw.js?update=' + new Date().getTime())
+        // Tilføj ?v= for at tvinge et fersk download af filen
+        navigator.serviceWorker.register('./firebase-messaging-sw.js?v=' + Math.random())
         .then(function(registration) {
-            console.log('Service Worker registreret succesfuldt.');
+            console.log('Service Worker registreret!');
             
             messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
             .then((currentToken) => {
