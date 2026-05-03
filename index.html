@@ -57,7 +57,7 @@
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .logo-container img { height: 35px; opacity: 0.95; transition: filter 0.3s; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--text-main); letter-spacing: 0.5px; }
-        .menu-toggle { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px; }
+        .menu-toggle { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px; position: relative; }
         
         #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(5, 11, 20, 0.98); backdrop-filter: blur(10px); z-index: 999; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;}
         #nav-overlay.active { transform: translateX(0); }
@@ -391,7 +391,9 @@
             color: var(--text-muted);
         }
         
-        .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: var(--accent-gold); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--accent-gold); }
+        /* UNREAD NOTIFICATION STYLES */
+        .notif-badge { position: absolute; background: var(--danger); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--danger); z-index: 10; }
+        .nav-badge-text { display:none; background:var(--danger); color:#fff; font-size:0.65rem; padding:3px 8px; border-radius:12px; font-weight:900; margin-left:auto; box-shadow: 0 0 8px rgba(255,77,77,0.5); letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
@@ -403,21 +405,17 @@
             <span>Crew</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <!-- IN-APP NOTIFICATION BELL -->
-            <div style="position: relative; cursor: pointer;" onclick="handleBellClick()" title="Notifications">
-                <span class="material-icons" id="notif-icon" style="font-size: 1.6rem; color: var(--text-muted);">notifications</span>
-                <div id="notif-dot" class="notif-badge"></div>
-            </div>
             <span class="material-icons" id="theme-toggle" style="font-size: 1.6rem; cursor: pointer; color: var(--text-main);" onclick="toggleTheme()">light_mode</span>
             <button class="menu-toggle" onclick="toggleMenu()">
                 <span class="material-icons" id="menu-icon" style="font-size: 2rem;">menu</span>
+                <div id="global-notif-dot" class="notif-badge" style="top:-2px; right:-2px; width: 10px; height: 10px;"></div>
             </button>
         </div>
     </header>
 
     <div id="nav-overlay">
         <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Dashboard</a>
-        <a href="#" class="nav-link" onclick="goToDepartment()"><span class="material-icons">group_work</span> My Department <span style="background:var(--accent-gold); color:#000; font-size:0.7rem; padding:2px 8px; border-radius:12px; font-weight:bold; margin-left:5px;">HUB</span></a>
+        <a href="#" class="nav-link" onclick="goToDepartment()"><span class="material-icons">group_work</span> My Department <span id="nav-dept-badge" class="nav-badge-text">NEW</span></a>
         <a href="#" class="nav-link" onclick="openVoyage()"><span class="material-icons">explore</span> Voyage & Ship Status</a>
         <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook</a>
         <a href="#" class="nav-link" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Clearance Assessment</a>
@@ -481,7 +479,8 @@
                     <span class="material-icons" style="font-size: 2rem; margin-bottom: 8px;">explore</span>
                     <span>Live Voyage</span>
                 </button>
-                <button class="btn btn-outline" style="flex-direction: column; padding: 20px 10px; margin-bottom:0; border-color:var(--accent-gold); color:var(--accent-gold);" onclick="goToDepartment()">
+                <button class="btn btn-outline" style="flex-direction: column; padding: 20px 10px; margin-bottom:0; border-color:var(--accent-gold); color:var(--accent-gold); position:relative;" onclick="goToDepartment()">
+                    <div id="home-dept-badge" class="notif-badge" style="top:5px; right:5px; width:12px; height:12px;"></div>
                     <span class="material-icons" style="font-size: 2rem; margin-bottom: 8px;">group_work</span>
                     <span>My Department</span>
                 </button>
@@ -524,7 +523,7 @@
                 <button class="mess-tab" id="tab-dept-mess" onclick="switchDeptTab('mess')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">forum</span> Noticeboard</button>
             </div>
 
-            <!-- SCHEDULE TAB (Måned dropdown tilføjet her) -->
+            <!-- SCHEDULE TAB -->
             <div id="dept-schedule-view">
                 <div class="card" style="padding:15px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
@@ -545,7 +544,6 @@
                         </select>
                     </div>
                     <div class="dept-schedule-container" id="schedule-img-container">
-                        <!-- Image injected via JS -->
                         <div style="padding: 30px; text-align:center; color:var(--text-muted);">Loading schedule...</div>
                     </div>
                     <p style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-bottom:0;"><span class="material-icons" style="font-size:1rem; vertical-align:middle;">zoom_out_map</span> Tap image to view full screen</p>
@@ -608,7 +606,6 @@
                     <option value="Equipment Failure">Equipment Failure</option>
                 </select>
                 
-                <!-- NYT: Informationsboks der forklarer den valgte kategori -->
                 <div id="report-type-desc" class="report-info-box"></div>
                 
                 <label class="form-label">Where did this happen?</label>
@@ -826,7 +823,7 @@
             if (snapshot.exists()) { LIVE_DATA = snapshot.val(); }
             if (!LIVE_DATA.schedules) LIVE_DATA.schedules = {};
             firebaseActive = true; 
-            setupInAppNotifications(); // Start checking for unread items
+            setupInAppNotifications(); 
             goToView('view-home');
         }).catch(function(error) { goToView('view-home'); });
 
@@ -836,7 +833,7 @@
     } catch(e) { goToView('view-home'); }
 
     // ==========================================
-    // IN-APP NOTIFICATION LOGIC (NO FCM)
+    // IN-APP NOTIFICATION LOGIC (LYDLØS OG FEJLFRI)
     // ==========================================
     function setupInAppNotifications() {
         if (!firebaseActive || !activeDepartment) return;
@@ -850,10 +847,11 @@
             
             var lastSeen = localStorage.getItem('norrona_last_seen_' + activeDepartment) || 0;
             
-            // Show red dot if there is a new post and we are NOT looking at the department view
+            // Vis badges hvis der er noget nyt og vi IKKE allerede kigger på siden
             if (latestPostTime > lastSeen && !document.getElementById('view-department').classList.contains('active')) {
-                document.getElementById('notif-dot').style.display = 'block';
-                document.getElementById('notif-icon').style.color = 'var(--accent-gold)';
+                document.getElementById('global-notif-dot').style.display = 'block';
+                document.getElementById('nav-dept-badge').style.display = 'inline-block';
+                if(document.getElementById('home-dept-badge')) document.getElementById('home-dept-badge').style.display = 'block';
             }
         });
     }
@@ -861,17 +859,10 @@
     function markDepartmentAsRead() {
         if (!activeDepartment) return;
         localStorage.setItem('norrona_last_seen_' + activeDepartment, Date.now());
-        document.getElementById('notif-dot').style.display = 'none';
-        document.getElementById('notif-icon').style.color = 'var(--text-muted)';
-    }
-
-    function handleBellClick() {
-        if (!activeDepartment) {
-            alert("Please select your department first to receive updates.");
-            goToView('view-dept-select');
-        } else {
-            goToDepartment();
-        }
+        
+        document.getElementById('global-notif-dot').style.display = 'none';
+        document.getElementById('nav-dept-badge').style.display = 'none';
+        if(document.getElementById('home-dept-badge')) document.getElementById('home-dept-badge').style.display = 'none';
     }
 
     // ==========================================
@@ -965,8 +956,8 @@
             document.getElementById('dept-schedule-view').style.display = 'block';
             document.getElementById('dept-mess-view').style.display = 'none';
             loadDeptSchedule();
-            if(firebaseActive) db.ref('crew_mess/' + activeDepartment).off('value'); // Don't turn off completely, just the full feed load
-            setupInAppNotifications(); // re-init the limitToLast(1) listener
+            if(firebaseActive) db.ref('crew_mess/' + activeDepartment).off('value'); 
+            setupInAppNotifications(); 
         } else {
             document.getElementById('dept-schedule-view').style.display = 'none';
             document.getElementById('dept-mess-view').style.display = 'block';
