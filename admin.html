@@ -132,6 +132,8 @@
         .editor-wrapper { background: #fff; border-radius: 10px; overflow: hidden; margin-top: 5px; border: 1px solid var(--glass-border);}
         .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #ddd; background: #f8fafc; }
         .ql-container.ql-snow { border: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 1rem; background: #fff; color: #000; min-height: 150px; }
+        .ql-editor { min-height: 150px; }
+        .ai-quill-container .ql-editor { min-height: 250px; }
         
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--led-green); color: #000; padding: 16px 28px; border-radius: 12px; font-weight: 800; transform: translateY(100px); opacity: 0; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; box-shadow: 0 10px 30px rgba(0,230,118,0.3);}
         .toast.show { transform: translateY(0); opacity: 1; }
@@ -172,7 +174,6 @@
             </div>
             <div class="sidebar-nav">
                 
-                <!-- NY AFDELINGS SEKTION -->
                 <div class="nav-group">
                     <div class="nav-title">Departments (Schedules & Mess)</div>
                     <div class="nav-item" onclick="loadEditor('dept', 'Rest_Bar', this)"><span class="material-icons">local_bar</span> Rest/Bar</div>
@@ -261,6 +262,9 @@
     var currentEditorType = 'handbook'; 
     var currentEditorKey = 'general';
     var tempScheduleBase64 = null;
+    
+    // NYT: Holder styr på hvilken måned administratoren vil uploade/se til
+    var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
     var DEFAULT_DATA = {
         ai_knowledge: [{ topic: "General Info", content: "<p>Basic knowledge here...</p>" }],
@@ -306,7 +310,6 @@
                 alert("Save failed! Fejlbesked: \n" + err.message); 
             });
         } else {
-            // Gem kun appData (hvis der er et nyt skema)
             db.ref('appData').set(appData).then(function() { showToast(); });
         }
     }
@@ -338,7 +341,7 @@
                 if (currentEditorType === 'dept' && currentEditorKey === key) { renderDeptManager(document.getElementById('editor-container')); }
             });
         } else {
-            db.ref('crew_mess').off(); // Stop listening if not on dept tab
+            db.ref('crew_mess').off(); 
             renderCurrentEditor();
         }
     }
@@ -352,29 +355,39 @@
     }
 
     // ==========================================
-    // DEPARTMENT MANAGER (SCHEDULE + MESS)
+    // DEPARTMENT MANAGER (MED MÅNEDLIG DROPDOWN)
     // ==========================================
     function renderDeptManager(container) {
         tempScheduleBase64 = null;
-        var currentSchedule = appData.schedules && appData.schedules[currentEditorKey] ? appData.schedules[currentEditorKey] : null;
 
         var html = '<div style="display:grid; grid-template-columns: 1fr; gap:20px;">';
         
         // 1. SCHEDULE UPLOAD
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var monthOptions = '';
+        months.forEach(function(m) {
+            var sel = (m === currentScheduleMonth) ? 'selected' : '';
+            monthOptions += '<option value="'+m+'" '+sel+'>'+m+'</option>';
+        });
+
         html += '<div class="card">';
-        html += '<h3><span class="material-icons" style="vertical-align:middle;">calendar_month</span> Monthly Schedule ('+currentEditorKey.replace('_', ' ')+')</h3>';
-        html += '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Upload a screenshot or photo of the Excel schedule. It will be immediately available for the crew.</p>';
+        html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">';
+        html += '<h3 style="margin:0;"><span class="material-icons" style="vertical-align:middle;">calendar_month</span> Manage Schedules</h3>';
+        html += '<select id="admin-month-select" class="form-select" style="width:auto; padding:10px; margin:0;" onchange="changeAdminMonth()">' + monthOptions + '</select>';
+        html += '</div>';
+        
+        html += '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Upload a schedule for <strong id="admin-month-display" style="color:var(--accent-cyan);">'+currentScheduleMonth+'</strong>.</p>';
         
         html += '<div class="photo-upload-box" onclick="document.getElementById(\'schedule-upload\').click()">';
         html += '<span class="material-icons" style="font-size: 32px; color: var(--accent-cyan); margin-bottom:10px;">add_photo_alternate</span>';
-        html += '<span style="font-weight: 700; color: #fff;">Click to upload new schedule image</span>';
+        html += '<span style="font-weight: 700; color: #fff;">Click to upload image</span>';
         html += '</div>';
         html += '<input type="file" id="schedule-upload" accept="image/*" style="display:none;" onchange="previewScheduleImage(event)">';
         
-        html += '<div id="schedule-preview-container" style="'+(currentSchedule ? 'display:block;' : 'display:none;')+' border:1px solid var(--glass-border); padding:10px; border-radius:10px; background:rgba(0,0,0,0.4); text-align:center;">';
-        html += '<div style="color:var(--success); font-weight:bold; margin-bottom:10px; font-size:0.8rem;">CURRENT SCHEDULE ACTIVE</div>';
-        html += '<img id="schedule-img-preview" src="'+(currentSchedule || '')+'" style="max-width:100%; max-height:400px; border-radius:8px;">';
-        html += '<br><button class="btn btn-danger" style="margin-top:10px; font-size:0.8rem; padding:8px 12px;" onclick="deleteSchedule()">Delete Schedule</button>';
+        html += '<div id="schedule-preview-container" style="display:none; border:1px solid var(--glass-border); padding:10px; border-radius:10px; background:rgba(0,0,0,0.4); text-align:center;">';
+        html += '<div style="color:var(--success); font-weight:bold; margin-bottom:10px; font-size:0.8rem;">ACTIVE SCHEDULE</div>';
+        html += '<img id="schedule-img-preview" src="" style="max-width:100%; max-height:400px; border-radius:8px;">';
+        html += '<br><button class="btn btn-danger" style="margin-top:10px; font-size:0.8rem; padding:8px 12px;" onclick="deleteSchedule()">Delete '+currentScheduleMonth+'</button>';
         html += '</div>';
         html += '</div>';
 
@@ -416,6 +429,26 @@
         html += '</div></div>';
 
         container.innerHTML = html;
+        loadAdminSchedulePreview();
+    }
+
+    function changeAdminMonth() {
+        currentScheduleMonth = document.getElementById('admin-month-select').value;
+        document.getElementById('admin-month-display').innerText = currentScheduleMonth;
+        var btn = document.querySelector('#schedule-preview-container .btn-danger');
+        if(btn) btn.innerText = "Delete " + currentScheduleMonth;
+        loadAdminSchedulePreview();
+    }
+
+    function loadAdminSchedulePreview() {
+        var currentSchedule = appData.schedules && appData.schedules[currentEditorKey] && appData.schedules[currentEditorKey][currentScheduleMonth] ? appData.schedules[currentEditorKey][currentScheduleMonth] : null;
+        var container = document.getElementById('schedule-preview-container');
+        if(currentSchedule) {
+            document.getElementById('schedule-img-preview').src = currentSchedule;
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
     }
 
     function previewScheduleImage(event) {
@@ -426,7 +459,7 @@
                 var img = new Image();
                 img.onload = function() {
                     var canvas = document.createElement('canvas');
-                    var MAX_WIDTH = 1200; // Tillad højere opløsning for skemaer så tekst kan læses
+                    var MAX_WIDTH = 1200; 
                     var scaleSize = MAX_WIDTH / img.width;
                     if(scaleSize > 1) scaleSize = 1;
                     canvas.width = img.width * scaleSize; 
@@ -434,15 +467,15 @@
                     var ctx = canvas.getContext('2d'); 
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    var b64 = canvas.toDataURL('image/jpeg', 0.85); // Højere kvalitet
+                    var b64 = canvas.toDataURL('image/jpeg', 0.85); 
                     
                     if(!appData.schedules) appData.schedules = {};
-                    appData.schedules[currentEditorKey] = b64;
+                    if(!appData.schedules[currentEditorKey]) appData.schedules[currentEditorKey] = {};
                     
-                    document.getElementById('schedule-img-preview').src = b64;
-                    document.getElementById('schedule-preview-container').style.display = 'block';
+                    // GEM TIL SPECIFIK MÅNED
+                    appData.schedules[currentEditorKey][currentScheduleMonth] = b64;
                     
-                    // Auto-gem når billede lægges ind
+                    loadAdminSchedulePreview();
                     saveToFirebase();
                 }
                 img.src = e.target.result;
@@ -452,11 +485,10 @@
     }
 
     function deleteSchedule() {
-        if(confirm("Remove the schedule for " + currentEditorKey + "?")) {
-            if(appData.schedules) {
-                appData.schedules[currentEditorKey] = null;
-                document.getElementById('schedule-preview-container').style.display = 'none';
-                document.getElementById('schedule-img-preview').src = '';
+        if(confirm("Remove the schedule for " + currentScheduleMonth + "?")) {
+            if(appData.schedules && appData.schedules[currentEditorKey]) {
+                appData.schedules[currentEditorKey][currentScheduleMonth] = null;
+                loadAdminSchedulePreview();
                 saveToFirebase();
             }
         }
