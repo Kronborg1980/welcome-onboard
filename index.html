@@ -369,6 +369,27 @@
             text-decoration: none; 
             cursor: pointer; 
         }
+        
+        /* ==========================================
+           REPORT INFO BOX
+           ========================================== */
+        .report-info-box {
+            background: rgba(0, 229, 255, 0.05);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 12px 15px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            border-radius: 4px 10px 10px 4px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            line-height: 1.5;
+            transition: 0.3s ease;
+        }
+        body.light-mode .report-info-box {
+            background: rgba(0, 229, 255, 0.05);
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -496,7 +517,7 @@
                 <button class="mess-tab" id="tab-dept-mess" onclick="switchDeptTab('mess')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">forum</span> Noticeboard</button>
             </div>
 
-            <!-- SCHEDULE TAB -->
+            <!-- SCHEDULE TAB (Måned dropdown tilføjet her) -->
             <div id="dept-schedule-view">
                 <div class="card" style="padding:15px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
@@ -566,26 +587,29 @@
         </div>
 
         <!-- ==========================================
-             SAFETY REPORTING (MED MULTI-FOTO)
+             SAFETY REPORTING (MED INFO BOKS)
              ========================================== -->
         <div id="view-reporting" class="view">
             <h2>Safety Reporting</h2>
             <p>If you see a hazard, near miss, or safety issue, report it immediately to the Captain and Bridge.</p>
             <div class="card">
                 <label class="form-label">Type of Report</label>
-                <select class="form-select" id="report-type">
+                <select class="form-select" id="report-type" onchange="updateReportDesc()">
                     <option value="Safety Observation">Safety Observation (Potential Hazard)</option>
                     <option value="Near Miss">Near Miss (Almost an accident)</option>
                     <option value="Incident">Incident / Accident</option>
                     <option value="Equipment Failure">Equipment Failure</option>
                 </select>
+                
+                <!-- NYT: Informationsboks der forklarer den valgte kategori -->
+                <div id="report-type-desc" class="report-info-box"></div>
+                
                 <label class="form-label">Where did this happen?</label>
                 <input type="text" class="form-input" id="report-location" placeholder="e.g. Deck 5, Galley, Stairwell C">
                 
                 <label class="form-label">What happened? What did you see?</label>
                 <textarea class="form-textarea" id="report-desc" placeholder="Describe the situation clearly..."></textarea>
                 
-                <!-- NYT: Multi Billed Upload til Sikkerhedsrapport -->
                 <label class="form-label">Attach Photos (Optional)</label>
                 <div class="photo-upload-box" onclick="document.getElementById('report-photos-input').click()" style="border-color: rgba(255,77,77,0.3); background: rgba(255,77,77,0.05);">
                     <span class="material-icons" style="font-size: 32px; color: var(--danger); margin-bottom:10px;">add_a_photo</span>
@@ -784,7 +808,6 @@
     var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {} };
     var firebaseActive = false;
     
-    // NYT: Holder styr på afdeling og måned
     var activeDepartment = null;
     var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
@@ -1100,6 +1123,21 @@
     // ==========================================
     var currentReportImages = [];
 
+    function updateReportDesc() {
+        var type = document.getElementById('report-type').value;
+        var descBox = document.getElementById('report-type-desc');
+        
+        if (type === 'Safety Observation') {
+            descBox.innerHTML = "<strong>Safety Observation:</strong> A condition or behavior that could potentially cause harm or damage. <br><em style='color:var(--text-muted);'>E.g., a wet floor without a sign, or a blocked fire exit.</em>";
+        } else if (type === 'Near Miss') {
+            descBox.innerHTML = "<strong>Near Miss:</strong> An unplanned event that did not result in injury or damage, but had the potential to do so. <br><em style='color:var(--text-muted);'>E.g., almost slipping on a wet deck, or a falling object narrowly missing someone.</em>";
+        } else if (type === 'Incident') {
+            descBox.innerHTML = "<strong>Incident / Accident:</strong> An event that has resulted in injury, illness, or property/environmental damage. <br><em style='color:var(--text-muted);'>E.g., a cut requiring first aid, or a collision.</em>";
+        } else if (type === 'Equipment Failure') {
+            descBox.innerHTML = "<strong>Equipment Failure:</strong> A breakdown or malfunction of ship equipment, machinery, or tools that affects safety or operations. <br><em style='color:var(--text-muted);'>E.g., a broken radio, or a malfunctioning fire door.</em>";
+        }
+    }
+
     function openReporting() {
         document.getElementById('report-type').selectedIndex = 0; 
         document.getElementById('report-location').value = ""; 
@@ -1107,6 +1145,7 @@
         document.getElementById('report-action').value = ""; 
         currentReportImages = [];
         renderReportPhotoPreviews();
+        updateReportDesc(); // Opdater infoboksen med det samme
         goToView('view-reporting');
     }
 
@@ -1245,9 +1284,6 @@
     function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
-    // ==========================================
-    // QUIZ LOGIC
-    // ==========================================
     var activeQuiz = []; var currentQuizIdx = 0; var selectedQuizAns = null; var selectedDeptName = "";
     function openQuestionnaire() {
         if(!firebaseActive) return;
@@ -1301,9 +1337,6 @@
         } else { feedback.innerText = "Incorrect. Check Handbook and try again!"; feedback.style.display="block"; feedback.style.background="rgba(255,77,77,0.2)"; feedback.style.color="var(--danger)"; }
     }
 
-    // ==========================================
-    // VOYAGE API LOGIC
-    // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
 
@@ -1453,9 +1486,6 @@
         L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map); updateShipData(); setInterval(updateShipData, 60000); 
     }
 
-    // ==========================================
-    // GOOGLE GEMINI AI CHAT LOGIC
-    // ==========================================
     function minimizeChatTab(e) {
         e.stopPropagation(); document.getElementById('chat-fab').style.display = 'none';
         if(document.getElementById('chat-panel').classList.contains('active')) { document.getElementById('chat-panel').classList.remove('active'); }
