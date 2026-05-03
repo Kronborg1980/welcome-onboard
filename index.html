@@ -589,6 +589,7 @@
                     <div class="grid-item"><div class="label">Wind (Here)</div><div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div><div class="sub-value"><span id="wind-knots">--</span> kn <span style="opacity:0.25; margin:0 4px;">|</span><span id="wind-dir-text" style="color:var(--accent-gold); font-weight:bold;">--</span></div></div>
                     <div class="grid-item"><div class="label">Wave Height</div><div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div><div class="sub-value">Significant</div></div>
                     
+                    <!-- HIDDEN GRID ELEMENTS FOR JS COMPATIBILITY -->
                     <span id="distance" style="display:none;"></span>
                     <span id="distance-unit" style="display:none;"></span>
                     <span id="destination-label" style="display:none;"></span>
@@ -815,15 +816,25 @@
         }
     }
 
-    // NYT: Indlæser den specifikke måned
+    // NYT: Indlæser den specifikke måned med sikkerheds-tjek for gamle string-skemaer
     function loadDeptSchedule() {
         var container = document.getElementById('schedule-img-container');
         var selectedMonth = document.getElementById('crew-month-select').value;
 
-        if (LIVE_DATA.schedules && LIVE_DATA.schedules[activeDepartment] && LIVE_DATA.schedules[activeDepartment][selectedMonth]) {
-            container.innerHTML = '<img src="' + LIVE_DATA.schedules[activeDepartment][selectedMonth] + '" class="dept-schedule-img">';
+        var deptData = LIVE_DATA.schedules ? LIVE_DATA.schedules[activeDepartment] : null;
+
+        if (deptData) {
+            if (typeof deptData === 'string') {
+                // Hvis de har et gammelt skema uden måned fra tidligere version
+                container.innerHTML = '<img src="' + deptData + '" class="dept-schedule-img">';
+            } else if (deptData[selectedMonth]) {
+                // Det nye system med måneder
+                container.innerHTML = '<img src="' + deptData[selectedMonth] + '" class="dept-schedule-img">';
+            } else {
+                container.innerHTML = '<div style="padding: 40px; text-align:center; color:var(--text-muted); font-weight:bold;"><span class="material-icons" style="font-size:3rem; margin-bottom:10px; opacity:0.5;">calendar_today</span><br>No schedule posted for ' + selectedMonth + ' yet.</div>';
+            }
         } else {
-            container.innerHTML = '<div style="padding: 40px; text-align:center; color:var(--text-muted); font-weight:bold;"><span class="material-icons" style="font-size:3rem; margin-bottom:10px; opacity:0.5;">calendar_today</span><br>No schedule posted for ' + selectedMonth + ' yet.</div>';
+            container.innerHTML = '<div style="padding: 40px; text-align:center; color:var(--text-muted); font-weight:bold;"><span class="material-icons" style="font-size:3rem; margin-bottom:10px; opacity:0.5;">calendar_today</span><br>No schedule posted yet.</div>';
         }
     }
 
@@ -913,6 +924,7 @@
         var btnText = msgInput.value;
         msgInput.value = "Uploading...";
 
+        // GEMMER I AFDELINGENS MAPPE
         db.ref('crew_mess/' + activeDepartment).push(postData).then(function() {
             msgInput.value = '';
             currentMessImageBase64 = null;
@@ -930,6 +942,7 @@
         var votedKey = 'norrona_voted_' + postId;
         if(localStorage.getItem(votedKey)) { alert("You have already voted on this poll!"); return; }
 
+        // STEMMER I AFDELINGENS MAPPE
         db.ref('crew_mess/' + activeDepartment + '/' + postId + '/pollOptions/' + optIndex + '/votes').transaction(function(currentVotes) {
             return (currentVotes || 0) + 1;
         }).then(function() {
@@ -940,6 +953,7 @@
     function loadDeptMess() {
         if (!firebaseActive || !activeDepartment) { document.getElementById('crew-mess-feed').innerHTML = '<p>Offline mode. Cannot load messages.</p>'; return; }
 
+        // LYTTER KUN PÅ AFDELINGENS MAPPE
         db.ref('crew_mess/' + activeDepartment).on('value', function(snapshot) {
             var feed = document.getElementById('crew-mess-feed');
             feed.innerHTML = '';
@@ -1172,7 +1186,6 @@
             const departureTimeRaw = norrona.scheduledDeparture || norrona.etd; 
             const departureTime = formatETA(departureTimeRaw);
 
-            // --- PROGRESS BAR LOGIK ---
             let timeRemainingStr = "In: --h --m";
             if (norrona.etaFromAIS && !isInPort) {
                 let etaDate = new Date(norrona.etaFromAIS);
@@ -1191,13 +1204,11 @@
             let progPct = Math.max(0, Math.min(100, ((maxDist - dist) / maxDist) * 100));
             if (isInPort) progPct = 100;
 
-            // Opdater de nye Progress Bar elementer
             if(document.getElementById("prog-dest")) document.getElementById("prog-dest").textContent = currentDestInfo.name;
             if(document.getElementById("prog-dist")) document.getElementById("prog-dist").textContent = isInPort ? "0 km" : Math.round(dist) + " km";
             if(document.getElementById("prog-time")) document.getElementById("prog-time").textContent = isInPort ? "Docked" : timeRemainingStr;
             if(document.getElementById("prog-bar-fill")) document.getElementById("prog-bar-fill").style.width = progPct + "%";
 
-            // Opdater det gamle grid
             if (isInPort) {
                 if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
                 if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name; 
