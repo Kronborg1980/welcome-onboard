@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>M/F Norröna - Crew App</title>
     
-    <!-- Nyt højopløseligt PNG logo som ikon -->
     <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png">
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
@@ -142,7 +141,7 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* VOYAGE STYLES */
-        #view-voyage { background: transparent; min-height: 100vh; padding: 0; }
+        #view-voyage { background: transparent; padding: 0; }
         .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
         #map { width: 100%; height: 100%; background: #000; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1; transition: filter 0.3s; }
         .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; transition: background 0.3s;}
@@ -306,6 +305,26 @@
             color: var(--primary-blue);
             text-shadow: none;
         }
+
+        /* ==========================================
+           DEPARTMENT HUB STYLES 
+           ========================================== */
+        .dept-schedule-container {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+        }
+        .dept-schedule-img {
+            min-width: 800px; /* Sikrer at skemaet ikke bliver ulæseligt småt, man skal scrolle/panne */
+            max-width: 1500px;
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -326,7 +345,8 @@
 
     <div id="nav-overlay">
         <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Dashboard</a>
-        <a href="#" class="nav-link" onclick="openCrewMess()"><span class="material-icons">forum</span> Crew Mess <span style="background:var(--danger); color:#fff; font-size:0.7rem; padding:2px 8px; border-radius:12px; font-weight:bold; margin-left:5px;">NEW</span></a>
+        <!-- OPDATERET MENUPUNKT TIL DEPARTMENT -->
+        <a href="#" class="nav-link" onclick="goToDepartment()"><span class="material-icons">group_work</span> My Department <span style="background:var(--accent-gold); color:#000; font-size:0.7rem; padding:2px 8px; border-radius:12px; font-weight:bold; margin-left:5px;">HUB</span></a>
         <a href="#" class="nav-link" onclick="openVoyage()"><span class="material-icons">explore</span> Voyage & Ship Status</a>
         <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook</a>
         <a href="#" class="nav-link" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Clearance Assessment</a>
@@ -342,9 +362,6 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             HOME / ONBOARDING VIEW
-             ========================================== -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
                 <img id="front-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; opacity:0.95; transition: filter 0.3s;" alt="Smyril Line Logo">
@@ -361,7 +378,6 @@
                         Required Onboarding
                     </h2>
                     
-                    <!-- TRIN 1: HÅNDBOG -->
                     <div class="onboarding-step">
                         <div style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
                             <div class="step-badge">1</div>
@@ -373,7 +389,6 @@
                         </button>
                     </div>
 
-                    <!-- TRIN 2: QUIZ -->
                     <div class="onboarding-step step-2">
                         <div style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
                             <div class="step-badge">2</div>
@@ -387,52 +402,100 @@
                 </div>
             </div>
             
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <button class="btn btn-outline" style="flex-direction: column; padding: 20px 10px; margin-bottom:0;" onclick="openVoyage()">
+                    <span class="material-icons" style="font-size: 2rem; margin-bottom: 8px;">explore</span>
+                    <span>Live Voyage</span>
+                </button>
+                <button class="btn btn-outline" style="flex-direction: column; padding: 20px 10px; margin-bottom:0; border-color:var(--accent-gold); color:var(--accent-gold);" onclick="goToDepartment()">
+                    <span class="material-icons" style="font-size: 2rem; margin-bottom: 8px;">group_work</span>
+                    <span>My Department</span>
+                </button>
+            </div>
+
             <div style="text-align:center; padding-top:10px;">
                 <button class="btn btn-danger-outline" onclick="openReporting()"><span class="material-icons">report_problem</span> Report Safety Issue</button>
             </div>
         </div>
 
         <!-- ==========================================
-             CREW MESS (SOCIAL FEED) VIEW
+             DEPARTMENT SELECTION VIEW
              ========================================== -->
-        <div id="view-crew-mess" class="view">
-            <h2 style="display:flex; align-items:center; gap:12px; margin-bottom: 5px;"><span class="material-icons" style="color:var(--accent-cyan); font-size:2.4rem;">forum</span> Crew Mess</h2>
-            <p style="margin-bottom: 25px;">Internal noticeboard. Ask for shift swaps, announce events, or start a poll!</p>
+        <div id="view-dept-select" class="view">
+            <h2>Select Your Department</h2>
+            <p>Please select your department to access schedules and the noticeboard.</p>
+            
+            <button class="btn btn-dept" onclick="setDepartment('Rest_Bar')"><span class="material-icons">local_bar</span> <div><div style="font-size:1.2rem; font-weight:800;">Rest/Bar</div></div></button>
+            <button class="btn btn-dept" onclick="setDepartment('Galley')"><span class="material-icons">restaurant</span> <div><div style="font-size:1.2rem; font-weight:800;">Galley</div></div></button>
+            <button class="btn btn-dept" onclick="setDepartment('Shop')"><span class="material-icons">storefront</span> <div><div style="font-size:1.2rem; font-weight:800;">Shop</div></div></button>
+            <button class="btn btn-dept" onclick="setDepartment('Reception')"><span class="material-icons">room_service</span> <div><div style="font-size:1.2rem; font-weight:800;">Reception</div></div></button>
+            <button class="btn btn-dept" onclick="setDepartment('Housekeeping')"><span class="material-icons">cleaning_services</span> <div><div style="font-size:1.2rem; font-weight:800;">Housekeeping</div></div></button>
+            <button class="btn btn-dept" onclick="setDepartment('Deck')"><span class="material-icons">anchor</span> <div><div style="font-size:1.2rem; font-weight:800;">Deck Ops</div></div></button>
+            <button class="btn btn-dept" onclick="setDepartment('Engine')"><span class="material-icons">settings</span> <div><div style="font-size:1.2rem; font-weight:800;">Engine Room</div></div></button>
+            
+            <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')"><span class="material-icons">arrow_back</span> Dashboard</button>
+        </div>
 
-            <!-- COMPOSER -->
-            <div class="card" style="border: 1px solid var(--accent-cyan); padding: 20px; box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1);">
-                <input type="text" id="mess-name" class="form-input" placeholder="Your Name (e.g. John - Deck)" style="margin-bottom: 15px; font-weight:bold;">
-
-                <div class="mess-tabs">
-                    <button class="mess-tab active" id="tab-text" onclick="setMessType('text')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">notes</span> Text</button>
-                    <button class="mess-tab" id="tab-image" onclick="setMessType('image')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">image</span> Photo</button>
-                    <button class="mess-tab" id="tab-poll" onclick="setMessType('poll')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">poll</span> Poll</button>
-                </div>
-
-                <textarea id="mess-text" class="form-textarea" placeholder="What's happening?..." style="min-height: 90px; margin-bottom: 15px;"></textarea>
-
-                <div id="mess-image-area" style="display:none; margin-bottom:15px;">
-                    <div class="photo-upload-box" onclick="document.getElementById('mess-photo-input').click()">
-                        <span class="material-icons" style="font-size: 32px; color: var(--accent-cyan); margin-bottom:10px;">add_a_photo</span>
-                        <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">Tap to select photo</span>
-                    </div>
-                    <input type="file" id="mess-photo-input" accept="image/*" style="display:none;" onchange="previewMessPhoto(event)">
-                    <img id="mess-photo-preview" style="max-width: 100%; border-radius: 14px; display: none; border: 1px solid var(--glass-border); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                </div>
-
-                <div id="mess-poll-area" style="display:none; margin-bottom:15px; background: rgba(0,0,0,0.3); padding:15px; border-radius:16px; border: 1px solid var(--glass-border);">
-                    <div id="mess-poll-options">
-                        <input type="text" class="form-input poll-opt" placeholder="Option 1 (e.g. Die Hard)" style="margin-bottom:10px;">
-                        <input type="text" class="form-input poll-opt" placeholder="Option 2 (e.g. Titanic)" style="margin-bottom:10px;">
-                    </div>
-                    <button class="btn btn-outline" style="padding:12px; font-size:0.9rem; border-style:dashed; background:transparent;" onclick="addMessPollOption()">+ Add option</button>
-                </div>
-
-                <button class="btn btn-primary" style="margin-bottom:0;" onclick="submitCrewPost()">Post Message</button>
+        <!-- ==========================================
+             MY DEPARTMENT HUB VIEW (SCHEDULE + MESS)
+             ========================================== -->
+        <div id="view-department" class="view">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+                <h2 style="margin:0; display:flex; align-items:center; gap:12px;"><span class="material-icons" style="color:var(--accent-gold); font-size:2.4rem;">group_work</span> <span id="dept-hub-title">Dept Hub</span></h2>
+                <button class="btn btn-outline" style="width:auto; padding:8px; margin:0;" onclick="goToView('view-dept-select')" title="Change Department"><span class="material-icons" style="font-size:1.2rem;">settings</span></button>
             </div>
 
-            <div id="crew-mess-feed">
-                <!-- Posts will be injected here -->
+            <div class="mess-tabs" style="margin-bottom:20px;">
+                <button class="mess-tab active" id="tab-dept-schedule" onclick="switchDeptTab('schedule')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">calendar_month</span> Schedule</button>
+                <button class="mess-tab" id="tab-dept-mess" onclick="switchDeptTab('mess')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">forum</span> Noticeboard</button>
+            </div>
+
+            <!-- SCHEDULE TAB -->
+            <div id="dept-schedule-view">
+                <div class="card" style="padding:15px;">
+                    <h3 style="font-size: 1.1rem; color:var(--text-main); margin-bottom: 15px; display:flex; align-items:center; gap:8px;"><span class="material-icons" style="color:var(--accent-cyan);">event_note</span> Monthly Schedule</h3>
+                    <div class="dept-schedule-container" id="schedule-img-container">
+                        <!-- Image injected via JS -->
+                        <div style="padding: 30px; text-align:center; color:var(--text-muted);">Loading schedule...</div>
+                    </div>
+                    <p style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-bottom:0;"><span class="material-icons" style="font-size:1rem; vertical-align:middle;">swipe</span> Scroll horizontally or pinch to zoom</p>
+                </div>
+            </div>
+
+            <!-- MESS TAB -->
+            <div id="dept-mess-view" style="display:none;">
+                <div class="card" style="border: 1px solid var(--accent-gold); padding: 20px; box-shadow: 0 10px 30px rgba(251, 185, 0, 0.05);">
+                    <input type="text" id="mess-name" class="form-input" placeholder="Your Name" style="margin-bottom: 15px; font-weight:bold;">
+
+                    <div class="mess-tabs">
+                        <button class="mess-tab active" id="tab-text" onclick="setMessType('text')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">notes</span> Text</button>
+                        <button class="mess-tab" id="tab-image" onclick="setMessType('image')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">image</span> Photo</button>
+                        <button class="mess-tab" id="tab-poll" onclick="setMessType('poll')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">poll</span> Poll</button>
+                    </div>
+
+                    <textarea id="mess-text" class="form-textarea" placeholder="Post a message to your department..." style="min-height: 90px; margin-bottom: 15px;"></textarea>
+
+                    <div id="mess-image-area" style="display:none; margin-bottom:15px;">
+                        <div class="photo-upload-box" onclick="document.getElementById('mess-photo-input').click()">
+                            <span class="material-icons" style="font-size: 32px; color: var(--accent-gold); margin-bottom:10px;">add_a_photo</span>
+                            <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">Tap to select photo</span>
+                        </div>
+                        <input type="file" id="mess-photo-input" accept="image/*" style="display:none;" onchange="previewMessPhoto(event)">
+                        <img id="mess-photo-preview" style="max-width: 100%; border-radius: 14px; display: none; border: 1px solid var(--glass-border); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    </div>
+
+                    <div id="mess-poll-area" style="display:none; margin-bottom:15px; background: rgba(0,0,0,0.3); padding:15px; border-radius:16px; border: 1px solid var(--glass-border);">
+                        <div id="mess-poll-options">
+                            <input type="text" class="form-input poll-opt" placeholder="Option 1" style="margin-bottom:10px;">
+                            <input type="text" class="form-input poll-opt" placeholder="Option 2" style="margin-bottom:10px;">
+                        </div>
+                        <button class="btn btn-outline" style="padding:12px; font-size:0.9rem; border-style:dashed; background:transparent;" onclick="addMessPollOption()">+ Add option</button>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-bottom:0;" onclick="submitCrewPost()">Post Message</button>
+                </div>
+
+                <div id="crew-mess-feed"></div>
             </div>
             
             <button class="btn btn-outline" style="margin-top: 30px; width: 100%;" onclick="goToView('view-home')">
@@ -481,7 +544,6 @@
             </div>
             <div class="voyage-sheet">
                 
-                <!-- NYT VOYAGE PROGRESS PANEL -->
                 <div class="card" style="background: rgba(0,0,0,0.6); padding: 25px 20px; border-color: var(--glass-border); margin-bottom: 25px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
                     <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">Voyage Progress</div>
                     <div style="text-align: center; font-size: 1.8rem; font-weight: 900; color: var(--text-main); letter-spacing: 1px; text-transform: uppercase;" id="prog-dest">--</div>
@@ -496,7 +558,6 @@
                         <span id="prog-time" style="color: var(--text-muted);">In: --h --m</span>
                     </div>
                 </div>
-                <!-- SLUT PÅ PROGRESS PANEL -->
 
                 <div class="weather-strip">
                     <div class="weather-left">
@@ -622,7 +683,7 @@
 </div>
 
 <script>
-    // GitHub Secret Scanner Bypass (Puzzle trick)
+    // GitHub Secret Scanner Bypass
     var k = ["AIza","SyD1","C2qR","2CR5","LPA2","tps8","b9_c","O9WN","t13i","Dqbc"];
     var firebaseConfig = { 
         apiKey: k.join("").substring(0, 39), 
@@ -635,14 +696,18 @@
     };
     
     var DYNAMIC_GEMINI_KEY = ""; 
-    var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [] };
+    var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {} };
     var firebaseActive = false;
+    
+    // NEW: Department Logic
+    var activeDepartment = null;
 
     try {
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         var db = firebase.database();
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { LIVE_DATA = snapshot.val(); }
+            if (!LIVE_DATA.schedules) LIVE_DATA.schedules = {};
             firebaseActive = true; goToView('view-home');
         }).catch(function(error) { goToView('view-home'); });
 
@@ -651,7 +716,6 @@
         });
     } catch(e) { goToView('view-home'); }
 
-    // Generates beautiful consistent colors from a name
     function getAvatarColor(name) {
         var colors = ['#FF4B4B', '#00E5FF', '#FBB900', '#B070FF', '#00DF89', '#FF8F00'];
         var hash = 0;
@@ -664,7 +728,6 @@
         document.getElementById('menu-icon').innerText = nav.classList.contains('active') ? 'close' : 'menu'; 
     }
     
-    // NYT FUNKTION TIL TEMA-SKIFT (KORREKT)
     function toggleTheme() {
         var body = document.body;
         var icon = document.getElementById('theme-toggle');
@@ -680,7 +743,6 @@
         }
     }
 
-    // Tjek om brugeren valgte Light Mode sidst
     window.onload = function() {
         if (localStorage.getItem('norrona_theme') === 'light') {
             document.body.classList.add('light-mode');
@@ -689,6 +751,7 @@
     };
 
     function toggleSubMenu(id) { document.getElementById(id).classList.toggle('active'); }
+    
     function goToView(viewId) {
         var views = document.querySelectorAll('.view');
         for(var i=0; i<views.length; i++) { views[i].classList.remove('active'); }
@@ -698,7 +761,54 @@
     }
 
     // ==========================================
-    // CREW MESS LOGIC 
+    // DEPARTMENT HUB LOGIC (NEW)
+    // ==========================================
+    function goToDepartment() {
+        var savedDept = localStorage.getItem('norrona_my_dept');
+        if (savedDept) {
+            setDepartment(savedDept);
+        } else {
+            goToView('view-dept-select');
+        }
+    }
+
+    function setDepartment(deptKey) {
+        localStorage.setItem('norrona_my_dept', deptKey);
+        activeDepartment = deptKey;
+        document.getElementById('dept-hub-title').innerText = deptKey.replace('_', ' ');
+        goToView('view-department');
+        switchDeptTab('schedule'); // Default to schedule
+    }
+
+    function switchDeptTab(tab) {
+        document.getElementById('tab-dept-schedule').classList.remove('active');
+        document.getElementById('tab-dept-mess').classList.remove('active');
+        document.getElementById('tab-dept-' + tab).classList.add('active');
+
+        if (tab === 'schedule') {
+            document.getElementById('dept-schedule-view').style.display = 'block';
+            document.getElementById('dept-mess-view').style.display = 'none';
+            loadDeptSchedule();
+            // Stop listening to mess feed to save data
+            if(firebaseActive) db.ref('crew_mess/' + activeDepartment).off();
+        } else {
+            document.getElementById('dept-schedule-view').style.display = 'none';
+            document.getElementById('dept-mess-view').style.display = 'block';
+            loadDeptMess();
+        }
+    }
+
+    function loadDeptSchedule() {
+        var container = document.getElementById('schedule-img-container');
+        if (LIVE_DATA.schedules && LIVE_DATA.schedules[activeDepartment]) {
+            container.innerHTML = '<img src="' + LIVE_DATA.schedules[activeDepartment] + '" class="dept-schedule-img">';
+        } else {
+            container.innerHTML = '<div style="padding: 40px; text-align:center; color:var(--text-muted); font-weight:bold;"><span class="material-icons" style="font-size:3rem; margin-bottom:10px; opacity:0.5;">calendar_today</span><br>No schedule posted by Admin yet.</div>';
+        }
+    }
+
+    // ==========================================
+    // CREW MESS LOGIC (NOW DEPARTMENT SPECIFIC)
     // ==========================================
     var currentMessType = 'text';
     var currentMessImageBase64 = null;
@@ -714,11 +824,11 @@
         document.getElementById('mess-poll-area').style.display = (type === 'poll') ? 'block' : 'none';
 
         if(type === 'poll') {
-            document.getElementById('mess-text').placeholder = "Ask a question for the poll... (e.g. Which movie tonight?)";
+            document.getElementById('mess-text').placeholder = "Ask a question for the poll...";
         } else if (type === 'image') {
             document.getElementById('mess-text').placeholder = "Add a caption to your photo...";
         } else {
-            document.getElementById('mess-text').placeholder = "What's happening?...";
+            document.getElementById('mess-text').placeholder = "Post a message to your department...";
         }
     }
 
@@ -757,6 +867,7 @@
 
     function submitCrewPost() {
         if(!firebaseActive) { alert("Cannot connect to server."); return; }
+        if(!activeDepartment) { alert("Department not selected."); return; }
 
         var nameInput = document.getElementById('mess-name');
         var msgInput = document.getElementById('mess-text');
@@ -764,7 +875,7 @@
         var name = nameInput.value.trim() || "Crew Member";
         var msg = msgInput.value.trim();
 
-        if (msg === "") { alert("Please write a message/question first."); return; }
+        if (msg === "") { alert("Please write a message first."); return; }
 
         var postData = { name: name, message: msg, type: currentMessType, timestamp: new Date().toISOString() };
 
@@ -782,11 +893,12 @@
         var btnText = msgInput.value;
         msgInput.value = "Uploading...";
 
-        db.ref('crew_mess').push(postData).then(function() {
+        // GEMMER I AFDELINGENS MAPPE
+        db.ref('crew_mess/' + activeDepartment).push(postData).then(function() {
             msgInput.value = '';
             currentMessImageBase64 = null;
             document.getElementById('mess-photo-preview').style.display = 'none';
-            document.getElementById('mess-poll-options').innerHTML = '<input type="text" class="form-input poll-opt" placeholder="Option 1 (e.g. Die Hard)" style="margin-bottom:10px;"><input type="text" class="form-input poll-opt" placeholder="Option 2 (e.g. Titanic)" style="margin-bottom:10px;">';
+            document.getElementById('mess-poll-options').innerHTML = '<input type="text" class="form-input poll-opt" placeholder="Option 1"><input type="text" class="form-input poll-opt" placeholder="Option 2">';
             setMessType('text');
         }).catch(function(error) {
             alert("Security Error: Database is locked. Check Rules.");
@@ -795,28 +907,29 @@
     }
 
     function voteOnPoll(postId, optIndex) {
-        if(!firebaseActive) return;
+        if(!firebaseActive || !activeDepartment) return;
         var votedKey = 'norrona_voted_' + postId;
         if(localStorage.getItem(votedKey)) { alert("You have already voted on this poll!"); return; }
 
-        db.ref('crew_mess/' + postId + '/pollOptions/' + optIndex + '/votes').transaction(function(currentVotes) {
+        // STEMMER I AFDELINGENS MAPPE
+        db.ref('crew_mess/' + activeDepartment + '/' + postId + '/pollOptions/' + optIndex + '/votes').transaction(function(currentVotes) {
             return (currentVotes || 0) + 1;
         }).then(function() {
             localStorage.setItem(votedKey, "true");
         });
     }
 
-    function openCrewMess() {
-        goToView('view-crew-mess');
-        if (!firebaseActive) { document.getElementById('crew-mess-feed').innerHTML = '<p>Offline mode. Cannot load messages.</p>'; return; }
+    function loadDeptMess() {
+        if (!firebaseActive || !activeDepartment) { document.getElementById('crew-mess-feed').innerHTML = '<p>Offline mode. Cannot load messages.</p>'; return; }
 
-        db.ref('crew_mess').on('value', function(snapshot) {
+        // LYTTER KUN PÅ AFDELINGENS MAPPE
+        db.ref('crew_mess/' + activeDepartment).on('value', function(snapshot) {
             var feed = document.getElementById('crew-mess-feed');
             feed.innerHTML = '';
             var posts = [];
             
             if (snapshot.exists()) { snapshot.forEach(function(child) { var data = child.val(); data.id = child.key; posts.push(data); }); }
-            if (posts.length === 0) { feed.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No messages yet. Be the first to post!</p>'; return; }
+            if (posts.length === 0) { feed.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No posts in your department yet.</p>'; return; }
 
             posts.reverse(); 
             
