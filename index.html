@@ -13,7 +13,6 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <!-- ADDED: Firebase Messaging SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
     <style>
@@ -403,7 +402,7 @@
             <span>Crew</span>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <!-- ADDED: Notification bell with click event -->
+            <!-- Notifikations klokke med rød prik hvis der mangler rettigheder -->
             <div style="position: relative; cursor: pointer;" onclick="requestNotificationPermission()" title="Enable Notifications">
                 <span class="material-icons" id="notif-icon" style="font-size: 1.6rem; color: var(--danger);">notifications_off</span>
             </div>
@@ -824,7 +823,6 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         db = firebase.database();
         
-        // ADDED: Initialize Messaging
         try {
             messaging = firebase.messaging();
         } catch(e) {
@@ -843,7 +841,7 @@
     } catch(e) { goToView('view-home'); }
 
     // ==========================================
-    // ADDED: NOTIFICATION LOGIC
+    // NOTIFICATION LOGIC (ROBUST FOR GITHUB PAGES)
     // ==========================================
     function requestNotificationPermission() {
         Notification.requestPermission().then((permission) => {
@@ -859,17 +857,34 @@
 
     function setupMessagingToken() {
         const vapidKey = 'BA1Aj80LMZQ0NmrBtTCbxCkue86yux73-O_-e9ut49RbabB0gjHJGj_OipWUGUj_7jVDzo3ACvBo6ksh7Et2yTc';
-        if (!messaging) return;
-        messaging.getToken({ vapidKey: vapidKey }).then((currentToken) => {
-            if (currentToken) {
-                console.log("Device Token received");
-                db.ref('tokens/' + currentToken.substring(0, 20)).set({
-                    token: currentToken,
-                    lastSeen: new Date().toISOString()
-                });
-            }
-        }).catch((err) => {
-            console.log('An error occurred while retrieving token. ', err);
+        if (!messaging) {
+            alert("Din browser understøtter ikke Push-beskeder.");
+            return;
+        }
+
+        // Tvinger browseren til at finde Service Worker filen
+        navigator.serviceWorker.register('./firebase-messaging-sw.js')
+        .then(function(registration) {
+            console.log('Service Worker registreret succesfuldt.');
+            
+            messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
+            .then((currentToken) => {
+                if (currentToken) {
+                    console.log("Device Token fundet!");
+                    db.ref('tokens/' + currentToken.substring(0, 20)).set({
+                        token: currentToken,
+                        lastSeen: new Date().toISOString()
+                    }).then(() => {
+                        console.log("Token gemt i databasen.");
+                    });
+                }
+            }).catch((err) => {
+                console.error('Fejl ved hentning af token: ', err);
+                alert("Kunne ikke oprette notifikations-ID. Fejl: " + err.message);
+            });
+        }).catch(function(err) {
+            console.error('Service worker registrering fejlede:', err);
+            alert("Kunne ikke finde firebase-messaging-sw.js filen!");
         });
     }
 
@@ -914,7 +929,7 @@
             document.body.classList.add('light-mode');
             document.getElementById('theme-toggle').innerText = 'dark_mode';
         }
-        // Check Notification Permission on load
+        
         if (Notification.permission === 'granted') {
             document.getElementById('notif-icon').innerText = 'notifications_active';
             document.getElementById('notif-icon').style.color = 'var(--success)';
