@@ -174,14 +174,7 @@
             </div>
             <div class="sidebar-nav">
                 
-                <!-- ADDED: COMMUNICATIONS SECTION -->
-                <div class="nav-group">
-                    <div class="nav-title">Communications</div>
-                    <div class="nav-item" onclick="loadEditor('comm', 'push', this)">
-                        <span class="material-icons" style="color: var(--accent-cyan);">campaign</span> Push Alerts
-                    </div>
-                </div>
-
+                <!-- NY SEKTION TIL SETTINGS / EMAILS -->
                 <div class="nav-group">
                     <div class="nav-title">System Settings</div>
                     <div class="nav-item" onclick="loadEditor('settings', 'email_routing', this)">
@@ -353,7 +346,6 @@
             document.getElementById('mobile-overlay').style.display = 'none';
         }
 
-        // ADDED LOGIC FOR 'comm' type
         var titleDisplay = "";
         if (type === 'ai') titleDisplay = "AI KNOWLEDGE BASE";
         else if (type === 'comm') titleDisplay = "COMMUNICATIONS & ALERTS";
@@ -382,11 +374,11 @@
         else if (currentEditorType === 'ai') renderAITraining(container);
         else if (currentEditorType === 'dept') renderDeptManager(container);
         else if (currentEditorType === 'settings') renderEmailSettings(container);
-        else if (currentEditorType === 'comm') renderPushSender(container); // Added line
+        else if (currentEditorType === 'comm') renderPushSender(container);
     }
 
     // ==========================================
-    // ADDED: PUSH SENDER FUNCTION
+    // PUSH SENDER FUNCTION
     // ==========================================
     function renderPushSender(container) {
         var html = `
@@ -424,7 +416,7 @@
             body: body,
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            showToast(); // Viser SUCCESS toast nederst til højre
+            showToast(); 
             document.getElementById('push-title-input').value = '';
             document.getElementById('push-body-input').value = '';
         }).catch(err => {
