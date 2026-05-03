@@ -85,7 +85,8 @@
         
         .content-area { flex: 1; padding: 30px; overflow-y: auto; }
         h2 { margin-bottom: 25px; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; font-size: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        
+        h3 { margin-bottom: 15px; color: var(--accent-cyan); font-size: 1.2rem; }
+
         /* GLASS CARDS */
         .card { 
             background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -111,13 +112,11 @@
         .btn-success { background: rgba(0, 230, 118, 0.1); color: var(--success); border: 1px solid rgba(0, 230, 118, 0.3); }
         .btn-outline { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; }
         
-        /* INSIGHTS (AI) */
+        /* INSIGHTS & AI */
         .insights-box { background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 16px; padding: 24px; margin-bottom: 25px; }
-        .insights-box h3 { color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .insight-item { background: rgba(0,0,0,0.3); padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--glass-border); }
         .insight-count { background: var(--danger); color: #fff; font-weight: bold; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; box-shadow: 0 0 10px rgba(255,77,77,0.3);}
-        .insight-text { font-weight: 600; color: #fff; flex: 1; margin-right: 15px; }
-
+        
         .ai-card { padding: 0; overflow: hidden; transition: 0.3s; }
         .ai-card-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: transparent; transition: 0.2s; }
         .ai-card-header:hover { background: rgba(255,255,255,0.02); }
@@ -129,12 +128,10 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* QUILL EDITOR - Styled for Dark Admin */
+        /* QUILL EDITOR */
         .editor-wrapper { background: #fff; border-radius: 10px; overflow: hidden; margin-top: 5px; border: 1px solid var(--glass-border);}
         .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #ddd; background: #f8fafc; }
         .ql-container.ql-snow { border: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 1rem; background: #fff; color: #000; min-height: 150px; }
-        .ql-editor { min-height: 150px; }
-        .ai-quill-container .ql-editor { min-height: 250px; }
         
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--led-green); color: #000; padding: 16px 28px; border-radius: 12px; font-weight: 800; transform: translateY(100px); opacity: 0; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; box-shadow: 0 10px 30px rgba(0,230,118,0.3);}
         .toast.show { transform: translateY(0); opacity: 1; }
@@ -142,12 +139,8 @@
         .option-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
         .option-row input { flex: 1; margin: 0; }
         .option-row button { padding: 12px; background: rgba(255,77,77,0.1); color: var(--danger); border: 1px solid rgba(255,77,77,0.3); border-radius: 10px; cursor: pointer; transition: 0.2s;}
-        .option-row button:hover { background: rgba(255,77,77,0.2); }
 
         .suggestion-box { background: rgba(0,0,0,0.3); border: 1px solid var(--accent-cyan); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0,229,255,0.05); }
-        .suggestion-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
-        .suggestion-q { font-weight: 800; font-size: 1.1rem; color: #fff; display:flex; gap:10px; align-items:center; }
-        .suggestion-q .material-icons { color: var(--danger); }
 
         /* CREW MESS MODERATION STYLES */
         .mess-mod-post { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
@@ -158,6 +151,8 @@
         .mess-mod-body { color: #fff; line-height: 1.5; font-size: 1rem; }
         .mess-mod-badge { font-size: 0.7rem; padding: 4px 10px; border-radius: 12px; background: rgba(0, 229, 255, 0.2); color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; border: 1px solid rgba(0,229,255,0.3); }
         .mess-mod-img { max-width: 200px; max-height: 120px; object-fit: cover; border-radius: 10px; margin-top: 12px; border: 1px solid var(--glass-border);}
+        
+        .photo-upload-box { border: 2px dashed var(--glass-border); border-radius: 14px; padding: 25px 20px; text-align: center; cursor: pointer; background: rgba(0,0,0,0.3); margin-bottom: 20px; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
 
         @media (max-width: 768px) {
             aside { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
@@ -176,12 +171,17 @@
                 <div class="dot"></div> DEV MODE (NO LOGIN)
             </div>
             <div class="sidebar-nav">
-                <!-- NY GRUPPE TIL COMMUNITY -->
+                
+                <!-- NY AFDELINGS SEKTION -->
                 <div class="nav-group">
-                    <div class="nav-title">Community</div>
-                    <div class="nav-item" onclick="loadEditor('mess', 'moderate', this)">
-                        <span class="material-icons" style="color: var(--danger);">forum</span> Crew Mess
-                    </div>
+                    <div class="nav-title">Departments (Schedules & Mess)</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Rest_Bar', this)"><span class="material-icons">local_bar</span> Rest/Bar</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Galley', this)"><span class="material-icons">restaurant</span> Galley</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Shop', this)"><span class="material-icons">storefront</span> Shop</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Reception', this)"><span class="material-icons">room_service</span> Reception</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Housekeeping', this)"><span class="material-icons">cleaning_services</span> Housekeeping</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Deck', this)"><span class="material-icons">anchor</span> Deck Ops</div>
+                    <div class="nav-item" onclick="loadEditor('dept', 'Engine', this)"><span class="material-icons">settings</span> Engine Room</div>
                 </div>
 
                 <div class="nav-group">
@@ -232,14 +232,7 @@
     <div class="toast" id="toast">SYSTEM UPDATED SUCCESSFULLY!</div>
 
 <script>
-    var p1 = "AIzaS";
-    var p2 = "yD1C2q";
-    var p3 = "R2CR5L";
-    var p4 = "PA2tps";
-    var p5 = "8b9_cO";
-    var p6 = "9WNt13";
-    var p7 = "iDqc";
-    
+    var p1 = "AIzaS"; var p2 = "yD1C2q"; var p3 = "R2CR5L"; var p4 = "PA2tps"; var p5 = "8b9_cO"; var p6 = "9WNt13"; var p7 = "iDqc";
     var firebaseConfig = {
         apiKey: p1 + p2 + p3 + p4 + p5 + p6 + p7,
         authDomain: "norrona-app.firebaseapp.com",
@@ -250,7 +243,7 @@
         appId: "1:836610543277:web:3e74479daf205453bd0024"
     };
     
-    try { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } } catch(e) { alert("Firebase failed to connect. Check Config."); }
+    try { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } } catch(e) { alert("Firebase failed to connect."); }
 
     var db = firebase.database();
 
@@ -261,73 +254,60 @@
         overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
     }
 
-    var appData = { handbook: {}, quizzes: {}, ai_knowledge: [] };
+    var appData = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {} };
     var unansweredQuestions = [];
     var pendingSuggestions = [];
     var crewMessPosts = []; 
     var currentEditorType = 'handbook'; 
     var currentEditorKey = 'general';
+    var tempScheduleBase64 = null;
 
     var DEFAULT_DATA = {
-        ai_knowledge: [{ topic: "Safety Reporting Definitions", content: "<p><strong>1. Safety Observation:</strong> Potential Hazard. <strong>2. Near Miss:</strong> Almost an accident.</p>" }],
-        handbook: {
-            general: [ { title: "Your New Home at Sea", img: "https://www.smyrilline.com/wp-content/uploads/2021/09/Norrona-1920x1080-1.jpg", video: "", content: "<p>Welcome on board.</p>" } ],
-            hotel: [ { title: "Hotel Rules", img: "", video: "", content: "<p>Footwear MUST be all black.</p>" } ],
-            bridge_engine: [ { title: "Bridge & Engine", img: "", video: "", content: "<p>Required certificates.</p>" } ]
-        },
-        quizzes: { universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ] }
+        ai_knowledge: [{ topic: "General Info", content: "<p>Basic knowledge here...</p>" }],
+        handbook: { general: [ { title: "Welcome", img: "", video: "", content: "<p>Welcome on board.</p>" } ] },
+        quizzes: { universal: [ { q: "SAFIR handles?", options: ["Food", "Tickets", "Accidents"], ans: 2 } ] },
+        schedules: {}
     };
 
     function fetchDatabase() {
         db.ref('appData').once('value').then(function(snapshot) {
             if (snapshot.exists()) { 
                 appData = snapshot.val(); 
+                if(!appData.schedules) appData.schedules = {};
                 if (typeof appData.ai_knowledge === 'string') { appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }]; }
             } else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
-            var firstItem = document.querySelectorAll('.nav-item')[2]; 
+            var firstItem = document.querySelectorAll('.nav-item')[9]; // Starter på Handbook
             loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { 
             appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-            var firstItem = document.querySelectorAll('.nav-item')[2]; 
+            var firstItem = document.querySelectorAll('.nav-item')[9]; 
             loadEditor('handbook', 'general', firstItem); 
         });
 
         db.ref('ai_unanswered').on('value', function(snapshot) {
             unansweredQuestions = [];
-            if (snapshot.exists()) { snapshot.forEach(function(childSnapshot) { unansweredQuestions.push({ id: childSnapshot.key, q: childSnapshot.val().question }); }); }
+            if (snapshot.exists()) { snapshot.forEach(function(child) { unansweredQuestions.push({ id: child.key, q: child.val().question }); }); }
             if (currentEditorType === 'ai') { updateInsightsUI(); }
         });
 
         db.ref('ai_suggestions').on('value', function(snapshot) {
             pendingSuggestions = [];
-            if (snapshot.exists()) { snapshot.forEach(function(childSnapshot) { var data = childSnapshot.val(); data.id = childSnapshot.key; pendingSuggestions.push(data); }); }
+            if (snapshot.exists()) { snapshot.forEach(function(child) { var data = child.val(); data.id = child.key; pendingSuggestions.push(data); }); }
             if (currentEditorType === 'ai') { updateSuggestionsUI(); }
-        });
-
-        db.ref('crew_mess').on('value', function(snapshot) {
-            crewMessPosts = [];
-            if (snapshot.exists()) {
-                snapshot.forEach(function(childSnapshot) {
-                    var data = childSnapshot.val();
-                    data.id = childSnapshot.key;
-                    crewMessPosts.push(data);
-                });
-            }
-            if (currentEditorType === 'mess') { renderMessModeration(document.getElementById('editor-container')); }
         });
     }
 
-    // OPDATERET GEM-FUNKTION (Viser præcis fejlbesked)
     function saveToFirebase() {
         extractFormData(); 
-        if(currentEditorType !== 'mess') {
+        if(currentEditorType !== 'dept') {
             db.ref('appData').set(appData).then(function() { 
                 showToast(); 
             }).catch(function(err) { 
-                alert("Save failed! Fejlbesked fra serveren: \n" + err.message + "\n\n(Tjek at dine Firebase Rules for 'appData' er sat til '.write': true)"); 
+                alert("Save failed! Fejlbesked: \n" + err.message); 
             });
         } else {
-            showToast();
+            // Gem kun appData (hvis der er et nyt skema)
+            db.ref('appData').set(appData).then(function() { showToast(); });
         }
     }
 
@@ -346,11 +326,21 @@
 
         var titleDisplay = "";
         if (type === 'ai') titleDisplay = "AI KNOWLEDGE BASE";
-        else if (type === 'mess') titleDisplay = "CREW MESS MODERATION";
+        else if (type === 'dept') titleDisplay = key.replace('_', ' ').toUpperCase() + " DEPARTMENT";
         else titleDisplay = (key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')) + (type === 'quiz' ? ' QUESTIONS' : ' PAGES');
         
         document.getElementById('header-title').innerText = titleDisplay;
-        renderCurrentEditor();
+        
+        if (type === 'dept') {
+            db.ref('crew_mess/' + key).on('value', function(snapshot) {
+                crewMessPosts = [];
+                if (snapshot.exists()) { snapshot.forEach(function(child) { var data = child.val(); data.id = child.key; crewMessPosts.push(data); }); }
+                if (currentEditorType === 'dept' && currentEditorKey === key) { renderDeptManager(document.getElementById('editor-container')); }
+            });
+        } else {
+            db.ref('crew_mess').off(); // Stop listening if not on dept tab
+            renderCurrentEditor();
+        }
     }
 
     function renderCurrentEditor() {
@@ -358,62 +348,129 @@
         if (currentEditorType === 'handbook') renderHandbookForms(container);
         else if (currentEditorType === 'quiz') renderQuizForms(container);
         else if (currentEditorType === 'ai') renderAITraining(container);
-        else if (currentEditorType === 'mess') renderMessModeration(container);
+        else if (currentEditorType === 'dept') renderDeptManager(container);
     }
 
-    function renderMessModeration(container) {
-        var html = '<h2><span class="material-icons" style="color:var(--danger); margin-right:12px;">forum</span> Live Crew Feed</h2>';
-        html += '<p style="color:var(--text-muted); margin-bottom:25px;">Review and moderate the social feed. Deleting a post removes it instantly from all crew devices.</p>';
+    // ==========================================
+    // DEPARTMENT MANAGER (SCHEDULE + MESS)
+    // ==========================================
+    function renderDeptManager(container) {
+        tempScheduleBase64 = null;
+        var currentSchedule = appData.schedules && appData.schedules[currentEditorKey] ? appData.schedules[currentEditorKey] : null;
+
+        var html = '<div style="display:grid; grid-template-columns: 1fr; gap:20px;">';
+        
+        // 1. SCHEDULE UPLOAD
+        html += '<div class="card">';
+        html += '<h3><span class="material-icons" style="vertical-align:middle;">calendar_month</span> Monthly Schedule ('+currentEditorKey.replace('_', ' ')+')</h3>';
+        html += '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Upload a screenshot or photo of the Excel schedule. It will be immediately available for the crew.</p>';
+        
+        html += '<div class="photo-upload-box" onclick="document.getElementById(\'schedule-upload\').click()">';
+        html += '<span class="material-icons" style="font-size: 32px; color: var(--accent-cyan); margin-bottom:10px;">add_photo_alternate</span>';
+        html += '<span style="font-weight: 700; color: #fff;">Click to upload new schedule image</span>';
+        html += '</div>';
+        html += '<input type="file" id="schedule-upload" accept="image/*" style="display:none;" onchange="previewScheduleImage(event)">';
+        
+        html += '<div id="schedule-preview-container" style="'+(currentSchedule ? 'display:block;' : 'display:none;')+' border:1px solid var(--glass-border); padding:10px; border-radius:10px; background:rgba(0,0,0,0.4); text-align:center;">';
+        html += '<div style="color:var(--success); font-weight:bold; margin-bottom:10px; font-size:0.8rem;">CURRENT SCHEDULE ACTIVE</div>';
+        html += '<img id="schedule-img-preview" src="'+(currentSchedule || '')+'" style="max-width:100%; max-height:400px; border-radius:8px;">';
+        html += '<br><button class="btn btn-danger" style="margin-top:10px; font-size:0.8rem; padding:8px 12px;" onclick="deleteSchedule()">Delete Schedule</button>';
+        html += '</div>';
+        html += '</div>';
+
+        // 2. CREW MESS MODERATION
+        html += '<div>';
+        html += '<h3><span class="material-icons" style="color:var(--danger); vertical-align:middle;">forum</span> Department Noticeboard</h3>';
+        html += '<p style="color:var(--text-muted); margin-bottom:15px; font-size:0.9rem;">Review and moderate the internal social feed for this department.</p>';
 
         if (crewMessPosts.length === 0) {
-            html += '<div class="card" style="text-align:center; padding: 40px; color:var(--text-muted);">No posts active on the ship right now.</div>';
-            container.innerHTML = html;
-            return;
-        }
+            html += '<div class="card" style="text-align:center; padding: 40px; color:var(--text-muted);">No posts active in this department right now.</div>';
+        } else {
+            var displayPosts = [...crewMessPosts].reverse();
+            displayPosts.forEach(function(p) {
+                var dateObj = new Date(p.timestamp);
+                var timeString = dateObj.toLocaleDateString('en-GB') + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+                
+                html += '<div class="mess-mod-post">';
+                html += '  <div class="mess-mod-content">';
+                html += '    <div class="mess-mod-header">';
+                html += '      <span class="mess-mod-name">' + p.name + '</span>';
+                html += '      <span class="mess-mod-badge">' + (p.type || 'text') + '</span>';
+                html += '      <span class="mess-mod-time">' + timeString + '</span>';
+                html += '    </div>';
+                html += '    <div class="mess-mod-body">' + p.message + '</div>';
+                
+                if (p.type === 'image' && p.image) {
+                    html += '<img src="' + p.image + '" class="mess-mod-img">';
+                } else if (p.type === 'poll' && p.pollOptions) {
+                    html += '<div style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">';
+                    p.pollOptions.forEach(function(opt) { html += '&bull; ' + opt.text + ' (' + (opt.votes || 0) + ' votes)<br>'; });
+                    html += '</div>';
+                }
 
-        var displayPosts = [...crewMessPosts].reverse();
-
-        displayPosts.forEach(function(p) {
-            var dateObj = new Date(p.timestamp);
-            var timeString = dateObj.toLocaleDateString('en-GB') + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-            
-            html += '<div class="mess-mod-post">';
-            html += '  <div class="mess-mod-content">';
-            html += '    <div class="mess-mod-header">';
-            html += '      <span class="mess-mod-name">' + p.name + '</span>';
-            html += '      <span class="mess-mod-badge">' + (p.type || 'text') + '</span>';
-            html += '      <span class="mess-mod-time">' + timeString + '</span>';
-            html += '    </div>';
-            html += '    <div class="mess-mod-body">' + p.message + '</div>';
-            
-            if (p.type === 'image' && p.image) {
-                html += '<img src="' + p.image + '" class="mess-mod-img">';
-            } else if (p.type === 'poll' && p.pollOptions) {
-                html += '<div style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">';
-                p.pollOptions.forEach(function(opt) {
-                    html += '&bull; ' + opt.text + ' (' + (opt.votes || 0) + ' votes)<br>';
-                });
+                html += '  </div>';
+                html += '  <button class="btn btn-danger" onclick="deleteDeptMessPost(\'' + p.id + '\')"><span class="material-icons" style="font-size:1.2rem;">delete</span> PURGE</button>';
                 html += '</div>';
-            }
-
-            html += '  </div>';
-            html += '  <button class="btn btn-danger" onclick="deleteMessPost(\'' + p.id + '\')"><span class="material-icons" style="font-size:1.2rem;">delete</span> PURGE</button>';
-            html += '</div>';
-        });
+            });
+        }
+        html += '</div></div>';
 
         container.innerHTML = html;
     }
 
-    function deleteMessPost(postId) {
-        if(confirm("Are you sure you want to permanently delete this post from the Crew Mess?")) {
-            db.ref('crew_mess/' + postId).remove().then(function() {
-                showToast(); 
-            }).catch(function(err) {
-                alert("Failed to delete post. Check Firebase rules.");
-            });
+    function previewScheduleImage(event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    var MAX_WIDTH = 1200; // Tillad højere opløsning for skemaer så tekst kan læses
+                    var scaleSize = MAX_WIDTH / img.width;
+                    if(scaleSize > 1) scaleSize = 1;
+                    canvas.width = img.width * scaleSize; 
+                    canvas.height = img.height * scaleSize;
+                    var ctx = canvas.getContext('2d'); 
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    var b64 = canvas.toDataURL('image/jpeg', 0.85); // Højere kvalitet
+                    
+                    if(!appData.schedules) appData.schedules = {};
+                    appData.schedules[currentEditorKey] = b64;
+                    
+                    document.getElementById('schedule-img-preview').src = b64;
+                    document.getElementById('schedule-preview-container').style.display = 'block';
+                    
+                    // Auto-gem når billede lægges ind
+                    saveToFirebase();
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
         }
     }
 
+    function deleteSchedule() {
+        if(confirm("Remove the schedule for " + currentEditorKey + "?")) {
+            if(appData.schedules) {
+                appData.schedules[currentEditorKey] = null;
+                document.getElementById('schedule-preview-container').style.display = 'none';
+                document.getElementById('schedule-img-preview').src = '';
+                saveToFirebase();
+            }
+        }
+    }
+
+    function deleteDeptMessPost(postId) {
+        if(confirm("Permanently delete this post from the department board?")) {
+            db.ref('crew_mess/' + currentEditorKey + '/' + postId).remove().then(function() { showToast(); });
+        }
+    }
+
+    // ==========================================
+    // AI TRAINING & SUGGESTIONS UI
+    // ==========================================
     function renderAITraining(container) {
         if (!Array.isArray(appData.ai_knowledge)) appData.ai_knowledge = [];
         var html = '<div id="ai-suggestions-container"></div>';
