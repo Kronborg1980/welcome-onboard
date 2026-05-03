@@ -251,7 +251,6 @@
             text-shadow: none;
         }
         
-        /* Lyse og lækre onboarding kasser */
         body.light-mode .onboarding-step {
             background: linear-gradient(145deg, #ffffff, #f1f8fc);
             border: 1px solid rgba(0, 229, 255, 0.3);
@@ -319,7 +318,7 @@
             padding: 10px;
         }
         .dept-schedule-img {
-            min-width: 800px; /* Sikrer at skemaet ikke bliver ulæseligt småt, man skal scrolle/panne */
+            min-width: 800px; 
             max-width: 1500px;
             width: 100%;
             display: block;
@@ -345,7 +344,6 @@
 
     <div id="nav-overlay">
         <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Dashboard</a>
-        <!-- OPDATERET MENUPUNKT TIL DEPARTMENT -->
         <a href="#" class="nav-link" onclick="goToDepartment()"><span class="material-icons">group_work</span> My Department <span style="background:var(--accent-gold); color:#000; font-size:0.7rem; padding:2px 8px; border-radius:12px; font-weight:bold; margin-left:5px;">HUB</span></a>
         <a href="#" class="nav-link" onclick="openVoyage()"><span class="material-icons">explore</span> Voyage & Ship Status</a>
         <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook</a>
@@ -362,9 +360,12 @@
             </div>
         </div>
 
+        <!-- ==========================================
+             HOME / ONBOARDING VIEW
+             ========================================== -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
-                <img id="front-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; opacity:0.95; transition: filter 0.3s;" alt="Smyril Line Logo">
+                <img id="front-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; transition: filter 0.3s;" alt="Smyril Line Logo">
                 <h1 style="margin-bottom: 5px;">Norröna</h1>
                 <p style="font-size: 1.1rem; max-width: 80%; margin: 0 auto; color: var(--accent-cyan); font-weight: 600; letter-spacing: 1px;">CREW PORTAL</p>
             </div>
@@ -450,10 +451,26 @@
                 <button class="mess-tab" id="tab-dept-mess" onclick="switchDeptTab('mess')"><span class="material-icons" style="font-size:18px; vertical-align:middle; margin-right:4px;">forum</span> Noticeboard</button>
             </div>
 
-            <!-- SCHEDULE TAB -->
+            <!-- SCHEDULE TAB (Måned dropdown tilføjet her) -->
             <div id="dept-schedule-view">
                 <div class="card" style="padding:15px;">
-                    <h3 style="font-size: 1.1rem; color:var(--text-main); margin-bottom: 15px; display:flex; align-items:center; gap:8px;"><span class="material-icons" style="color:var(--accent-cyan);">event_note</span> Monthly Schedule</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <h3 style="font-size: 1.1rem; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;"><span class="material-icons" style="color:var(--accent-cyan);">event_note</span> Schedule</h3>
+                        <select id="crew-month-select" class="form-select" style="width:140px; padding:8px; margin:0;" onchange="loadDeptSchedule()">
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
                     <div class="dept-schedule-container" id="schedule-img-container">
                         <!-- Image injected via JS -->
                         <div style="padding: 30px; text-align:center; color:var(--text-muted);">Loading schedule...</div>
@@ -572,7 +589,6 @@
                     <div class="grid-item"><div class="label">Wind (Here)</div><div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div><div class="sub-value"><span id="wind-knots">--</span> kn <span style="opacity:0.25; margin:0 4px;">|</span><span id="wind-dir-text" style="color:var(--accent-gold); font-weight:bold;">--</span></div></div>
                     <div class="grid-item"><div class="label">Wave Height</div><div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div><div class="sub-value">Significant</div></div>
                     
-                    <!-- HIDDEN GRID ELEMENTS FOR JS COMPATIBILITY -->
                     <span id="distance" style="display:none;"></span>
                     <span id="distance-unit" style="display:none;"></span>
                     <span id="destination-label" style="display:none;"></span>
@@ -699,8 +715,9 @@
     var LIVE_DATA = { handbook: {}, quizzes: {}, ai_knowledge: [], schedules: {} };
     var firebaseActive = false;
     
-    // NEW: Department Logic
+    // NYT: Holder styr på afdeling og måned
     var activeDepartment = null;
+    var currentScheduleMonth = new Date().toLocaleString('en-US', { month: 'long' });
 
     try {
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
@@ -761,7 +778,7 @@
     }
 
     // ==========================================
-    // DEPARTMENT HUB LOGIC (NEW)
+    // DEPARTMENT HUB LOGIC
     // ==========================================
     function goToDepartment() {
         var savedDept = localStorage.getItem('norrona_my_dept');
@@ -776,8 +793,9 @@
         localStorage.setItem('norrona_my_dept', deptKey);
         activeDepartment = deptKey;
         document.getElementById('dept-hub-title').innerText = deptKey.replace('_', ' ');
+        document.getElementById('crew-month-select').value = currentScheduleMonth; 
         goToView('view-department');
-        switchDeptTab('schedule'); // Default to schedule
+        switchDeptTab('schedule'); 
     }
 
     function switchDeptTab(tab) {
@@ -789,7 +807,6 @@
             document.getElementById('dept-schedule-view').style.display = 'block';
             document.getElementById('dept-mess-view').style.display = 'none';
             loadDeptSchedule();
-            // Stop listening to mess feed to save data
             if(firebaseActive) db.ref('crew_mess/' + activeDepartment).off();
         } else {
             document.getElementById('dept-schedule-view').style.display = 'none';
@@ -798,17 +815,20 @@
         }
     }
 
+    // NYT: Indlæser den specifikke måned
     function loadDeptSchedule() {
         var container = document.getElementById('schedule-img-container');
-        if (LIVE_DATA.schedules && LIVE_DATA.schedules[activeDepartment]) {
-            container.innerHTML = '<img src="' + LIVE_DATA.schedules[activeDepartment] + '" class="dept-schedule-img">';
+        var selectedMonth = document.getElementById('crew-month-select').value;
+
+        if (LIVE_DATA.schedules && LIVE_DATA.schedules[activeDepartment] && LIVE_DATA.schedules[activeDepartment][selectedMonth]) {
+            container.innerHTML = '<img src="' + LIVE_DATA.schedules[activeDepartment][selectedMonth] + '" class="dept-schedule-img">';
         } else {
-            container.innerHTML = '<div style="padding: 40px; text-align:center; color:var(--text-muted); font-weight:bold;"><span class="material-icons" style="font-size:3rem; margin-bottom:10px; opacity:0.5;">calendar_today</span><br>No schedule posted by Admin yet.</div>';
+            container.innerHTML = '<div style="padding: 40px; text-align:center; color:var(--text-muted); font-weight:bold;"><span class="material-icons" style="font-size:3rem; margin-bottom:10px; opacity:0.5;">calendar_today</span><br>No schedule posted for ' + selectedMonth + ' yet.</div>';
         }
     }
 
     // ==========================================
-    // CREW MESS LOGIC (NOW DEPARTMENT SPECIFIC)
+    // CREW MESS LOGIC 
     // ==========================================
     var currentMessType = 'text';
     var currentMessImageBase64 = null;
@@ -893,7 +913,6 @@
         var btnText = msgInput.value;
         msgInput.value = "Uploading...";
 
-        // GEMMER I AFDELINGENS MAPPE
         db.ref('crew_mess/' + activeDepartment).push(postData).then(function() {
             msgInput.value = '';
             currentMessImageBase64 = null;
@@ -911,7 +930,6 @@
         var votedKey = 'norrona_voted_' + postId;
         if(localStorage.getItem(votedKey)) { alert("You have already voted on this poll!"); return; }
 
-        // STEMMER I AFDELINGENS MAPPE
         db.ref('crew_mess/' + activeDepartment + '/' + postId + '/pollOptions/' + optIndex + '/votes').transaction(function(currentVotes) {
             return (currentVotes || 0) + 1;
         }).then(function() {
@@ -922,7 +940,6 @@
     function loadDeptMess() {
         if (!firebaseActive || !activeDepartment) { document.getElementById('crew-mess-feed').innerHTML = '<p>Offline mode. Cannot load messages.</p>'; return; }
 
-        // LYTTER KUN PÅ AFDELINGENS MAPPE
         db.ref('crew_mess/' + activeDepartment).on('value', function(snapshot) {
             var feed = document.getElementById('crew-mess-feed');
             feed.innerHTML = '';
@@ -988,9 +1005,6 @@
         });
     }
 
-    // ==========================================
-    // MULTI-PHOTO SAFETY REPORTING LOGIC
-    // ==========================================
     function openReporting() {
         document.getElementById('report-type').selectedIndex = 0; document.getElementById('report-location').value = ""; document.getElementById('report-desc').value = ""; document.getElementById('report-action').value = ""; goToView('view-reporting');
     }
@@ -1002,9 +1016,6 @@
         db.ref('reports').push({ timestamp: new Date().toISOString(), type: type, location: loc, description: desc, immediateAction: action }).then(function() { setTimeout(function() { goToView('view-report-success'); }, 1500); }).catch(function(error) { goToView('view-reporting'); });
     }
 
-    // ==========================================
-    // HANDBOOK RENDERER
-    // ==========================================
     var handbookFlow = []; var currentHbIdx = 0;
     function openHandbook(dept) {
         if(!firebaseActive || !LIVE_DATA.handbook) return;
@@ -1033,9 +1044,6 @@
     function nextHandbook() { if(currentHbIdx < handbookFlow.length - 1) { currentHbIdx++; renderHandbookPage(); } }
     function prevHandbook() { if(currentHbIdx > 0) { currentHbIdx--; renderHandbookPage(); } }
 
-    // ==========================================
-    // QUIZ LOGIC
-    // ==========================================
     var activeQuiz = []; var currentQuizIdx = 0; var selectedQuizAns = null; var selectedDeptName = "";
     function openQuestionnaire() {
         if(!firebaseActive) return;
@@ -1089,9 +1097,6 @@
         } else { feedback.innerText = "Incorrect. Check Handbook and try again!"; feedback.style.display="block"; feedback.style.background="rgba(255,77,77,0.2)"; feedback.style.color="var(--danger)"; }
     }
 
-    // ==========================================
-    // VOYAGE API LOGIC MED PROGRESS BAR
-    // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
 
@@ -1192,7 +1197,7 @@
             if(document.getElementById("prog-time")) document.getElementById("prog-time").textContent = isInPort ? "Docked" : timeRemainingStr;
             if(document.getElementById("prog-bar-fill")) document.getElementById("prog-bar-fill").style.width = progPct + "%";
 
-            // Opdater det gamle grid (skjulte for JS kompatibilitet, men sikret for crashes)
+            // Opdater det gamle grid
             if (isInPort) {
                 if(document.getElementById("distance")) document.getElementById("distance").textContent = "Docked"; 
                 if(document.getElementById("distance-unit")) document.getElementById("distance-unit").textContent = "in " + currentDestInfo.name; 
@@ -1244,9 +1249,6 @@
         L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map); updateShipData(); setInterval(updateShipData, 60000); 
     }
 
-    // ==========================================
-    // GOOGLE GEMINI AI CHAT LOGIC (MED WALKIE-TALKIE)
-    // ==========================================
     function minimizeChatTab(e) {
         e.stopPropagation(); document.getElementById('chat-fab').style.display = 'none';
         if(document.getElementById('chat-panel').classList.contains('active')) { document.getElementById('chat-panel').classList.remove('active'); }
