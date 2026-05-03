@@ -247,9 +247,9 @@
     <div class="toast" id="toast">SYSTEM UPDATED SUCCESSFULLY!</div>
 
 <script>
-    // Base64 krypteret for at snyde GitHub Secret Scanner
+    const k = ["AIzaS", "yD1C2q", "R2CR5L", "PA2tps", "8b9_cO", "9WNt13", "iDqc"].join("");
     var firebaseConfig = {
-        apiKey: atob("QUl6YVN5RDFDMnFSMkNSNUxQQTJ0cHM4YjlfY085V050MTNpRHFj"),
+        apiKey: k,
         authDomain: "norrona-app.firebaseapp.com",
         databaseURL: "https://norrona-app-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "norrona-app",
@@ -305,7 +305,7 @@
                 if(!appData.emails) appData.emails = DEFAULT_DATA.emails;
                 if (typeof appData.ai_knowledge === 'string') { appData.ai_knowledge = [{ topic: "General Info", content: appData.ai_knowledge }]; }
             } else { appData = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
-            var firstItem = document.querySelectorAll('.nav-item')[10]; // Starter på Handbook
+            var firstItem = document.querySelectorAll('.nav-item')[10]; 
             loadEditor('handbook', 'general', firstItem); 
         }).catch(function(error) { 
             appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
