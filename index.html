@@ -16,20 +16,21 @@
 
     <style>
         :root { 
-            --primary-navy: #00121a; 
-            --primary-blue: #004A59;
-            --accent-gold: #fbb900; 
-            --accent-cyan: #00e5ff;
-            --bg-dark: #000000;
+            /* SMYRIL LINE OFFICIAL PALETTE */
+            --primary-navy: #041E3A; /* Dyb rederi mørkeblå */
+            --primary-blue: #0A365D; /* Hav-blå */
+            --accent-cyan: #00AEEF;  /* Smyril bølge-cyan */
+            --bg-dark: #020C17;      /* Næsten sort/blå baggrund */
             
-            --glass-bg: rgba(10, 20, 30, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            /* Glassmorphism tonet til Smyril Line */
+            --glass-bg: rgba(4, 30, 58, 0.65);
+            --glass-border: rgba(0, 174, 239, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
             
-            --text-main: #e2e8f0; 
-            --text-muted: #8b9eb0; 
-            --danger: #ff4d4d; 
-            --success: #00e676; 
+            --text-main: #F0F4F8; 
+            --text-muted: #8FA6B8; 
+            --danger: #FF4D4D; 
+            --success: #00E676; 
             --header-height: 70px; 
         }
         
@@ -37,7 +38,7 @@
         
         body { 
             background-color: var(--bg-dark); 
-            background-image: radial-gradient(circle at 50% 0%, rgba(0, 74, 89, 0.2) 0%, transparent 60%);
+            background-image: radial-gradient(circle at 50% 0%, rgba(10, 54, 93, 0.4) 0%, transparent 70%);
             color: var(--text-main); 
             min-height: 100vh; 
             overflow-x: hidden;
@@ -48,21 +49,21 @@
         
         header { 
             position: sticky; top: 0; z-index: 1000; height: var(--header-height); 
-            background: rgba(2, 6, 12, 0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            background: rgba(4, 30, 58, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px; 
             border-bottom: 1px solid var(--glass-border); 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             transition: background 0.3s, border-color 0.3s;
         }
         .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .logo-container img { height: 35px; opacity: 0.95; transition: filter 0.3s; } 
+        .logo-container img { height: 35px; opacity: 1; transition: filter 0.3s; } 
         .logo-container span { font-weight: 800; font-size: 1.2rem; color: var(--text-main); letter-spacing: 0.5px; }
         .menu-toggle { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px; position: relative; }
         
-        #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(5, 11, 20, 0.98); backdrop-filter: blur(10px); z-index: 999; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;}
+        #nav-overlay { position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0; background: rgba(2, 12, 23, 0.98); backdrop-filter: blur(10px); z-index: 999; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;}
         #nav-overlay.active { transform: translateX(0); }
-        .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: var(--text-main); text-decoration: none; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid var(--glass-border); transition: 0.2s;}
-        .nav-link:hover, .nav-link:active { color: var(--accent-gold); background: rgba(255,255,255,0.03); border-radius: 12px; }
+        .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 20px; color: var(--text-main); text-decoration: none; font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;}
+        .nav-link:hover, .nav-link:active { background: rgba(0, 174, 239, 0.1); color: #fff; border-radius: 12px; }
         .nav-link .material-icons { color: var(--accent-cyan); }
 
         main { flex: 1; padding: 20px; padding-bottom: 120px; display: flex; flex-direction: column; }
@@ -85,14 +86,14 @@
         .hero-img { width: calc(100% + 48px); height: 220px; object-fit: cover; margin: -24px -24px 20px -24px; border-radius: 20px 20px 0 0; border-bottom: 1px solid var(--glass-border); }
 
         .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 14px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; text-align: center; margin-bottom: 15px; }
-        .btn-primary { background: var(--accent-gold); color: #000; box-shadow: 0 4px 15px rgba(251, 185, 0, 0.2); }
-        .btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(251, 185, 0, 0.2); }
+        .btn-primary { background: var(--accent-cyan); color: #000; box-shadow: 0 4px 15px rgba(0, 174, 239, 0.3); }
+        .btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(0, 174, 239, 0.3); }
         .btn-outline { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main); }
         .btn-outline:active { background: rgba(255,255,255,0.1); transform: translateY(2px); }
         .btn-danger-outline { background: rgba(255, 77, 77, 0.1); border: 1px solid rgba(255, 77, 77, 0.3); color: var(--danger); }
         
         .btn-dept { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: var(--text-main); justify-content: flex-start; padding: 20px; border-radius: 16px; transition: 0.2s; box-shadow: inset 0 0 10px rgba(255,255,255,0.02); }
-        .btn-dept:active { background: rgba(0, 229, 255, 0.1); border-color: var(--accent-cyan); }
+        .btn-dept:active { background: rgba(0, 174, 239, 0.15); border-color: var(--accent-cyan); }
         .btn-dept .material-icons { color: var(--accent-cyan); font-size: 28px;}
 
         .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 15px; border-left: 2px solid var(--accent-cyan); margin-left: 20px; margin-bottom: 10px;}
@@ -101,17 +102,17 @@
 
         .form-label { display: block; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;}
         .form-input, .form-select, .form-textarea { width: 100%; padding: 16px; border: 1px solid var(--glass-border); border-radius: 14px; font-size: 1rem; margin-bottom: 20px; background: rgba(0,0,0,0.4); color: var(--text-main); transition: 0.2s; }
-        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent-cyan); background: rgba(0,0,0,0.6); box-shadow: 0 0 10px rgba(0, 229, 255, 0.1); }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent-cyan); background: rgba(0,0,0,0.6); box-shadow: 0 0 10px rgba(0, 174, 239, 0.2); }
         .form-textarea { min-height: 120px; resize: vertical; }
 
         /* CREW MESS STYLES */
         .mess-tabs { display: flex; gap: 8px; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 14px; border: 1px solid var(--glass-border);}
         .mess-tab { flex: 1; background: transparent; border: none; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 12px 5px; border-radius: 10px; transition: 0.2s; font-size: 0.9rem;}
-        .mess-tab.active { background: rgba(255,255,255,0.1); color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .mess-tab.active { background: rgba(0, 174, 239, 0.15); color: #fff; box-shadow: inset 0 0 10px rgba(0, 174, 239, 0.1); border: 1px solid rgba(0, 174, 239, 0.3);}
 
         .mess-post { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: var(--glass-shadow); overflow: hidden; }
         .mess-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; border: none; padding: 0; }
-        .mess-avatar { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-cyan), var(--primary-blue)); color: #000; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 229, 255, 0.2); text-shadow: none; }
+        .mess-avatar { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-cyan), var(--primary-blue)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 174, 239, 0.3); text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
         .mess-header-info { display: flex; flex-direction: column; }
         .mess-name { font-weight: 800; color: var(--text-main); font-size: 1.1rem; letter-spacing: 0.5px;}
         .mess-time { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-top: 2px;}
@@ -120,10 +121,10 @@
         
         .poll-container { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 15px; border: 1px solid var(--glass-border); margin-top: 10px;}
         .poll-option-btn { display: block; width: 100%; text-align: left; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: var(--text-main); font-weight: 700; font-size: 1rem; transition: 0.2s; }
-        .poll-option-btn:active { background: rgba(0, 229, 255, 0.1); border-color: var(--accent-cyan); }
+        .poll-option-btn:active { background: rgba(0, 174, 239, 0.15); border-color: var(--accent-cyan); }
         
         .poll-result-wrapper { height: 48px; background: rgba(0,0,0,0.5); border-radius: 12px; margin-bottom: 8px; position: relative; overflow: hidden; box-shadow: inset 0 2px 6px rgba(0,0,0,0.4); display: flex; align-items: center; border: 1px solid var(--glass-border); }
-        .poll-result-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--primary-blue), var(--accent-cyan)); z-index: 1; border-radius: 10px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); width: 0%; opacity: 0.8; box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);}
+        .poll-result-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--primary-blue), var(--accent-cyan)); z-index: 1; border-radius: 10px; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); width: 0%; opacity: 0.8; box-shadow: 0 0 15px rgba(0, 174, 239, 0.4);}
         .poll-result-text { position: relative; z-index: 2; width: 100%; display: flex; justify-content: space-between; padding: 0 16px; font-weight: 700; color: #fff; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         .photo-upload-box { border: 2px dashed var(--glass-border); border-radius: 14px; padding: 25px 20px; text-align: center; cursor: pointer; background: rgba(0,0,0,0.3); margin-bottom: 20px; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
@@ -134,7 +135,7 @@
         .progress-step.completed { background: var(--success); }
 
         .quiz-option { display: block; width: 100%; text-align: left; padding: 18px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border: 2px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1rem; transition: 0.2s; line-height: 1.4; font-weight: 600;}
-        .quiz-option.selected { border-color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); font-weight: 800; border-width: 3px; padding: 17px; box-shadow: inset 0 0 10px rgba(0,229,255,0.1); }
+        .quiz-option.selected { border-color: var(--accent-cyan); background: rgba(0, 174, 239, 0.15); font-weight: 800; border-width: 3px; padding: 17px; box-shadow: inset 0 0 10px rgba(0,174,239,0.2); }
 
         .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 4px solid var(--glass-border); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
@@ -160,25 +161,25 @@
         .weather-desc { font-size: 0.85rem; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; margin-top: 5px; letter-spacing: 1px;}
         .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; font-weight: 600;}
         
-        #ship-status-bar { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); color: #fff; text-align: center; padding: 12px 20px; font-weight: 800; font-size: 0.85rem; letter-spacing: 1.5px; border-radius: 50px; margin: 0 auto 15px auto; width: max-content; border: 1px solid var(--glass-border); box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
+        #ship-status-bar { background: rgba(2, 12, 23, 0.8); backdrop-filter: blur(10px); color: #fff; text-align: center; padding: 12px 20px; font-weight: 800; font-size: 0.85rem; letter-spacing: 1.5px; border-radius: 50px; margin: 0 auto 15px auto; width: max-content; border: 1px solid var(--accent-cyan); box-shadow: 0 4px 15px rgba(0, 174, 239, 0.2);}
         .status-dot { display: inline-block; width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); animation: pulseDot 2s infinite; margin-right: 10px; vertical-align: middle;}
         @keyframes pulseDot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
         /* AI CHAT WIDGET STYLES */
-        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0, 229, 255, 0.2); cursor: pointer; z-index: 9999; transition: 0.3s; border: 1px solid var(--glass-border); }
+        .chat-fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0, 174, 239, 0.3); cursor: pointer; z-index: 9999; transition: 0.3s; border: 1px solid var(--glass-border); }
         .chat-fab:active { transform: scale(0.95); }
         .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: rgba(0,0,0,0.8); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--glass-border); z-index: 10000; }
         .chat-minimized-tab { position: fixed; bottom: 35px; right: 0; width: 40px; height: 40px; background: var(--primary-navy); border-radius: 20px 0 0 20px; display: none; align-items: center; justify-content: center; color: var(--accent-cyan); cursor: pointer; z-index: 9999; border: 1px solid var(--glass-border); border-right: none;}
-        .chat-panel { position: fixed; bottom: 105px; right: 25px; width: 350px; max-width: calc(100vw - 50px); height: 500px; background: rgba(5, 11, 20, 0.95); backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 15px 50px rgba(0,0,0,0.6); z-index: 9998; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid var(--glass-border); }
+        .chat-panel { position: fixed; bottom: 105px; right: 25px; width: 350px; max-width: calc(100vw - 50px); height: 500px; background: rgba(4, 30, 58, 0.95); backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 15px 50px rgba(0,0,0,0.8); z-index: 9998; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid var(--glass-border); }
         .chat-panel.active { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .chat-header { background: rgba(0,0,0,0.5); color: #fff; padding: 18px; display: flex; align-items: center; gap: 10px; font-weight: bold; border-bottom: 1px solid var(--glass-border); }
+        .chat-header { background: rgba(2, 12, 23, 0.9); color: #fff; padding: 18px; display: flex; align-items: center; gap: 10px; font-weight: bold; border-bottom: 1px solid var(--glass-border); }
         .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .msg { max-width: 85%; padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; }
         .msg.ai { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .msg.user { background: rgba(0, 74, 89, 0.6); border: 1px solid var(--accent-cyan); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.user { background: rgba(0, 174, 239, 0.2); border: 1px solid var(--accent-cyan); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
         
-        .chat-input-area { display: flex; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.4); padding: 12px; align-items: center; gap: 8px;}
+        .chat-input-area { display: flex; border-top: 1px solid var(--glass-border); background: rgba(2, 12, 23, 0.8); padding: 12px; align-items: center; gap: 8px;}
         .chat-input-area input { flex: 1; border: none; padding: 12px; font-size: 1rem; outline: none; background: rgba(255,255,255,0.05); color: var(--text-main); border-radius: 12px;}
         .chat-input-area .btn-icon { background: transparent; color: var(--text-muted); border: none; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: 0.2s;}
         .chat-input-area .btn-icon.active-mic { color: var(--danger); animation: pulseDot 1s infinite; background: rgba(255, 77, 77, 0.1); }
@@ -191,12 +192,12 @@
            ========================================== */
         .onboarding-step { 
             position: relative;
-            background: linear-gradient(145deg, rgba(0, 30, 40, 0.6), rgba(0, 10, 15, 0.8)); 
-            border: 1px solid rgba(0, 229, 255, 0.3); 
+            background: linear-gradient(145deg, rgba(4, 30, 58, 0.8), rgba(2, 12, 23, 0.9)); 
+            border: 1px solid rgba(0, 174, 239, 0.3); 
             border-radius: 16px; 
             padding: 24px 20px; 
             margin-bottom: 20px; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 229, 255, 0.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 174, 239, 0.05);
             overflow: hidden;
             transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
@@ -206,13 +207,13 @@
             box-shadow: 0 0 15px var(--accent-cyan);
         }
         .onboarding-step.step-2 {
-            background: linear-gradient(145deg, rgba(40, 30, 0, 0.6), rgba(15, 10, 0, 0.8));
-            border-color: rgba(251, 185, 0, 0.3);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(251, 185, 0, 0.05);
+            background: linear-gradient(145deg, rgba(10, 54, 93, 0.5), rgba(4, 30, 58, 0.8));
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 255, 255, 0.02);
         }
         .onboarding-step.step-2::before {
-            background: var(--accent-gold);
-            box-shadow: 0 0 15px var(--accent-gold);
+            background: #fff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
         .step-badge { 
             background: rgba(0,0,0,0.5); 
@@ -222,25 +223,25 @@
             display: flex; align-items: center; justify-content: center; 
             font-weight: 900; font-size: 1.1rem; flex-shrink: 0; 
             border: 2px solid var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 174, 239, 0.4);
             transition: background 0.3s;
         }
         .onboarding-step.step-2 .step-badge {
-            color: var(--accent-gold);
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 15px rgba(251, 185, 0, 0.4);
+            color: #fff;
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
         }
 
         /* ==========================================
            LIGHT MODE OVERRIDES 
            ========================================== */
         body.light-mode {
-            --bg-dark: #eef2f6;
-            --text-main: #0a192f;
-            --text-muted: #64748b;
+            --bg-dark: #F4F7F9;
+            --text-main: #041E3A;
+            --text-muted: #567385;
             --glass-bg: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(0, 74, 89, 0.15);
-            --glass-shadow: 0 10px 40px 0 rgba(0, 74, 89, 0.08);
+            --glass-border: rgba(4, 30, 58, 0.15);
+            --glass-shadow: 0 10px 40px 0 rgba(4, 30, 58, 0.08);
             --primary-navy: #ffffff;
         }
         body.light-mode header {
@@ -251,14 +252,14 @@
             text-shadow: none;
         }
         body.light-mode .onboarding-step {
-            background: linear-gradient(145deg, #ffffff, #f1f8fc);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(0, 74, 89, 0.05), inset 0 0 20px rgba(0, 229, 255, 0.05);
+            background: linear-gradient(145deg, #ffffff, #F0F4F8);
+            border: 1px solid rgba(0, 174, 239, 0.3);
+            box-shadow: 0 8px 25px rgba(4, 30, 58, 0.05), inset 0 0 20px rgba(0, 174, 239, 0.05);
         }
         body.light-mode .onboarding-step.step-2 {
-            background: linear-gradient(145deg, #ffffff, #fffcf0);
-            border: 1px solid rgba(251, 185, 0, 0.4);
-            box-shadow: 0 8px 25px rgba(0, 74, 89, 0.05), inset 0 0 20px rgba(251, 185, 0, 0.05);
+            background: linear-gradient(145deg, #ffffff, #F4F7F9);
+            border: 1px solid rgba(4, 30, 58, 0.2);
+            box-shadow: 0 8px 25px rgba(4, 30, 58, 0.05);
         }
         body.light-mode .step-badge {
             background: #ffffff;
@@ -282,11 +283,11 @@
             box-shadow: 0 4px 15px rgba(255, 77, 77, 0.1);
         }
         body.light-mode .btn-dept {
-            background: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.8);
             color: var(--primary-blue);
         }
         body.light-mode .btn-dept .material-icons {
-            color: var(--primary-blue);
+            color: var(--accent-cyan);
         }
         body.light-mode .form-input, body.light-mode .form-textarea, body.light-mode .form-select {
             background: rgba(255,255,255,0.8);
@@ -297,6 +298,7 @@
         }
         body.light-mode .nav-link {
             color: var(--primary-blue);
+            border-bottom: 1px solid rgba(4, 30, 58, 0.1);
         }
         body.light-mode .grid-item .value {
             color: var(--primary-blue);
@@ -336,7 +338,7 @@
             width: 100%; 
             height: 100%; 
             overflow: auto; 
-            background-color: rgba(0,0,0,0.9); 
+            background-color: rgba(2, 12, 23, 0.95); 
             backdrop-filter: blur(10px); 
         }
         .image-modal-content { 
@@ -374,8 +376,8 @@
            REPORT INFO BOX
            ========================================== */
         .report-info-box {
-            background: rgba(0, 229, 255, 0.05);
-            border: 1px solid rgba(0, 229, 255, 0.2);
+            background: rgba(0, 174, 239, 0.05);
+            border: 1px solid rgba(0, 174, 239, 0.2);
             border-left: 3px solid var(--accent-cyan);
             padding: 12px 15px;
             margin-top: -10px;
@@ -387,7 +389,7 @@
             transition: 0.3s ease;
         }
         body.light-mode .report-info-box {
-            background: rgba(0, 229, 255, 0.05);
+            background: rgba(0, 174, 239, 0.05);
             color: var(--text-muted);
         }
         
@@ -456,7 +458,7 @@
                             <div style="font-weight:800; font-size:1.15rem; color: var(--text-main); letter-spacing: 0.5px;">Read the Handbook</div>
                         </div>
                         <p style="font-size:0.95rem; margin-bottom:18px; margin-left:51px; line-height: 1.5;">Review the safety guidelines and rules for your department.</p>
-                        <button class="btn btn-outline" style="border-color:var(--accent-cyan); color:var(--accent-cyan); background: rgba(0, 229, 255, 0.05); margin-bottom:0;" onclick="goToView('view-handbook-select')">
+                        <button class="btn btn-outline" style="border-color:var(--accent-cyan); color:var(--accent-cyan); background: rgba(0, 174, 239, 0.05); margin-bottom:0;" onclick="goToView('view-handbook-select')">
                             <span class="material-icons">menu_book</span> Open Handbook
                         </button>
                     </div>
@@ -479,7 +481,7 @@
                     <span class="material-icons" style="font-size: 2rem; margin-bottom: 8px;">explore</span>
                     <span>Live Voyage</span>
                 </button>
-                <button class="btn btn-outline" style="flex-direction: column; padding: 20px 10px; margin-bottom:0; border-color:var(--accent-gold); color:var(--accent-gold); position:relative;" onclick="goToDepartment()">
+                <button class="btn btn-outline" style="flex-direction: column; padding: 20px 10px; margin-bottom:0; border-color:var(--accent-cyan); color:var(--accent-cyan); position:relative;" onclick="goToDepartment()">
                     <div id="home-dept-badge" class="notif-badge" style="top:5px; right:5px; width:12px; height:12px;"></div>
                     <span class="material-icons" style="font-size: 2rem; margin-bottom: 8px;">group_work</span>
                     <span>My Department</span>
@@ -514,7 +516,7 @@
              ========================================== -->
         <div id="view-department" class="view">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
-                <h2 style="margin:0; display:flex; align-items:center; gap:12px;"><span class="material-icons" style="color:var(--accent-gold); font-size:2.4rem;">group_work</span> <span id="dept-hub-title">Dept Hub</span></h2>
+                <h2 style="margin:0; display:flex; align-items:center; gap:12px;"><span class="material-icons" style="color:var(--accent-cyan); font-size:2.4rem;">group_work</span> <span id="dept-hub-title">Dept Hub</span></h2>
                 <button class="btn btn-outline" style="width:auto; padding:8px; margin:0;" onclick="goToView('view-dept-select')" title="Change Department"><span class="material-icons" style="font-size:1.2rem;">settings</span></button>
             </div>
 
@@ -552,7 +554,7 @@
 
             <!-- MESS TAB -->
             <div id="dept-mess-view" style="display:none;">
-                <div class="card" style="border: 1px solid var(--accent-gold); padding: 20px; box-shadow: 0 10px 30px rgba(251, 185, 0, 0.05);">
+                <div class="card" style="border: 1px solid var(--accent-cyan); padding: 20px; box-shadow: 0 10px 30px rgba(0, 174, 239, 0.05);">
                     <input type="text" id="mess-name" class="form-input" placeholder="Your Name" style="margin-bottom: 15px; font-weight:bold;">
 
                     <div class="mess-tabs">
@@ -565,7 +567,7 @@
 
                     <div id="mess-image-area" style="display:none; margin-bottom:15px;">
                         <div class="photo-upload-box" onclick="document.getElementById('mess-photo-input').click()">
-                            <span class="material-icons" style="font-size: 32px; color: var(--accent-gold); margin-bottom:10px;">add_a_photo</span>
+                            <span class="material-icons" style="font-size: 32px; color: var(--accent-cyan); margin-bottom:10px;">add_a_photo</span>
                             <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">Tap to select photo</span>
                         </div>
                         <input type="file" id="mess-photo-input" accept="image/*" style="display:none;" onchange="previewMessPhoto(event)">
@@ -673,7 +675,7 @@
                 <div class="voyage-grid">
                     <div class="grid-item"><div class="label">Speed & Course</div><div class="value"><span id="speed-knots">--</span> <span class="unit">kn</span><span class="separator" style="display:none;">|</span><span id="speed-kmh" style="display:none;">--</span></div><div class="sub-value" id="course-voyage">Course: --°</div></div>
                     <div class="grid-item"><div class="label">Time (Tórshavn)</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">GMT</div></div>
-                    <div class="grid-item"><div class="label">Wind (Here)</div><div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div><div class="sub-value"><span id="wind-knots">--</span> kn <span style="opacity:0.25; margin:0 4px;">|</span><span id="wind-dir-text" style="color:var(--accent-gold); font-weight:bold;">--</span></div></div>
+                    <div class="grid-item"><div class="label">Wind (Here)</div><div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div><div class="sub-value"><span id="wind-knots">--</span> kn <span style="opacity:0.25; margin:0 4px;">|</span><span id="wind-dir-text" style="color: #fff; font-weight:bold;">--</span></div></div>
                     <div class="grid-item"><div class="label">Wave Height</div><div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div><div class="sub-value">Significant</div></div>
                     
                     <span id="distance" style="display:none;"></span>
@@ -754,8 +756,8 @@
 
         <!-- SUCCES SKÆRM -->
         <div id="view-success" class="view">
-            <div class="card" style="text-align: center; padding: 50px 20px; border: 1px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,229,255,0.2);">
-                <span class="material-icons" style="font-size: 80px; color: var(--accent-cyan); margin-bottom: 20px; text-shadow: 0 0 20px rgba(0,229,255,0.5);">task_alt</span>
+            <div class="card" style="text-align: center; padding: 50px 20px; border: 1px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,174,239,0.2);">
+                <span class="material-icons" style="font-size: 80px; color: var(--accent-cyan); margin-bottom: 20px; text-shadow: 0 0 20px rgba(0,174,239,0.5);">task_alt</span>
                 <h1 style="color: var(--text-main); margin-bottom: 5px;">Clearance Pass</h1>
                 <h2 style="color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 20px;" id="pass-dept">Department</h2>
                 <p style="font-size: 1rem; color: var(--text-muted);">You have successfully completed your safety and operational assessment.</p>
@@ -1351,7 +1353,7 @@
     function selectQuizOption(btn, idx) {
         var btns = document.querySelectorAll('.quiz-option');
         for(var i=0; i<btns.length; i++) { btns[i].style.borderColor = 'var(--glass-border)'; btns[i].style.background = 'rgba(255,255,255,0.05)'; }
-        btn.style.borderColor = 'var(--accent-cyan)'; btn.style.background = 'rgba(0, 229, 255, 0.1)'; selectedQuizAns = idx; document.getElementById('quiz-feedback').style.display = 'none';
+        btn.style.borderColor = 'var(--accent-cyan)'; btn.style.background = 'rgba(0, 174, 239, 0.15)'; selectedQuizAns = idx; document.getElementById('quiz-feedback').style.display = 'none';
     }
     function submitQuizAnswer() {
         var feedback = document.getElementById('quiz-feedback');
@@ -1396,7 +1398,7 @@
     setInterval(updateClock, 1000); updateClock();
 
     const pinIcon = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
-    const createShipIcon = (course) => { const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#00e5ff" stroke="#00121a" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>`; return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px; filter: drop-shadow(0 0 5px #00e5ff);">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] }); };
+    const createShipIcon = (course) => { const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#00AEEF" stroke="#041E3A" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>`; return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px; filter: drop-shadow(0 0 5px #00AEEF);">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] }); };
 
     async function fetchMarineData(lat, lon) {
         try {
@@ -1507,7 +1509,7 @@
                 if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); map.shipMarker.setIcon(createShipIcon(course)); }
                 if (!isInPort) {
                     if (!map.destMarker) map.destMarker = L.marker(destPos, {icon: pinIcon}).addTo(map); else map.destMarker.setLatLng(destPos);
-                    if (liveRouteLine) map.removeLayer(liveRouteLine); liveRouteLine = L.polyline([shipPos, destPos], { color: '#00e5ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map); map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
+                    if (liveRouteLine) map.removeLayer(liveRouteLine); liveRouteLine = L.polyline([shipPos, destPos], { color: '#00AEEF', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map); map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
                 } else {
                     if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
                     if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; } map.setView(shipPos, 15);
