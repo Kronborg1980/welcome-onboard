@@ -692,18 +692,16 @@
         </div>
 
         <!-- ==========================================
-             VOYAGE DASHBOARD (SINGLE WINDY INSTANCE)
+             VOYAGE DASHBOARD (DUAL MAP STACK)
              ========================================== -->
         <div id="view-voyage" class="view">
             <div style="padding: 12px 12px 0 12px;">
                 <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
                 
-                <!-- The overlapping button controls -->
+                <!-- The overlapping button controls (Simplified to 2 buttons) -->
                 <div class="map-mode-controls">
                     <button id="btn-mode-standard" class="map-mode-btn active" onclick="setMapMode('standard')">Standard</button>
-                    <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Live Wind</button>
-                    <!-- Changed to Live Rain since Free API does not support waves -->
-                    <button id="btn-mode-rain" class="map-mode-btn" onclick="setMapMode('rain')">Live Rain</button>
+                    <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Windy</button>
                 </div>
                 
                 <!-- The Map Container -->
@@ -1440,7 +1438,7 @@
 
 
     /* =========================================================
-       MAP API LOGIC (SINGLE INSTANCE - NO BLUE SCREEN)
+       MAP API LOGIC (SIMPLIFIED TO 2 BUTTONS)
        ========================================================= */
 
     const WINDY_API_KEY = "vOskajjEdsu4MiFzIeJvFF56PM0XhTvB";
@@ -1641,7 +1639,6 @@
         
         document.getElementById('btn-mode-standard').classList.remove('active');
         document.getElementById('btn-mode-wind').classList.remove('active');
-        document.getElementById('btn-mode-rain').classList.remove('active');
 
         // Hide layers
         document.getElementById('map-standard').style.opacity = '0';
@@ -1665,8 +1662,7 @@
             if (mapStd) { setTimeout(() => mapStd.invalidateSize(), 50); }
             
         } else {
-            if (mode === 'wind') document.getElementById('btn-mode-wind').classList.add('active');
-            if (mode === 'rain') document.getElementById('btn-mode-rain').classList.add('active');
+            document.getElementById('btn-mode-wind').classList.add('active');
             
             document.getElementById('windy').style.opacity = '1';
             document.getElementById('windy').style.pointerEvents = 'auto';
@@ -1675,8 +1671,8 @@
             
             activeMapInstance = mapWindy;
             if (windyInitialized && windyStore) {
-                // Instantly switch the Windy overlay layer 
-                windyStore.set('overlay', mode);
+                // Keep the overlay on wind
+                windyStore.set('overlay', 'wind');
             }
             if (mapWindy) { setTimeout(() => mapWindy.invalidateSize(), 50); }
         }
