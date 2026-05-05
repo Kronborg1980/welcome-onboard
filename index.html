@@ -142,41 +142,56 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--glass-border); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE STYLES & DUAL MAP STACK */
+        /* ==========================================
+           VOYAGE STYLES & DUAL MAP STACK 
+           ========================================== */
         #view-voyage { background: transparent; padding: 0; }
         
-        /* INCREASED MAP HEIGHT AND ADDED OVERFLOW HIDDEN */
-        .voyage-map-container { position: relative; width: 100%; height: 45vh; min-height: 350px; z-index: 1; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        /* Map is now 50vh, making it taller and easier to see */
+        .voyage-map-container { position: relative; width: 100%; height: 50vh; min-height: 450px; z-index: 1; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* CONTROLS MOVED ABOVE MAP */
+        /* Controls are completely separated and sit above the map */
         .map-mode-controls {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 8px;
-            margin-bottom: 12px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
         }
         .map-mode-btn {
-            background: rgba(2, 12, 23, 0.6);
+            background: transparent;
             color: var(--text-muted);
-            border: 1px solid var(--glass-border);
-            padding: 10px 16px;
-            font-size: 0.9rem;
-            font-weight: 700;
+            border: 1px solid transparent;
+            padding: 12px 10px;
+            font-size: 0.95rem;
+            font-weight: 800;
             border-radius: 12px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
             flex: 1;
+            text-align: center;
         }
         .map-mode-btn:hover { color: var(--text-main); }
         .map-mode-btn.active {
             background: var(--accent-cyan);
             color: #000;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(0,174,239,0.3);
+            box-shadow: 0 4px 15px rgba(0,174,239,0.3);
         }
 
-        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); pointer-events: none; transition: background 0.3s;}
+        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); pointer-events: none; transition: opacity 0.3s;}
         
+        /* OVERRIDE TO FORCE WINDY LEGEND TO SHOW ON MOBILE */
+        #windy #bottom, #windy #mobile-ovr-select, .weather2-scale {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
         .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; border-top: 1px solid var(--glass-border); transition: background 0.3s, border-color 0.3s;}
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .grid-item { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 15px rgba(255,255,255,0.02);}
@@ -198,6 +213,7 @@
             .weather-temp { font-size: 1.8rem; }
             .weather-desc { font-size: 0.75rem; }
             #weather-icon { width: 50px; height: 50px; }
+            .map-mode-btn { padding: 10px 5px; font-size: 0.85rem; }
         }
         
         #ship-status-bar { background: rgba(2, 12, 23, 0.8); backdrop-filter: blur(10px); color: #fff; text-align: center; padding: 12px 20px; font-weight: 800; font-size: 0.85rem; letter-spacing: 1.5px; border-radius: 50px; margin: 0 auto 15px auto; width: max-content; border: 1px solid var(--accent-cyan); box-shadow: 0 4px 15px rgba(0, 174, 239, 0.2);}
@@ -337,6 +353,9 @@
         }
         body.light-mode .weather-label {
             border-left: 1px solid var(--glass-border);
+        }
+        body.light-mode .map-mode-controls {
+            background: rgba(255,255,255,0.8);
         }
 
         .dept-schedule-container {
@@ -666,18 +685,21 @@
                 <!-- Controls moved completely ABOVE the map container -->
                 <div class="map-mode-controls">
                     <button id="btn-mode-standard" class="map-mode-btn active" onclick="setMapMode('standard')">Standard</button>
-                    <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Windy (Wind)</button>
-                    <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Windy (Waves)</button>
+                    <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Live Wind</button>
+                    <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Live Waves</button>
                 </div>
                 
+                <!-- Notice the map is now taller! -->
                 <div class="voyage-map-container">
+                    
                     <!-- Map Standard layer -->
                     <div id="map-standard" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:5; transition: opacity 0.3s;"></div>
                     
                     <!-- Map Windy layer (Using exact 'windy' ID required by API) -->
                     <div id="windy" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:1; opacity:0; pointer-events:none; transition: opacity 0.3s;"></div>
                     
-                    <div class="map-gradient" style="z-index: 10;"></div>
+                    <!-- Gradient specifically applied so it can be hidden when Windy is active -->
+                    <div id="map-gradient" class="map-gradient" style="z-index: 10;"></div>
                 </div>
 
             </div>
@@ -784,7 +806,7 @@
             <div class="loader-container active">
                 <div class="spinner"></div>
                 <h2 style="border:none; padding:0; color:var(--text-main);" id="loading-msg">Processing...</h2>
-                <p id="loading-sub">Transmitting your results to the Department Leader.</p>
+                <p id="loading-sub">Transmitting results to HQ...</p>
             </div>
         </div>
 
@@ -1482,7 +1504,7 @@
         let isActive = (targetMap === activeMapInstance);
         
         if (!targetMap.shipMarker) { 
-            targetMap.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(targetMap); 
+            targetMap.shipMarker = L.marker(shipPos, { icon: createShipIcon(course), zIndexOffset: 1000 }).addTo(targetMap); 
         } else { 
             targetMap.shipMarker.setLatLng(shipPos); 
             targetMap.shipMarker.setIcon(createShipIcon(course)); 
@@ -1617,6 +1639,7 @@
             document.getElementById('map-standard').style.opacity = '1';
             document.getElementById('map-standard').style.pointerEvents = 'auto';
             document.getElementById('map-standard').style.zIndex = '5';
+            document.getElementById('map-gradient').style.opacity = '1';
             
             // Hide windy map
             document.getElementById('windy').style.opacity = '0';
@@ -1634,6 +1657,7 @@
             document.getElementById('windy').style.opacity = '1';
             document.getElementById('windy').style.pointerEvents = 'auto';
             document.getElementById('windy').style.zIndex = '5';
+            document.getElementById('map-gradient').style.opacity = '0';
             
             // Hide standard map
             document.getElementById('map-standard').style.opacity = '0';
@@ -1643,7 +1667,11 @@
             if (!windyInitialized) {
                 initWindyMap(mode);
             } else {
-                if (windyStore) windyStore.set('overlay', mode);
+                if (windyStore) {
+                    setTimeout(() => {
+                        windyStore.set('overlay', mode);
+                    }, 50); // slight delay forces a clean re-render of the layer
+                }
                 activeMapInstance = mapWindy;
                 if (mapWindy) { setTimeout(() => mapWindy.invalidateSize(), 100); }
             }
@@ -1661,9 +1689,16 @@
         };
         
         windyInit(options, windyAPI => {
-            mapWindy = windyAPI.map;
-            windyStore = windyAPI.store;
+            const { map, store, picker } = windyAPI;
+            mapWindy = map;
+            windyStore = store;
+            
             windyStore.set('overlay', initialMode);
+            
+            // ADDED: Interactive Picker. Tapping anywhere shows the exact wind/wave value flag!
+            mapWindy.on('click', function(e) {
+                picker.open({ lat: e.latlng.lat, lon: e.latlng.lng });
+            });
             
             activeMapInstance = mapWindy;
             windyInitialized = true;
