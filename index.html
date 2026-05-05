@@ -20,12 +20,11 @@
     <style>
         :root { 
             /* SMYRIL LINE OFFICIAL PALETTE */
-            --primary-navy: #041E3A; /* Dyb rederi mørkeblå */
-            --primary-blue: #0A365D; /* Hav-blå */
-            --accent-cyan: #00AEEF;  /* Smyril bølge-cyan */
-            --bg-dark: #020C17;      /* Næsten sort/blå baggrund */
+            --primary-navy: #041E3A; 
+            --primary-blue: #0A365D; 
+            --accent-cyan: #00AEEF;  
+            --bg-dark: #020C17;      
             
-            /* Glassmorphism tonet til Smyril Line */
             --glass-bg: rgba(4, 30, 58, 0.65);
             --glass-border: rgba(0, 174, 239, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
@@ -108,7 +107,6 @@
         .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent-cyan); background: rgba(0,0,0,0.6); box-shadow: 0 0 10px rgba(0, 174, 239, 0.2); }
         .form-textarea { min-height: 120px; resize: vertical; }
 
-        /* CREW MESS STYLES */
         .mess-tabs { display: flex; gap: 8px; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 14px; border: 1px solid var(--glass-border);}
         .mess-tab { flex: 1; background: transparent; border: none; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 12px 5px; border-radius: 10px; transition: 0.2s; font-size: 0.9rem;}
         .mess-tab.active { background: rgba(0, 174, 239, 0.15); color: #fff; box-shadow: inset 0 0 10px rgba(0, 174, 239, 0.1); border: 1px solid rgba(0, 174, 239, 0.3);}
@@ -144,11 +142,43 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--glass-border); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* VOYAGE STYLES */
+        /* VOYAGE STYLES & DUAL MAP STACK */
         #view-voyage { background: transparent; padding: 0; }
         .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
-        #map { width: 100%; height: 100%; background: #000; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 1; transition: filter 0.3s; }
-        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; transition: background 0.3s;}
+        
+        .map-mode-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            display: flex;
+            gap: 5px;
+            background: rgba(2, 12, 23, 0.75);
+            padding: 5px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .map-mode-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .map-mode-btn:hover { color: var(--text-main); }
+        .map-mode-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            box-shadow: 0 0 10px rgba(0,174,239,0.4);
+        }
+
+        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); border-radius: 0 0 20px 20px; pointer-events: none; transition: background 0.3s;}
         
         .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; border-top: 1px solid var(--glass-border); transition: background 0.3s, border-color 0.3s;}
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -158,7 +188,6 @@
         .grid-item .value .unit { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; text-transform: lowercase; }
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center;}
         
-        /* VEJRUDSIGT FIX - Centreret som grid-items */
         .weather-strip { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px 12px; margin-bottom: 25px; box-shadow: inset 0 0 15px rgba(255,255,255,0.02);}
         .weather-header { font-size: 0.7rem; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-weight: 800; width: 100%; text-align: center; }
         .weather-content { display: flex; align-items: center; justify-content: center; gap: 15px; }
@@ -200,9 +229,6 @@
         
         .typing-indicator { padding: 0 15px 10px 15px; font-size: 0.8rem; color: var(--text-muted); display: none; }
         
-        /* ==========================================
-           ONBOARDING "LED/GLASS" STYLES 
-           ========================================== */
         .onboarding-step { 
             position: relative;
             background: linear-gradient(145deg, rgba(4, 30, 58, 0.8), rgba(2, 12, 23, 0.9)); 
@@ -245,9 +271,7 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
         }
 
-        /* ==========================================
-           LIGHT MODE OVERRIDES 
-           ========================================== */
+        /* LIGHT MODE OVERRIDES */
         body.light-mode {
             --bg-dark: #F4F7F9;
             --text-main: #041E3A;
@@ -279,9 +303,6 @@
         }
         body.light-mode .mess-post, body.light-mode .card {
              box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        body.light-mode .voyage-map-container #map {
-            filter: contrast(1) brightness(1);
         }
         body.light-mode .map-gradient {
             background: linear-gradient(to bottom, transparent, var(--bg-dark));
@@ -321,9 +342,6 @@
             border-left: 1px solid var(--glass-border);
         }
 
-        /* ==========================================
-           DEPARTMENT HUB STYLES 
-           ========================================== */
         .dept-schedule-container {
             width: 100%;
             overflow-x: auto;
@@ -341,9 +359,6 @@
             border-radius: 8px;
         }
 
-        /* ==========================================
-           IMAGE MODAL (FULLSCREEN ZOOM)
-           ========================================== */
         .image-modal { 
             display: none; 
             position: fixed; 
@@ -388,9 +403,6 @@
             cursor: pointer; 
         }
         
-        /* ==========================================
-           REPORT INFO BOX
-           ========================================== */
         .report-info-box {
             background: rgba(0, 174, 239, 0.05);
             border: 1px solid rgba(0, 174, 239, 0.2);
@@ -409,7 +421,6 @@
             color: var(--text-muted);
         }
         
-        /* UNREAD NOTIFICATION STYLES */
         .notif-badge { position: absolute; background: var(--danger); border-radius: 50%; display: none; box-shadow: 0 0 8px var(--danger); z-index: 10; }
         .nav-badge-text { display:none; background:var(--danger); color:#fff; font-size:0.65rem; padding:3px 8px; border-radius:12px; font-weight:900; margin-left:auto; box-shadow: 0 0 8px rgba(255,77,77,0.5); letter-spacing: 0.5px; }
     </style>
@@ -449,9 +460,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             HOME / ONBOARDING VIEW
-             ========================================== -->
+        <!-- HOME VIEW -->
         <div id="view-home" class="view">
             <div style="text-align: center; padding: 10px 20px 25px 20px;">
                 <img id="front-logo-img" src="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png" style="height: 70px; margin-bottom: 15px; transition: filter 0.3s;" alt="Smyril Line Logo">
@@ -509,9 +518,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             DEPARTMENT SELECTION VIEW
-             ========================================== -->
+        <!-- DEPARTMENT SELECTION -->
         <div id="view-dept-select" class="view">
             <h2>Select Your Department</h2>
             <p>Please select your department to access schedules and the noticeboard.</p>
@@ -527,9 +534,7 @@
             <button class="btn btn-outline" style="margin-top: 30px;" onclick="goToView('view-home')"><span class="material-icons">arrow_back</span> Dashboard</button>
         </div>
 
-        <!-- ==========================================
-             MY DEPARTMENT HUB VIEW (SCHEDULE + MESS)
-             ========================================== -->
+        <!-- MY DEPARTMENT HUB -->
         <div id="view-department" class="view">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
                 <h2 style="margin:0; display:flex; align-items:center; gap:12px;"><span class="material-icons" style="color:var(--accent-cyan); font-size:2.4rem;">group_work</span> <span id="dept-hub-title">Dept Hub</span></h2>
@@ -609,9 +614,7 @@
             </button>
         </div>
 
-        <!-- ==========================================
-             SAFETY REPORTING
-             ========================================== -->
+        <!-- SAFETY REPORTING -->
         <div id="view-reporting" class="view">
             <h2>Safety Reporting</h2>
             <p>If you see a hazard, near miss, or safety issue, report it immediately to the Captain and Bridge.</p>
@@ -657,20 +660,29 @@
         </div>
 
         <!-- ==========================================
-             VOYAGE DASHBOARD (WINDY INTEGRATED)
+             VOYAGE DASHBOARD (DUAL MAP STACK)
              ========================================== -->
         <div id="view-voyage" class="view">
             <div style="padding: 12px 12px 0 12px;">
                 <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
                 
-                <!-- Modified Map Container for Windy Controls -->
-                <div class="voyage-map-container" style="position: relative;">
-                    <div class="windy-controls" style="position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 8px;">
-                        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(2, 12, 23, 0.8); border-color: var(--accent-cyan); color: var(--accent-cyan); margin: 0; backdrop-filter: blur(5px);" onclick="toggleWindyLayer('wind')">Wind</button>
-                        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(2, 12, 23, 0.8); border-color: var(--accent-cyan); color: var(--accent-cyan); margin: 0; backdrop-filter: blur(5px);" onclick="toggleWindyLayer('waves')">Waves</button>
+                <div class="voyage-map-container">
+                    <div style="position:relative; width:100%; height:100%;">
+                        
+                        <!-- Control Overlay -->
+                        <div class="map-mode-controls">
+                            <button id="btn-mode-standard" class="map-mode-btn active" onclick="setMapMode('standard')">Standard</button>
+                            <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Windy (Wind)</button>
+                            <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Windy (Waves)</button>
+                        </div>
+                        
+                        <!-- The Two Maps -->
+                        <div id="map-standard" style="position:absolute; width:100%; height:100%; top:0; left:0; border-radius:20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index:1;"></div>
+                        <div id="map-windy" style="position:absolute; width:100%; height:100%; top:0; left:0; border-radius:20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index:2; visibility:hidden; pointer-events:none;"></div>
+                        
+                        <!-- Gradient Overlay -->
+                        <div class="map-gradient" style="z-index: 10;"></div>
                     </div>
-                    <div id="map"></div>
-                    <div class="map-gradient"></div>
                 </div>
 
             </div>
@@ -717,9 +729,7 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             HANDBOOK / QUIZ SYSTEM / CHAT ... 
-             ========================================== -->
+        <!-- HANDBOOK / QUIZ SYSTEM -->
         <div id="view-handbook-select" class="view">
             <h2>The Ship Handbook</h2>
             <p>Select your department to read guidelines synced from HQ.</p>
@@ -1396,21 +1406,31 @@
 
 
     /* =========================================================
-       WINDY API MAP INTEGRATION & ROUTING LOGIC
+       MAP API LOGIC (DUAL MAP STACK)
        ========================================================= */
 
-    var map, liveRouteLine, windyStore;
-    var mapInitialized = false;
+    const WINDY_API_KEY = "vOskajjEdsu4MiFzIeJvFF56PM0XhTvB";
 
-    // === ACTION REQUIRED ===
-    // Get your free API key at api.windy.com and paste it here
-    const WINDY_API_KEY = "INSERT_YOUR_WINDY_API_KEY_HERE";
+    var mapStd = null;
+    var mapWindy = null;
+    var windyStore = null;
+    var activeMapInstance = null;
+    var activeMapMode = 'standard';
+    
+    var mapInitialized = false;
+    var windyInitialized = false;
+    
+    var hasSetBoundsStd = false;
+    var hasSetBoundsWindy = false;
 
     function openVoyage() {
         goToView('view-voyage');
         setTimeout(function() {
-            if (!mapInitialized && typeof L !== 'undefined') { initializeVoyagePage(); mapInitialized = true; } 
-            else if (mapInitialized && map) { map.invalidateSize(); }
+            if (!mapInitialized && typeof L !== 'undefined') { 
+                initializeVoyagePage(); 
+            } else if (mapInitialized) { 
+                if (activeMapInstance) activeMapInstance.invalidateSize(); 
+            }
         }, 350); 
     }
 
@@ -1440,6 +1460,7 @@
             const elWave = document.getElementById('wave-height'); if(elWave) elWave.innerText = (waveHeight !== null && waveHeight !== undefined) ? Number(waveHeight).toFixed(1) : "--";
         } catch(e) {}
     }
+    
     async function fetchShipWeather(lat, lon) {
         try {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms`;
@@ -1450,13 +1471,56 @@
             }
         } catch(e) {}
     }
+    
     async function fetchDestWeather(lat, lon) {
         try {
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto`;
             const response = await fetch(url); if (!response.ok) return; const data = await response.json();
             const temp = Math.round(data.current.temperature_2m); const wCode = data.current.weathercode; const { desc, icon } = getWeatherDetails(wCode);
-            document.getElementById("weather-temp").textContent = `${temp°C}`; document.getElementById("weather-description").textContent = desc; document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`; document.getElementById("weather-icon").style.display = "block";
+            document.getElementById("weather-temp").textContent = `${temp}°C`; document.getElementById("weather-description").textContent = desc; document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`; document.getElementById("weather-icon").style.display = "block";
         } catch (e) {}
+    }
+
+    function updateMarkersForMap(targetMap, course, shipPos, destPos, isInPort) {
+        if (!targetMap) return;
+        
+        let isActive = (targetMap === activeMapInstance);
+        
+        if (!targetMap.shipMarker) { 
+            targetMap.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(targetMap); 
+        } else { 
+            targetMap.shipMarker.setLatLng(shipPos); 
+            targetMap.shipMarker.setIcon(createShipIcon(course)); 
+        }
+        
+        if (!isInPort) {
+            if (!targetMap.destMarker) targetMap.destMarker = L.marker(destPos, {icon: pinIcon}).addTo(targetMap); else targetMap.destMarker.setLatLng(destPos);
+            
+            if (targetMap.routeLine) targetMap.removeLayer(targetMap.routeLine); 
+            
+            // Adjust line color based on map mode (white for standard, cyan for windy looks better)
+            let lineColor = targetMap === mapStd ? '#ffffff' : '#00AEEF';
+            let lineOpac = targetMap === mapStd ? 0.3 : 0.9;
+            
+            targetMap.routeLine = L.polyline([shipPos, destPos], { color: lineColor, weight: 3, dashArray: '5, 10', opacity: lineOpac }).addTo(targetMap); 
+            
+            if (isActive) {
+                if (targetMap === mapStd && !hasSetBoundsStd) {
+                    targetMap.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
+                    hasSetBoundsStd = true;
+                } else if (targetMap === mapWindy && !hasSetBoundsWindy) {
+                    targetMap.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
+                    hasSetBoundsWindy = true;
+                }
+            }
+        } else {
+            if (targetMap.destMarker) { targetMap.removeLayer(targetMap.destMarker); targetMap.destMarker = null; }
+            if (targetMap.routeLine) { targetMap.removeLayer(targetMap.routeLine); targetMap.routeLine = null; } 
+            
+            if (isActive) {
+                targetMap.setView(shipPos, 15);
+            }
+        }
     }
     
     async function updateShipData() {
@@ -1528,67 +1592,103 @@
                 if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot' style='background-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);'></span> SAILING TO " + currentDestInfo.name.toUpperCase();
             }
 
-            if(norrona.position) { fetchMarineData(norrona.position.latitude, norrona.position.longitude); fetchShipWeather(norrona.position.latitude, norrona.position.longitude); }
+            if(norrona.position) { 
+                fetchMarineData(norrona.position.latitude, norrona.position.longitude); 
+                fetchShipWeather(norrona.position.latitude, norrona.position.longitude); 
+                
+                const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
+                const destPos = [currentDestInfo.lat, currentDestInfo.lon];
+                
+                // Update markers on both map layers to ensure they are synchronized
+                updateMarkersForMap(mapStd, course, shipPos, destPos, isInPort);
+                updateMarkersForMap(mapWindy, course, shipPos, destPos, isInPort);
+            }
+            
             fetchDestWeather(currentDestInfo.lat, currentDestInfo.lon);
 
-            if (map && norrona.position) {
-                const shipPos = [norrona.position.latitude, norrona.position.longitude]; const destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); map.shipMarker.setIcon(createShipIcon(course)); }
-                if (!isInPort) {
-                    if (!map.destMarker) map.destMarker = L.marker(destPos, {icon: pinIcon}).addTo(map); else map.destMarker.setLatLng(destPos);
-                    if (liveRouteLine) map.removeLayer(liveRouteLine); liveRouteLine = L.polyline([shipPos, destPos], { color: '#ffffff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map); map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
-                } else {
-                    if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
-                    if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; } map.setView(shipPos, 15);
-                }
-            }
         } catch(e) { console.error("Data error", e); }
     }
 
-    // Toggle between Windy Layers
-    function toggleWindyLayer(layerName) {
-        if (windyStore) {
-            windyStore.set('overlay', layerName);
+    function setMapMode(mode) {
+        if (mode === activeMapMode) return;
+        
+        activeMapMode = mode;
+        document.getElementById('btn-mode-standard').classList.remove('active');
+        document.getElementById('btn-mode-wind').classList.remove('active');
+        document.getElementById('btn-mode-waves').classList.remove('active');
+
+        if (mode === 'standard') {
+            document.getElementById('btn-mode-standard').classList.add('active');
+            
+            document.getElementById('map-standard').style.visibility = 'visible';
+            document.getElementById('map-standard').style.pointerEvents = 'auto';
+            
+            document.getElementById('map-windy').style.visibility = 'hidden';
+            document.getElementById('map-windy').style.pointerEvents = 'none';
+            
+            activeMapInstance = mapStd;
+            if (mapStd) mapStd.invalidateSize();
+            
         } else {
-            alert("Windy Map API is not active. Please insert your API Key in the code to enable live layers.");
+            if (mode === 'wind') document.getElementById('btn-mode-wind').classList.add('active');
+            if (mode === 'waves') document.getElementById('btn-mode-waves').classList.add('active');
+            
+            document.getElementById('map-windy').style.visibility = 'visible';
+            document.getElementById('map-windy').style.pointerEvents = 'auto';
+            
+            document.getElementById('map-standard').style.visibility = 'hidden';
+            document.getElementById('map-standard').style.pointerEvents = 'none';
+
+            if (!windyInitialized) {
+                initWindyMap(mode);
+            } else {
+                if (windyStore) windyStore.set('overlay', mode);
+                activeMapInstance = mapWindy;
+                if (mapWindy) mapWindy.invalidateSize();
+            }
         }
+        
+        updateShipData();
+    }
+
+    function initWindyMap(initialMode) {
+        const options = {
+            key: WINDY_API_KEY,
+            lat: 62.0,
+            lon: -6.7,
+            zoom: 5,
+        };
+        
+        windyInit(options, windyAPI => {
+            mapWindy = windyAPI.map;
+            windyStore = windyAPI.store;
+            windyStore.set('overlay', initialMode);
+            
+            activeMapInstance = mapWindy;
+            windyInitialized = true;
+            
+            if (mapWindy.zoomControl) { mapWindy.removeControl(mapWindy.zoomControl); }
+
+            updateShipData(); 
+        });
     }
 
     function initializeVoyagePage() {
-        if(!document.getElementById("map")) return; 
+        if(!document.getElementById("map-standard")) return; 
         
-        if (WINDY_API_KEY && WINDY_API_KEY !== "INSERT_YOUR_WINDY_API_KEY_HERE") {
-            // LOAD WINDY API MAP
-            const options = {
-                key: WINDY_API_KEY,
-                lat: 62.0,
-                lon: -6.7,
-                zoom: 5,
-            };
-            
-            windyInit(options, windyAPI => {
-                map = windyAPI.map;
-                windyStore = windyAPI.store;
-                windyStore.set('overlay', 'wind'); // Set default to wind
-                
-                const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
-                L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.5 }).addTo(map); 
-                
-                updateShipData(); 
-                setInterval(updateShipData, 60000);
-            });
-        } else {
-            // FALLBACK TO YOUR EXISTING DARK THEME LEAFLET MAP IF NO API KEY IS PRESENT
-            console.warn("Windy API Key missing. Falling back to default dark theme map.");
-            map = L.map("map", { zoomControl: false, attributionControl: false }).setView([62.0, -6.7], 5);
-            L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { subdomains: "abcd" }).addTo(map);
-            const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
-            L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map); 
-            
-            updateShipData(); 
-            setInterval(updateShipData, 60000); 
-        }
+        mapStd = L.map("map-standard", { zoomControl: false, attributionControl: false }).setView([62.0, -6.7], 5);
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { subdomains: "abcd" }).addTo(mapStd);
+        
+        activeMapInstance = mapStd;
+        mapInitialized = true;
+        
+        updateShipData(); 
+        setInterval(updateShipData, 60000); 
     }
+
+    /* =========================================================
+       CHAT LOGIC
+       ========================================================= */
 
     function minimizeChatTab(e) {
         e.stopPropagation(); document.getElementById('chat-fab').style.display = 'none';
