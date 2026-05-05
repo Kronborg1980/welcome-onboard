@@ -198,14 +198,14 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
         }
 
-        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); pointer-events: none; transition: opacity 0.3s;}
+        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); pointer-events: none; transition: opacity 0.3s; z-index: 10;}
         
         /* OVERRIDE TO FORCE WINDY LEGEND TO SHOW ON MOBILE */
         #windy #bottom, #windy #mobile-ovr-select, .weather2-scale {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
-            z-index: 10 !important;
+            z-index: 15 !important;
         }
 
         .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; border-top: 1px solid var(--glass-border); transition: background 0.3s, border-color 0.3s;}
@@ -702,7 +702,8 @@
                 <div class="map-mode-controls">
                     <button id="btn-mode-standard" class="map-mode-btn active" onclick="setMapMode('standard')">Standard</button>
                     <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Live Wind</button>
-                    <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Live Waves</button>
+                    <!-- Changed to Live Rain since Free API does not support waves -->
+                    <button id="btn-mode-rain" class="map-mode-btn" onclick="setMapMode('rain')">Live Rain</button>
                 </div>
                 
                 <!-- The Map Container -->
@@ -1640,7 +1641,7 @@
         
         document.getElementById('btn-mode-standard').classList.remove('active');
         document.getElementById('btn-mode-wind').classList.remove('active');
-        document.getElementById('btn-mode-waves').classList.remove('active');
+        document.getElementById('btn-mode-rain').classList.remove('active');
 
         // Hide layers
         document.getElementById('map-standard').style.opacity = '0';
@@ -1665,7 +1666,7 @@
             
         } else {
             if (mode === 'wind') document.getElementById('btn-mode-wind').classList.add('active');
-            if (mode === 'waves') document.getElementById('btn-mode-waves').classList.add('active');
+            if (mode === 'rain') document.getElementById('btn-mode-rain').classList.add('active');
             
             document.getElementById('windy').style.opacity = '1';
             document.getElementById('windy').style.pointerEvents = 'auto';
