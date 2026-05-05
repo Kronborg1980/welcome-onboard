@@ -8,8 +8,11 @@
     <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/Smyril_Line_logo.svg/1280px-Smyril_Line_logo.svg.png">
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+    <!-- Windy API requires Leaflet 1.4.0 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <script src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -607,7 +610,7 @@
         </div>
 
         <!-- ==========================================
-             SAFETY REPORTING (MED INFO BOKS)
+             SAFETY REPORTING
              ========================================== -->
         <div id="view-reporting" class="view">
             <h2>Safety Reporting</h2>
@@ -654,12 +657,22 @@
         </div>
 
         <!-- ==========================================
-             VOYAGE DASHBOARD (MED PROGRESS BAR)
+             VOYAGE DASHBOARD (WINDY INTEGRATED)
              ========================================== -->
         <div id="view-voyage" class="view">
             <div style="padding: 12px 12px 0 12px;">
                 <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
-                <div class="voyage-map-container"><div id="map"></div><div class="map-gradient"></div></div>
+                
+                <!-- Modified Map Container for Windy Controls -->
+                <div class="voyage-map-container" style="position: relative;">
+                    <div class="windy-controls" style="position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 8px;">
+                        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(2, 12, 23, 0.8); border-color: var(--accent-cyan); color: var(--accent-cyan); margin: 0; backdrop-filter: blur(5px);" onclick="toggleWindyLayer('wind')">Wind</button>
+                        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(2, 12, 23, 0.8); border-color: var(--accent-cyan); color: var(--accent-cyan); margin: 0; backdrop-filter: blur(5px);" onclick="toggleWindyLayer('waves')">Waves</button>
+                    </div>
+                    <div id="map"></div>
+                    <div class="map-gradient"></div>
+                </div>
+
             </div>
             <div class="voyage-sheet">
                 
@@ -704,6 +717,9 @@
             </div>
         </div>
 
+        <!-- ==========================================
+             HANDBOOK / QUIZ SYSTEM / CHAT ... 
+             ========================================== -->
         <div id="view-handbook-select" class="view">
             <h2>The Ship Handbook</h2>
             <p>Select your department to read guidelines synced from HQ.</p>
@@ -728,9 +744,6 @@
             <button class="btn btn-outline" style="margin-top: 15px; border-color: transparent; background:transparent;" onclick="goToView('view-handbook-select')"><span class="material-icons">close</span> Exit Handbook</button>
         </div>
 
-        <!-- ==========================================
-             QUIZ SYSTEM
-             ========================================== -->
         <div id="view-q-select" class="view">
             <h2>Clearance Assessment</h2>
             <p>Select your role. <strong style="color:var(--danger)">This can only be completed once.</strong></p>
@@ -770,7 +783,6 @@
             </div>
         </div>
 
-        <!-- SUCCES SKÆRM -->
         <div id="view-success" class="view">
             <div class="card" style="text-align: center; padding: 50px 20px; border: 1px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(0,174,239,0.2);">
                 <span class="material-icons" style="font-size: 80px; color: var(--accent-cyan); margin-bottom: 20px; text-shadow: 0 0 20px rgba(0,174,239,0.5);">task_alt</span>
@@ -803,9 +815,6 @@
     </div>
 </div>
 
-<!-- ==========================================
-     IMAGE MODAL (FULLSCREEN ZOOM)
-     ========================================== -->
 <div id="imageModal" class="image-modal">
     <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
     <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: auto; padding-bottom: 50px;">
@@ -850,9 +859,6 @@
         });
     } catch(e) { goToView('view-home'); }
 
-    // ==========================================
-    // IN-APP NOTIFICATION LOGIC (LYDLØS OG FEJLFRI)
-    // ==========================================
     function setupInAppNotifications() {
         if (!firebaseActive || !activeDepartment) return;
         
@@ -865,7 +871,6 @@
             
             var lastSeen = localStorage.getItem('norrona_last_seen_' + activeDepartment) || 0;
             
-            // Vis badges hvis der er noget nyt og vi IKKE allerede kigger på siden
             if (latestPostTime > lastSeen && !document.getElementById('view-department').classList.contains('active')) {
                 document.getElementById('global-notif-dot').style.display = 'block';
                 document.getElementById('nav-dept-badge').style.display = 'inline-block';
@@ -883,9 +888,6 @@
         if(document.getElementById('home-dept-badge')) document.getElementById('home-dept-badge').style.display = 'none';
     }
 
-    // ==========================================
-    // ORIGINAL APP LOGIC
-    // ==========================================
     function getAvatarColor(name) {
         var colors = ['#FF4B4B', '#00E5FF', '#FBB900', '#B070FF', '#00DF89', '#FF8F00'];
         var hash = 0;
@@ -1392,14 +1394,23 @@
         } else { feedback.innerText = "Incorrect. Check Handbook and try again!"; feedback.style.display="block"; feedback.style.background="rgba(255,77,77,0.2)"; feedback.style.color="var(--danger)"; }
     }
 
-    var map, liveRouteLine;
+
+    /* =========================================================
+       WINDY API MAP INTEGRATION & ROUTING LOGIC
+       ========================================================= */
+
+    var map, liveRouteLine, windyStore;
     var mapInitialized = false;
+
+    // === ACTION REQUIRED ===
+    // Get your free API key at api.windy.com and paste it here
+    const WINDY_API_KEY = "INSERT_YOUR_WINDY_API_KEY_HERE";
 
     function openVoyage() {
         goToView('view-voyage');
         setTimeout(function() {
             if (!mapInitialized && typeof L !== 'undefined') { initializeVoyagePage(); mapInitialized = true; } 
-            else if (mapInitialized) { map.invalidateSize(); }
+            else if (mapInitialized && map) { map.invalidateSize(); }
         }, 350); 
     }
 
@@ -1444,7 +1455,7 @@
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto`;
             const response = await fetch(url); if (!response.ok) return; const data = await response.json();
             const temp = Math.round(data.current.temperature_2m); const wCode = data.current.weathercode; const { desc, icon } = getWeatherDetails(wCode);
-            document.getElementById("weather-temp").textContent = `${temp}°C`; document.getElementById("weather-description").textContent = desc; document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`; document.getElementById("weather-icon").style.display = "block";
+            document.getElementById("weather-temp").textContent = `${temp°C}`; document.getElementById("weather-description").textContent = desc; document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${icon}@2x.png`; document.getElementById("weather-icon").style.display = "block";
         } catch (e) {}
     }
     
@@ -1525,7 +1536,7 @@
                 if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); map.shipMarker.setIcon(createShipIcon(course)); }
                 if (!isInPort) {
                     if (!map.destMarker) map.destMarker = L.marker(destPos, {icon: pinIcon}).addTo(map); else map.destMarker.setLatLng(destPos);
-                    if (liveRouteLine) map.removeLayer(liveRouteLine); liveRouteLine = L.polyline([shipPos, destPos], { color: '#00AEEF', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map); map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
+                    if (liveRouteLine) map.removeLayer(liveRouteLine); liveRouteLine = L.polyline([shipPos, destPos], { color: '#ffffff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map); map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
                 } else {
                     if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
                     if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; } map.setView(shipPos, 15);
@@ -1534,11 +1545,49 @@
         } catch(e) { console.error("Data error", e); }
     }
 
+    // Toggle between Windy Layers
+    function toggleWindyLayer(layerName) {
+        if (windyStore) {
+            windyStore.set('overlay', layerName);
+        } else {
+            alert("Windy Map API is not active. Please insert your API Key in the code to enable live layers.");
+        }
+    }
+
     function initializeVoyagePage() {
-        if(!document.getElementById("map")) return; map = L.map("map", { zoomControl: false, attributionControl: false }).setView([62.0, -6.7], 5);
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { subdomains: "abcd" }).addTo(map);
-        const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
-        L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map); updateShipData(); setInterval(updateShipData, 60000); 
+        if(!document.getElementById("map")) return; 
+        
+        if (WINDY_API_KEY && WINDY_API_KEY !== "INSERT_YOUR_WINDY_API_KEY_HERE") {
+            // LOAD WINDY API MAP
+            const options = {
+                key: WINDY_API_KEY,
+                lat: 62.0,
+                lon: -6.7,
+                zoom: 5,
+            };
+            
+            windyInit(options, windyAPI => {
+                map = windyAPI.map;
+                windyStore = windyAPI.store;
+                windyStore.set('overlay', 'wind'); // Set default to wind
+                
+                const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
+                L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.5 }).addTo(map); 
+                
+                updateShipData(); 
+                setInterval(updateShipData, 60000);
+            });
+        } else {
+            // FALLBACK TO YOUR EXISTING DARK THEME LEAFLET MAP IF NO API KEY IS PRESENT
+            console.warn("Windy API Key missing. Falling back to default dark theme map.");
+            map = L.map("map", { zoomControl: false, attributionControl: false }).setView([62.0, -6.7], 5);
+            L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { subdomains: "abcd" }).addTo(map);
+            const route = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
+            L.polyline(route, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map); 
+            
+            updateShipData(); 
+            setInterval(updateShipData, 60000); 
+        }
     }
 
     function minimizeChatTab(e) {
