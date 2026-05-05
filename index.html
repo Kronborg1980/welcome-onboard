@@ -147,10 +147,9 @@
            ========================================== */
         #view-voyage { background: transparent; padding: 0; }
         
-        /* Map is now 50vh, making it taller and easier to see */
-        .voyage-map-container { position: relative; width: 100%; height: 50vh; min-height: 450px; z-index: 1; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        /* Reduced map height by 15% (from 50vh to 35vh, min-height to 300px) */
+        .voyage-map-container { position: relative; width: 100%; height: 35vh; min-height: 300px; z-index: 1; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* Controls are completely separated and sit above the map */
         .map-mode-controls {
             display: flex;
             justify-content: center;
@@ -689,14 +688,13 @@
                     <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Live Waves</button>
                 </div>
                 
-                <!-- Notice the map is now taller! -->
-                <div class="voyage-map-container">
-                    
+                <div class="voyage-map-container" id="map-container-box">
                     <!-- Map Standard layer -->
                     <div id="map-standard" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:5; transition: opacity 0.3s;"></div>
                     
-                    <!-- Map Windy layer (Using exact 'windy' ID required by API) -->
-                    <div id="windy" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:1; opacity:0; pointer-events:none; transition: opacity 0.3s;"></div>
+                    <!-- Map Windy layers (We use multiple to force a clean re-render on switch) -->
+                    <div id="windy-wind" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:1; opacity:0; pointer-events:none; transition: opacity 0.3s;"></div>
+                    <div id="windy-waves" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:1; opacity:0; pointer-events:none; transition: opacity 0.3s;"></div>
                     
                     <!-- Gradient specifically applied so it can be hidden when Windy is active -->
                     <div id="map-gradient" class="map-gradient" style="z-index: 10;"></div>
@@ -1423,22 +1421,18 @@
 
 
     /* =========================================================
-       MAP API LOGIC (DUAL MAP STACK)
+       MAP API LOGIC (RE-INIT FOR RELIABLE LAYER SWITCHING)
        ========================================================= */
 
     const WINDY_API_KEY = "vOskajjEdsu4MiFzIeJvFF56PM0XhTvB";
 
     var mapStd = null;
-    var mapWindy = null;
-    var windyStore = null;
+    var mapWindyWind = null;
+    var mapWindyWaves = null;
     var activeMapInstance = null;
     var activeMapMode = 'standard';
     
     var mapInitialized = false;
-    var windyInitialized = false;
-    
-    var hasSetBoundsStd = false;
-    var hasSetBoundsWindy = false;
 
     function openVoyage() {
         goToView('view-voyage');
@@ -1501,8 +1495,6 @@
     function updateMarkersForMap(targetMap, course, shipPos, destPos, isInPort) {
         if (!targetMap) return;
         
-        let isActive = (targetMap === activeMapInstance);
-        
         if (!targetMap.shipMarker) { 
             targetMap.shipMarker = L.marker(shipPos, { icon: createShipIcon(course), zIndexOffset: 1000 }).addTo(targetMap); 
         } else { 
@@ -1520,22 +1512,15 @@
             
             targetMap.routeLine = L.polyline([shipPos, destPos], { color: lineColor, weight: 3, dashArray: '5, 10', opacity: lineOpac }).addTo(targetMap); 
             
-            if (isActive) {
-                if (targetMap === mapStd && !hasSetBoundsStd) {
-                    targetMap.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
-                    hasSetBoundsStd = true;
-                } else if (targetMap === mapWindy && !hasSetBoundsWindy) {
-                    targetMap.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
-                    hasSetBoundsWindy = true;
-                }
+            // Only fitBounds if it's the standard map (Windy handles its own initial view)
+            if (targetMap === mapStd && !targetMap.hasSetBounds) {
+                targetMap.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
+                targetMap.hasSetBounds = true;
             }
         } else {
             if (targetMap.destMarker) { targetMap.removeLayer(targetMap.destMarker); targetMap.destMarker = null; }
             if (targetMap.routeLine) { targetMap.removeLayer(targetMap.routeLine); targetMap.routeLine = null; } 
-            
-            if (isActive) {
-                targetMap.setView(shipPos, 15);
-            }
+            if (targetMap === mapStd) targetMap.setView(shipPos, 15);
         }
     }
     
@@ -1616,7 +1601,8 @@
                 const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                 
                 updateMarkersForMap(mapStd, course, shipPos, destPos, isInPort);
-                updateMarkersForMap(mapWindy, course, shipPos, destPos, isInPort);
+                updateMarkersForMap(mapWindyWind, course, shipPos, destPos, isInPort);
+                updateMarkersForMap(mapWindyWaves, course, shipPos, destPos, isInPort);
             }
             
             fetchDestWeather(currentDestInfo.lat, currentDestInfo.lon);
@@ -1624,6 +1610,7 @@
         } catch(e) { console.error("Data error", e); }
     }
 
+    // THIS DESTROYS AND RECREATES THE WINDY MAP TO GUARANTEE THE LAYER SWITCH WORKS
     function setMapMode(mode) {
         if (mode === activeMapMode) return;
         
@@ -1632,81 +1619,80 @@
         document.getElementById('btn-mode-wind').classList.remove('active');
         document.getElementById('btn-mode-waves').classList.remove('active');
 
+        document.getElementById('map-standard').style.opacity = '0';
+        document.getElementById('map-standard').style.pointerEvents = 'none';
+        document.getElementById('map-standard').style.zIndex = '1';
+        
+        // Hide both windy containers initially
+        document.getElementById('windy-wind').style.opacity = '0';
+        document.getElementById('windy-wind').style.pointerEvents = 'none';
+        document.getElementById('windy-wind').style.zIndex = '1';
+        
+        document.getElementById('windy-waves').style.opacity = '0';
+        document.getElementById('windy-waves').style.pointerEvents = 'none';
+        document.getElementById('windy-waves').style.zIndex = '1';
+
         if (mode === 'standard') {
             document.getElementById('btn-mode-standard').classList.add('active');
             
-            // Show standard map smoothly
             document.getElementById('map-standard').style.opacity = '1';
             document.getElementById('map-standard').style.pointerEvents = 'auto';
             document.getElementById('map-standard').style.zIndex = '5';
             document.getElementById('map-gradient').style.opacity = '1';
             
-            // Hide windy map
-            document.getElementById('windy').style.opacity = '0';
-            document.getElementById('windy').style.pointerEvents = 'none';
-            document.getElementById('windy').style.zIndex = '1';
-            
             activeMapInstance = mapStd;
             if (mapStd) { setTimeout(() => mapStd.invalidateSize(), 100); }
             
-        } else {
-            if (mode === 'wind') document.getElementById('btn-mode-wind').classList.add('active');
-            if (mode === 'waves') document.getElementById('btn-mode-waves').classList.add('active');
-            
-            // Show windy map smoothly
-            document.getElementById('windy').style.opacity = '1';
-            document.getElementById('windy').style.pointerEvents = 'auto';
-            document.getElementById('windy').style.zIndex = '5';
+        } else if (mode === 'wind') {
+            document.getElementById('btn-mode-wind').classList.add('active');
             document.getElementById('map-gradient').style.opacity = '0';
             
-            // Hide standard map
-            document.getElementById('map-standard').style.opacity = '0';
-            document.getElementById('map-standard').style.pointerEvents = 'none';
-            document.getElementById('map-standard').style.zIndex = '1';
-
-            if (!windyInitialized) {
-                initWindyMap(mode);
-            } else {
-                if (windyStore) {
-                    setTimeout(() => {
-                        windyStore.set('overlay', mode);
-                    }, 50); // slight delay forces a clean re-render of the layer
-                }
-                activeMapInstance = mapWindy;
-                if (mapWindy) { setTimeout(() => mapWindy.invalidateSize(), 100); }
-            }
-        }
-        
-        updateShipData();
-    }
-
-    function initWindyMap(initialMode) {
-        const options = {
-            key: WINDY_API_KEY,
-            lat: 62.0,
-            lon: -6.7,
-            zoom: 5,
-        };
-        
-        windyInit(options, windyAPI => {
-            const { map, store, picker } = windyAPI;
-            mapWindy = map;
-            windyStore = store;
+            // To fix the API bug, we clear the container and rebuild it
+            let container = document.getElementById('windy-wind');
+            container.innerHTML = '';
             
-            windyStore.set('overlay', initialMode);
-            
-            // ADDED: Interactive Picker. Tapping anywhere shows the exact wind/wave value flag!
-            mapWindy.on('click', function(e) {
-                picker.open({ lat: e.latlng.lat, lon: e.latlng.lng });
+            const options = { key: WINDY_API_KEY, lat: 62.0, lon: -6.7, zoom: 5 };
+            windyInit(options, windyAPI => {
+                const { map, store, picker } = windyAPI;
+                mapWindyWind = map;
+                store.set('overlay', 'wind');
+                
+                mapWindyWind.on('click', function(e) { picker.open({ lat: e.latlng.lat, lon: e.latlng.lng }); });
+                if (mapWindyWind.zoomControl) { mapWindyWind.removeControl(mapWindyWind.zoomControl); }
+                
+                activeMapInstance = mapWindyWind;
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+                container.style.zIndex = '5';
+                
+                updateShipData();
             });
-            
-            activeMapInstance = mapWindy;
-            windyInitialized = true;
-            
-            if (mapWindy.zoomControl) { mapWindy.removeControl(mapWindy.zoomControl); }
 
-            updateShipData(); 
-        });
+        } else if (mode === 'waves') {
+            document.getElementById('btn-mode-waves').classList.add('active');
+            document.getElementById('map-gradient').style.opacity = '0';
+            
+            // To fix the API bug, we clear the container and rebuild it
+            let container = document.getElementById('windy-waves');
+            container.innerHTML = '';
+            
+            const options = { key: WINDY_API_KEY, lat: 62.0, lon: -6.7, zoom: 5 };
+            windyInit(options, windyAPI => {
+                const { map, store, picker } = windyAPI;
+                mapWindyWaves = map;
+                store.set('overlay', 'waves');
+                
+                mapWindyWaves.on('click', function(e) { picker.open({ lat: e.latlng.lat, lon: e.latlng.lng }); });
+                if (mapWindyWaves.zoomControl) { mapWindyWaves.removeControl(mapWindyWaves.zoomControl); }
+                
+                activeMapInstance = mapWindyWaves;
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+                container.style.zIndex = '5';
+                
+                updateShipData();
+            });
+        }
     }
 
     function initializeVoyagePage() {
