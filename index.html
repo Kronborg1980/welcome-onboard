@@ -144,41 +144,38 @@
 
         /* VOYAGE STYLES & DUAL MAP STACK */
         #view-voyage { background: transparent; padding: 0; }
-        .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
         
+        /* INCREASED MAP HEIGHT AND ADDED OVERFLOW HIDDEN */
+        .voyage-map-container { position: relative; width: 100%; height: 45vh; min-height: 350px; z-index: 1; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        
+        /* CONTROLS MOVED ABOVE MAP */
         .map-mode-controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 1000;
             display: flex;
-            gap: 5px;
-            background: rgba(2, 12, 23, 0.75);
-            padding: 5px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .map-mode-btn {
-            background: transparent;
+            background: rgba(2, 12, 23, 0.6);
             color: var(--text-muted);
-            border: none;
-            padding: 8px 12px;
-            font-size: 0.85rem;
+            border: 1px solid var(--glass-border);
+            padding: 10px 16px;
+            font-size: 0.9rem;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             transition: 0.2s;
+            flex: 1;
         }
         .map-mode-btn:hover { color: var(--text-main); }
         .map-mode-btn.active {
             background: var(--accent-cyan);
             color: #000;
-            box-shadow: 0 0 10px rgba(0,174,239,0.4);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0,174,239,0.3);
         }
 
-        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); border-radius: 0 0 20px 20px; pointer-events: none; transition: background 0.3s;}
+        .map-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-dark)); pointer-events: none; transition: background 0.3s;}
         
         .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 60vh; border-top: 1px solid var(--glass-border); transition: background 0.3s, border-color 0.3s;}
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -666,23 +663,21 @@
             <div style="padding: 12px 12px 0 12px;">
                 <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
                 
+                <!-- Controls moved completely ABOVE the map container -->
+                <div class="map-mode-controls">
+                    <button id="btn-mode-standard" class="map-mode-btn active" onclick="setMapMode('standard')">Standard</button>
+                    <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Windy (Wind)</button>
+                    <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Windy (Waves)</button>
+                </div>
+                
                 <div class="voyage-map-container">
-                    <div style="position:relative; width:100%; height:100%;">
-                        
-                        <!-- Control Overlay -->
-                        <div class="map-mode-controls">
-                            <button id="btn-mode-standard" class="map-mode-btn active" onclick="setMapMode('standard')">Standard</button>
-                            <button id="btn-mode-wind" class="map-mode-btn" onclick="setMapMode('wind')">Windy (Wind)</button>
-                            <button id="btn-mode-waves" class="map-mode-btn" onclick="setMapMode('waves')">Windy (Waves)</button>
-                        </div>
-                        
-                        <!-- The Two Maps -->
-                        <div id="map-standard" style="position:absolute; width:100%; height:100%; top:0; left:0; border-radius:20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index:1;"></div>
-                        <div id="map-windy" style="position:absolute; width:100%; height:100%; top:0; left:0; border-radius:20px; border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index:2; visibility:hidden; pointer-events:none;"></div>
-                        
-                        <!-- Gradient Overlay -->
-                        <div class="map-gradient" style="z-index: 10;"></div>
-                    </div>
+                    <!-- Map Standard layer -->
+                    <div id="map-standard" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:5; transition: opacity 0.3s;"></div>
+                    
+                    <!-- Map Windy layer (Using exact 'windy' ID required by API) -->
+                    <div id="windy" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:1; opacity:0; pointer-events:none; transition: opacity 0.3s;"></div>
+                    
+                    <div class="map-gradient" style="z-index: 10;"></div>
                 </div>
 
             </div>
@@ -1498,7 +1493,6 @@
             
             if (targetMap.routeLine) targetMap.removeLayer(targetMap.routeLine); 
             
-            // Adjust line color based on map mode (white for standard, cyan for windy looks better)
             let lineColor = targetMap === mapStd ? '#ffffff' : '#00AEEF';
             let lineOpac = targetMap === mapStd ? 0.3 : 0.9;
             
@@ -1599,7 +1593,6 @@
                 const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
                 const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                 
-                // Update markers on both map layers to ensure they are synchronized
                 updateMarkersForMap(mapStd, course, shipPos, destPos, isInPort);
                 updateMarkersForMap(mapWindy, course, shipPos, destPos, isInPort);
             }
@@ -1620,31 +1613,39 @@
         if (mode === 'standard') {
             document.getElementById('btn-mode-standard').classList.add('active');
             
-            document.getElementById('map-standard').style.visibility = 'visible';
+            // Show standard map smoothly
+            document.getElementById('map-standard').style.opacity = '1';
             document.getElementById('map-standard').style.pointerEvents = 'auto';
+            document.getElementById('map-standard').style.zIndex = '5';
             
-            document.getElementById('map-windy').style.visibility = 'hidden';
-            document.getElementById('map-windy').style.pointerEvents = 'none';
+            // Hide windy map
+            document.getElementById('windy').style.opacity = '0';
+            document.getElementById('windy').style.pointerEvents = 'none';
+            document.getElementById('windy').style.zIndex = '1';
             
             activeMapInstance = mapStd;
-            if (mapStd) mapStd.invalidateSize();
+            if (mapStd) { setTimeout(() => mapStd.invalidateSize(), 100); }
             
         } else {
             if (mode === 'wind') document.getElementById('btn-mode-wind').classList.add('active');
             if (mode === 'waves') document.getElementById('btn-mode-waves').classList.add('active');
             
-            document.getElementById('map-windy').style.visibility = 'visible';
-            document.getElementById('map-windy').style.pointerEvents = 'auto';
+            // Show windy map smoothly
+            document.getElementById('windy').style.opacity = '1';
+            document.getElementById('windy').style.pointerEvents = 'auto';
+            document.getElementById('windy').style.zIndex = '5';
             
-            document.getElementById('map-standard').style.visibility = 'hidden';
+            // Hide standard map
+            document.getElementById('map-standard').style.opacity = '0';
             document.getElementById('map-standard').style.pointerEvents = 'none';
+            document.getElementById('map-standard').style.zIndex = '1';
 
             if (!windyInitialized) {
                 initWindyMap(mode);
             } else {
                 if (windyStore) windyStore.set('overlay', mode);
                 activeMapInstance = mapWindy;
-                if (mapWindy) mapWindy.invalidateSize();
+                if (mapWindy) { setTimeout(() => mapWindy.invalidateSize(), 100); }
             }
         }
         
