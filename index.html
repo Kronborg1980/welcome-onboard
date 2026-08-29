@@ -132,7 +132,17 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);bo
 .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;
   background-image:linear-gradient(160deg,#004A59,#001C26);animation:zoom 26s infinite alternate ease-in-out}
 @keyframes zoom{from{transform:scale(1)}to{transform:scale(1.12)}}
-.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--deep) 8%,rgba(0,40,54,.75) 40%,rgba(0,40,54,0) 78%)}
+.hero::after{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(to top,var(--deep) 6%,rgba(0,40,54,.55) 32%,rgba(0,40,54,0) 70%)}
+.hero-art{position:absolute;inset:0;z-index:1}
+.hero-art svg{width:100%;height:100%;display:block}
+#shipG{animation:bob 7s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-7px) rotate(-.45deg)}}
+.wave-a{animation:drift 16s linear infinite}
+.wave-b{animation:drift 26s linear infinite reverse}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-90px)}}
+.aurora{animation:shimmer 11s ease-in-out infinite}
+@keyframes shimmer{0%,100%{opacity:.30}50%{opacity:.62}}
+.tile-dark{filter:invert(1) hue-rotate(180deg) brightness(.82) contrast(1.05) saturate(.5)}
 .hero-in{position:relative;z-index:3;text-align:center}
 .hero-in h1{text-shadow:0 8px 26px rgba(0,0,0,.7);margin-bottom:8px}
 .hero-in p{color:rgba(255,255,255,.85);font-size:.95rem;text-shadow:0 2px 6px rgba(0,0,0,.7)}
@@ -335,6 +345,71 @@ body.light .tabs{background:rgba(0,40,54,.05)}
     <section id="page-home" class="page" data-nav="home" style="padding:0">
       <div class="hero">
         <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-art" id="heroArt" aria-hidden="true">
+          <svg viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00121A"/><stop offset="52%" stop-color="#002B39"/><stop offset="100%" stop-color="#014D5C"/>
+              </linearGradient>
+              <linearGradient id="g-sea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#01414F"/><stop offset="100%" stop-color="#001820"/>
+              </linearGradient>
+              <linearGradient id="g-aur" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5AD1E5" stop-opacity="0"/>
+                <stop offset="45%" stop-color="#2FD08A" stop-opacity=".55"/>
+                <stop offset="100%" stop-color="#2FD08A" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="g-refl" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FCB900" stop-opacity=".38"/>
+                <stop offset="100%" stop-color="#FCB900" stop-opacity="0"/>
+              </linearGradient>
+              <pattern id="p-win" width="17" height="26" patternUnits="userSpaceOnUse">
+                <rect x="4" y="7" width="9" height="7" rx="1.5" fill="#FCB900" opacity=".9"/>
+              </pattern>
+            </defs>
+
+            <rect width="800" height="520" fill="url(#g-sky)"/>
+
+            <g class="aurora">
+              <path d="M-40,120 C160,40 300,180 470,90 C600,25 720,110 850,60 L850,180 C700,215 580,140 460,190 C300,255 140,180 -40,240 Z" fill="url(#g-aur)"/>
+              <path d="M-40,60 C180,10 320,120 520,50 C660,5 760,70 850,30 L850,120 C740,150 620,90 480,135 C320,185 130,120 -40,150 Z" fill="url(#g-aur)" opacity=".5"/>
+            </g>
+
+            <g fill="#ffffff">
+              <circle cx="90" cy="52" r="1.6" opacity=".7"/><circle cx="180" cy="96" r="1.1" opacity=".5"/>
+              <circle cx="300" cy="40" r="1.4" opacity=".6"/><circle cx="420" cy="118" r="1" opacity=".45"/>
+              <circle cx="560" cy="48" r="1.6" opacity=".65"/><circle cx="660" cy="104" r="1.2" opacity=".5"/>
+              <circle cx="730" cy="44" r="1" opacity=".45"/><circle cx="240" cy="150" r="1" opacity=".35"/>
+            </g>
+
+            <rect x="0" y="330" width="800" height="190" fill="url(#g-sea)"/>
+            <rect x="248" y="330" width="330" height="74" fill="url(#g-refl)"/>
+
+            <g id="shipG">
+              <!-- hull -->
+              <path d="M236,300 L556,300 L592,309 L577,331 L250,331 Z" fill="#08252F" stroke="rgba(255,255,255,.14)" stroke-width="1"/>
+              <rect x="240" y="302" width="330" height="4" fill="#FCB900" opacity=".55"/>
+              <!-- decks -->
+              <rect x="250" y="274" width="302" height="26" rx="3" fill="#103B49" stroke="rgba(255,255,255,.12)"/>
+              <rect x="250" y="274" width="302" height="26" fill="url(#p-win)"/>
+              <rect x="262" y="250" width="272" height="24" rx="3" fill="#124554" stroke="rgba(255,255,255,.12)"/>
+              <rect x="262" y="250" width="272" height="24" fill="url(#p-win)"/>
+              <rect x="280" y="228" width="222" height="22" rx="3" fill="#14505F" stroke="rgba(255,255,255,.12)"/>
+              <rect x="280" y="228" width="222" height="22" fill="url(#p-win)"/>
+              <!-- bridge -->
+              <path d="M444,206 L500,206 L512,228 L444,228 Z" fill="#1A5D6E" stroke="rgba(255,255,255,.16)"/>
+              <rect x="450" y="211" width="52" height="8" rx="2" fill="#FCB900" opacity=".85"/>
+              <!-- funnel + mast -->
+              <path d="M300,194 L336,194 L340,228 L296,228 Z" fill="#0E3341" stroke="rgba(255,255,255,.12)"/>
+              <rect x="298" y="200" width="40" height="7" fill="#FCB900" opacity=".9"/>
+              <line x1="478" y1="206" x2="478" y2="176" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+              <circle cx="478" cy="174" r="3" fill="#FCB900"/>
+            </g>
+
+            <path class="wave-a" d="M-100,352 q40,-8 80,0 t80,0 t80,0 t80,0 t80,0 t80,0 t80,0 t80,0 t80,0 t80,0 v40 H-100 Z" fill="#00202B" opacity=".55"/>
+            <path class="wave-b" d="M-100,376 q50,-9 100,0 t100,0 t100,0 t100,0 t100,0 t100,0 t100,0 t100,0 t100,0 v50 H-100 Z" fill="#00161E" opacity=".7"/>
+          </svg>
+        </div>
         <div class="hero-in">
           <h1>Norröna</h1>
           <p>Everything you need on board — handbook, schedule, voyage and safety.</p>
@@ -431,7 +506,7 @@ body.light .tabs{background:rgba(0,40,54,.05)}
             <div class="sub">Significant</div>
           </div>
         </div>
-        <p class="lede" style="margin:18px 0 0;font-size:.78rem;text-align:center">Position from AIS · weather from Open-Meteo · updates every minute</p>
+        <p class="lede" style="margin:18px 0 0;font-size:.76rem;text-align:center;line-height:1.6">Position from AIS · weather from Open-Meteo · updates every minute<br>Charts © Esri &amp; OpenStreetMap · sea marks © OpenSeaMap</p>
       </div>
     </section>
 
@@ -718,7 +793,10 @@ $("brandLogo").addEventListener("load",function(){
   (function tryNext(){
     if(i>=HERO_IMAGES.length) return;
     var img=new Image();
-    img.onload=function(){$("heroBg").style.backgroundImage="url('"+HERO_IMAGES[i]+"')";};
+    img.onload=function(){
+      $("heroBg").style.backgroundImage="url('"+HERO_IMAGES[i]+"')";
+      $("heroArt").style.display="none";   /* photo won — drop the drawn scene */
+    };
     img.onerror=function(){i++;tryNext();};
     img.src=HERO_IMAGES[i];
   })();
@@ -953,9 +1031,19 @@ function shipIcon(course){
 function initMap(){
   if(map){ setTimeout(function(){map.invalidateSize();},120); return; }
   if(typeof L==="undefined"||!$("map")) return;
-  map=L.map("map",{zoomControl:false,attributionControl:false,renderer:L.canvas()}).setView([61,-4],5);
-  baseChart=L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:18}).addTo(map);
-  baseSat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:18});
+  map=L.map("map",{zoomControl:false,attributionControl:false,renderer:L.canvas(),maxZoom:16}).setView([61,-4],5);
+
+  /* Esri dark canvas — no key. If it ever 403s, fall back to OSM inverted to dark. */
+  var chartTiles=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
+  var chartLabels=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
+  baseChart=L.layerGroup([chartTiles,chartLabels]).addTo(map);
+  var swapped=false;
+  chartTiles.on("tileerror",function(){
+    if(swapped) return; swapped=true;
+    baseChart.clearLayers();
+    baseChart.addLayer(L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:16,className:"tile-dark"}));
+  });
+  baseSat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
   seamarks=L.tileLayer("https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",{maxZoom:18,opacity:.9});
   L.polyline(ROUTE,{color:"#ffffff",weight:1,dashArray:"5,15",opacity:.22}).addTo(map);
   setTimeout(function(){map.invalidateSize();},200);
