@@ -142,7 +142,28 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);bo
 @keyframes drift{from{transform:translateX(0)}to{transform:translateX(-90px)}}
 .aurora{animation:shimmer 11s ease-in-out infinite}
 @keyframes shimmer{0%,100%{opacity:.30}50%{opacity:.62}}
-.tile-dark{filter:invert(1) hue-rotate(180deg) brightness(.82) contrast(1.05) saturate(.5)}
+.tile-dark{filter:invert(1) hue-rotate(150deg) saturate(5) brightness(1.5) contrast(2)}
+/* LAND MASK — hillshade forced to black over land, white over sea, then multiplied down.
+   Raise contrast to sharpen the coastline; raise brightness to lighten the land. */
+.land-mask{filter:grayscale(1) brightness(.64) contrast(5);mix-blend-mode:multiply}
+.leaflet-tile-pane{isolation:isolate}
+#map{background:#cfe6ef}
+#map.sat{background:#001e29}
+.wind-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.wind-cell span{font-size:.62rem;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.6);margin-top:-2px}
+.wave-cell{display:flex;align-items:baseline;justify-content:center;gap:1px;font-size:.72rem;font-weight:800;
+  border:1px solid;border-radius:8px;padding:3px 7px;backdrop-filter:blur(3px);
+  background-clip:padding-box;text-shadow:0 1px 3px rgba(0,0,0,.5);pointer-events:none}
+.wave-cell small{font-size:.55rem;opacity:.8;font-weight:600}
+.layer-gap{height:10px}
+.map-legend{position:absolute;left:22px;bottom:14px;z-index:402;background:rgba(0,30,41,.86);border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;padding:9px 11px;font-size:.62rem;color:#fff;backdrop-filter:blur(8px);display:none;max-width:calc(100% - 90px)}
+.map-legend.show{display:block}
+.map-legend b{display:block;font-size:.6rem;font-weight:700;letter-spacing:.4px;opacity:.8;margin-bottom:6px;line-height:1.3}
+.legend-row{display:flex;align-items:center;gap:9px;font-weight:700;font-variant-numeric:tabular-nums}
+.legend-row span{display:flex;align-items:center;gap:4px}
+.legend-row i{width:9px;height:9px;border-radius:3px;display:block}
+.legend-unit{opacity:.6;font-weight:600}
 .hero-in{position:relative;z-index:3;text-align:center}
 .hero-in h1{text-shadow:0 8px 26px rgba(0,0,0,.7);margin-bottom:8px}
 .hero-in p{color:rgba(255,255,255,.85);font-size:.95rem;text-shadow:0 2px 6px rgba(0,0,0,.7)}
@@ -461,8 +482,12 @@ body.light .tabs{background:rgba(0,40,54,.05)}
         <div class="map-layers">
           <button class="layer-btn on" id="lyrChart" onclick="setBase('chart')" title="Chart"><span class="material-icons">map</span></button>
           <button class="layer-btn" id="lyrSat" onclick="setBase('sat')" title="Satellite"><span class="material-icons">satellite_alt</span></button>
+          <div class="layer-gap"></div>
           <button class="layer-btn" id="lyrSea" onclick="toggleSeamarks()" title="Sea marks"><span class="material-icons">anchor</span></button>
+          <button class="layer-btn" id="lyrWind" onclick="toggleOverlay('wind')" title="Wind"><span class="material-icons">air</span></button>
+          <button class="layer-btn" id="lyrWave" onclick="toggleOverlay('wave')" title="Wave height"><span class="material-icons">waves</span></button>
         </div>
+        <div class="map-legend" id="mapLegend"></div>
       </div>
       <div class="sheet">
         <div class="progress-card">
@@ -1031,28 +1056,45 @@ function shipIcon(course){
 function initMap(){
   if(map){ setTimeout(function(){map.invalidateSize();},120); return; }
   if(typeof L==="undefined"||!$("map")) return;
-  map=L.map("map",{zoomControl:false,attributionControl:false,renderer:L.canvas(),maxZoom:16}).setView([61,-4],5);
+  map=L.map("map",{zoomControl:false,attributionControl:false,maxZoom:16}).setView([61,-4],5);
 
-  /* Esri dark canvas — no key. If it ever 403s, fall back to OSM inverted to dark. */
-  var chartTiles=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
-  var chartLabels=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
-  baseChart=L.layerGroup([chartTiles,chartLabels]).addTo(map);
+  /* CHART: light sea, dark land.
+     Esri Ocean Base gives pale-blue sea with bathymetry. The hillshade layer on top is
+     pushed to pure black over land / pure white over sea by the .land-mask filter, then
+     multiplied down onto the ocean base — so land goes solid dark and the sea is untouched.
+     Tune LAND MASK in the CSS if the land looks too light or too heavy. */
+  var ocean=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:13,maxZoom:16});
+  var landMask=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,className:"land-mask"});
+  baseChart=L.layerGroup([ocean,landMask]).addTo(map);
+
+  /* if Esri ever refuses, fall back to OSM inverted — dark land, deep-blue sea */
   var swapped=false;
-  chartTiles.on("tileerror",function(){
+  ocean.on("tileerror",function(){
     if(swapped) return; swapped=true;
     baseChart.clearLayers();
     baseChart.addLayer(L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:16,className:"tile-dark"}));
   });
+
   baseSat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
-  seamarks=L.tileLayer("https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",{maxZoom:18,opacity:.9});
-  L.polyline(ROUTE,{color:"#ffffff",weight:1,dashArray:"5,15",opacity:.22}).addTo(map);
+  seamarks=L.tileLayer("https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",{maxZoom:16,opacity:.9});
+
+  windLayer=L.layerGroup();
+  waveLayer=L.layerGroup();
+  L.polyline(ROUTE,{color:"#0a3d4d",weight:1.5,dashArray:"5,14",opacity:.35}).addTo(map);
+
+  map.on("moveend",function(){
+    if(!overlayMode) return;
+    clearTimeout(map._ovT);
+    map._ovT=setTimeout(loadOverlay,700);
+  });
+
   setTimeout(function(){map.invalidateSize();},200);
   if(lastShip) drawShipOnMap(lastShip, DESTS[lastShip.key]||DESTS.torshavn);
 }
 function setBase(which){
   if(!map) return;
-  if(which==="sat"){ map.removeLayer(baseChart); baseSat.addTo(map); }
-  else { map.removeLayer(baseSat); baseChart.addTo(map); }
+  if(which==="sat"){ map.removeLayer(baseChart); baseSat.addTo(map); $("map").classList.add("sat"); }
+  else { map.removeLayer(baseSat); baseChart.addTo(map); $("map").classList.remove("sat"); }
   if(seaOn) seamarks.bringToFront();
   $("lyrChart").classList.toggle("on",which==="chart");
   $("lyrSat").classList.toggle("on",which==="sat");
@@ -1062,6 +1104,101 @@ function toggleSeamarks(){
   seaOn=!seaOn;
   if(seaOn) seamarks.addTo(map); else map.removeLayer(seamarks);
   $("lyrSea").classList.toggle("on",seaOn);
+}
+
+/* =========================================================================
+   WIND + WAVE OVERLAYS   (Open-Meteo grid — no key, one request per refresh)
+   ========================================================================= */
+var windLayer=null, waveLayer=null, overlayMode="";
+var WIND_SCALE=[[0,"#5AD1E5","Calm"],[5,"#2FD08A","Fresh"],[10,"#FCB900","Strong"],[15,"#FF8A3D","Gale"],[20,"#FF5A5A","Storm"]];
+var WAVE_SCALE=[[0,"#5AD1E5","Slight"],[1,"#2FD08A","Moderate"],[2,"#FCB900","Rough"],[3,"#FF8A3D","Very rough"],[4,"#FF5A5A","High"]];
+function scaleColor(scale,v){
+  var c=scale[0][1];
+  for(var i=0;i<scale.length;i++) if(v>=scale[i][0]) c=scale[i][1];
+  return c;
+}
+function toggleOverlay(kind){
+  if(!map) return;
+  if(overlayMode===kind){ overlayMode=""; }
+  else { overlayMode=kind; }
+  map.removeLayer(windLayer); map.removeLayer(waveLayer);
+  windLayer.clearLayers(); waveLayer.clearLayers();
+  $("lyrWind").classList.toggle("on",overlayMode==="wind");
+  $("lyrWave").classList.toggle("on",overlayMode==="wave");
+  if(!overlayMode){ $("mapLegend").classList.remove("show"); return; }
+  (overlayMode==="wind"?windLayer:waveLayer).addTo(map);
+  loadOverlay();
+}
+function gridPoints(){
+  var b=map.getBounds(), sw=b.getSouthWest(), ne=b.getNorthEast();
+  var latPad=(ne.lat-sw.lat)*.12, lonPad=(ne.lng-sw.lng)*.12;
+  var lat0=sw.lat+latPad, lat1=ne.lat-latPad, lon0=sw.lng+lonPad, lon1=ne.lng-lonPad;
+  var rows=5, cols=4, pts=[];
+  for(var r=0;r<rows;r++)
+    for(var c=0;c<cols;c++)
+      pts.push([+(lat0+(lat1-lat0)*r/(rows-1)).toFixed(3), +(lon0+(lon1-lon0)*c/(cols-1)).toFixed(3)]);
+  return pts;
+}
+function windArrow(deg,speed){
+  var col=scaleColor(WIND_SCALE,speed);
+  /* meteorological direction is where the wind comes FROM, so the barb points to deg+180 */
+  return L.divIcon({className:"",iconSize:[42,42],iconAnchor:[21,21],
+    html:'<div class="wind-cell"><div class="wind-arrow" style="transform:rotate('+((deg+180)%360)+'deg)">'+
+         '<svg viewBox="0 0 24 24" width="22" height="22" fill="'+col+'" stroke="rgba(0,0,0,.45)" stroke-width="1">'+
+         '<path d="M12 2l6 18-6-4-6 4z"/></svg></div>'+
+         '<span style="color:'+col+'">'+Math.round(speed)+'</span></div>'});
+}
+function waveCell(h){
+  var col=scaleColor(WAVE_SCALE,h);
+  return L.divIcon({className:"",iconSize:[40,26],iconAnchor:[20,13],
+    html:'<div class="wave-cell" style="background:'+col+'22;border-color:'+col+';color:'+col+'">'+h.toFixed(1)+'<small>m</small></div>'});
+}
+async function loadOverlay(){
+  if(!overlayMode||!map) return;
+  var pts=gridPoints();
+  var lats=pts.map(function(p){return p[0];}).join(",");
+  var lons=pts.map(function(p){return p[1];}).join(",");
+  var legend=$("mapLegend");
+  legend.classList.add("show");
+  legend.innerHTML='<b>Loading…</b>';
+  try{
+    var url = overlayMode==="wind"
+      ? "https://api.open-meteo.com/v1/forecast?latitude="+lats+"&longitude="+lons+"&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=ms"
+      : "https://marine-api.open-meteo.com/v1/marine?latitude="+lats+"&longitude="+lons+"&current=wave_height,wave_direction";
+    var r=await fetch(url);
+    if(!r.ok) throw new Error("overlay");
+    var d=await r.json();
+    var arr=Array.isArray(d)?d:[d];
+    var layer = overlayMode==="wind"?windLayer:waveLayer;
+    layer.clearLayers();
+    var drawn=0;
+    arr.forEach(function(item,i){
+      if(!item||!item.current) return;
+      var lat=item.latitude!=null?item.latitude:pts[i][0];
+      var lon=item.longitude!=null?item.longitude:pts[i][1];
+      if(overlayMode==="wind"){
+        var sp=item.current.wind_speed_10m, dir=item.current.wind_direction_10m;
+        if(sp==null||dir==null) return;
+        L.marker([lat,lon],{icon:windArrow(dir,sp),interactive:false}).addTo(layer); drawn++;
+      } else {
+        var h=item.current.wave_height;
+        if(h==null) return;               /* land squares come back empty */
+        L.marker([lat,lon],{icon:waveCell(h),interactive:false}).addTo(layer); drawn++;
+      }
+    });
+    if(!drawn){ legend.innerHTML='<b>No data for this area</b>'; return; }
+    drawLegend();
+  }catch(e){
+    legend.innerHTML='<b>'+(overlayMode==="wind"?"Wind":"Wave")+' data unavailable</b>';
+  }
+}
+function drawLegend(){
+  var scale = overlayMode==="wind"?WIND_SCALE:WAVE_SCALE;
+  var unit  = overlayMode==="wind"?"m/s":"m";
+  var head  = overlayMode==="wind"?"Wind at 10 m — arrow shows where it blows to":"Significant wave height";
+  $("mapLegend").innerHTML='<b>'+head+'</b><div class="legend-row">'+scale.map(function(s){
+    return '<span><i style="background:'+s[1]+'"></i>'+s[0]+(unit==="m"?"":"")+'</span>';
+  }).join("")+'<span class="legend-unit">'+unit+'</span></div>';
 }
 function drawShipOnMap(s,dest){
   if(!map||!s) return;
