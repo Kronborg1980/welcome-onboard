@@ -147,7 +147,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);bo
    Raise contrast to sharpen the coastline; raise brightness to lighten the land. */
 .land-mask{filter:grayscale(1) brightness(.64) contrast(5);mix-blend-mode:multiply}
 .leaflet-tile-pane{isolation:isolate}
-#map{background:#cfe6ef}
+#map{background:#eceff1}
 #map.sat{background:#001e29}
 .wind-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
 .wind-cell span{font-size:.62rem;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.6);margin-top:-2px}
@@ -1058,18 +1058,18 @@ function initMap(){
   if(typeof L==="undefined"||!$("map")) return;
   map=L.map("map",{zoomControl:false,attributionControl:false,maxZoom:16}).setView([61,-4],5);
 
-  /* CHART: light sea, dark land.
-     Esri Ocean Base gives pale-blue sea with bathymetry. The hillshade layer on top is
-     pushed to pure black over land / pure white over sea by the .land-mask filter, then
-     multiplied down onto the ocean base — so land goes solid dark and the sea is untouched.
-     Tune LAND MASK in the CSS if the land looks too light or too heavy. */
-  var ocean=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:13,maxZoom:16});
+  /* CHART: same black-and-grey canvas, colours the other way round.
+     Esri Light Gray Canvas gives a near-white sea and light grey land. The hillshade on
+     top is forced to black over land / white over sea and multiplied down, so the land
+     goes solid black and the sea stays light. Labels ride on top so they stay readable. */
+  var greyBase=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:16,maxZoom:16});
   var landMask=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,className:"land-mask"});
-  baseChart=L.layerGroup([ocean,landMask]).addTo(map);
+  var greyLabels=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16});
+  baseChart=L.layerGroup([greyBase,landMask,greyLabels]).addTo(map);
 
   /* if Esri ever refuses, fall back to OSM inverted — dark land, deep-blue sea */
   var swapped=false;
-  ocean.on("tileerror",function(){
+  greyBase.on("tileerror",function(){
     if(swapped) return; swapped=true;
     baseChart.clearLayers();
     baseChart.addLayer(L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:16,className:"tile-dark"}));
