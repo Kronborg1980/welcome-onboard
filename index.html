@@ -1454,7 +1454,20 @@ var LANE_MAX_OFFSET_KM=150, LANE_MIN_SPEED_KN=5, LANE_WEIGHT_CAP=12, LANE_MERGE_
 var LANE_PREFIX="lane_v1_", TRAIL_PREFIX="trail_v1_", HIST_PREFIX="hist_v1_";
 var TRAIL_MIN_STEP_KM=1.2, TRAIL_MAX_POINTS=700;
 var HIST_KEEP=5, HIST_POINTS=120, HIST_MIN_POINTS=25, HIST_MATCH_KM=40, HIST_START_KM=45;
-var LANE_PUSH_MS=600000, LANE_PULL_MS=3600000;
+/* Cloudflare's free tier allows 1000 writes a day. Pushing every ten minutes
+   eats that on its own, so sync is deliberately lazy: pull twice a day, push
+   at most every three hours, and only when there is something new. A finished
+   crossing is worth sending sooner. Timestamps live in localStorage, so an
+   app that is opened and closed all day does not spam. */
+var LANE_PULL_MS=43200000;       /* 12 hours */
+var LANE_PUSH_MS=10800000;       /* 3 hours */
+var LANE_PUSH_URGENT_MS=1800000; /* 30 min, only for a finished crossing */
+var LANE_BACKOFF_MS=21600000;    /* 6 hours after a refusal */
+var LANE_TICK_MS=900000;         /* check the clock every 15 min */
+var laneUrgent=false;
+function laneStamp(k){ return parseInt(lsGet(k)||"0",10); }
+function laneBlocked(){ return Date.now()<laneStamp("lane_blockUntil"); }
+function laneBackOff(){ lsSet("lane_blockUntil",String(Date.now()+LANE_BACKOFF_MS)); }
 
 var laneStore={}, laneDirty=false, landRings=null, landBoxes=null;
 
@@ -1717,7 +1730,7 @@ function histArchive(key,pts,port){
   var list=histLoad(key);
   list.unshift({at:Date.now(),pts:histThin(pts,HIST_POINTS)});
   histSave(key,list);
-  laneDirty=true;
+  laneDirty=true; laneUrgent=true;
 }
 function histBestMatch(key,lat,lon){
   var list=histLoad(key);
@@ -1810,12 +1823,19 @@ function laneLegKeys(){
   return keys;
 }
 function laneSyncPull(){
-  if(!LANE_SYNC_URL) return;
-  fetch(laneEndpoint(),{cache:"no-store"}).then(function(r){return r.ok?r.json():null;})
-    .then(function(d){ if(d){ laneMergeLanes(d); laneMergeTracks(d.tracks); } }).catch(function(){});
+  if(!LANE_SYNC_URL||laneBlocked()) return;
+  if(Date.now()-laneStamp("lane_lastPull")<LANE_PULL_MS) return;
+  lsSet("lane_lastPull",String(Date.now()));
+  fetch(laneEndpoint(),{cache:"no-store"}).then(function(r){
+    if(!r.ok){ laneBackOff(); return null; }
+    return r.json();
+  }).then(function(d){ if(d){ laneMergeLanes(d); laneMergeTracks(d.tracks); } })
+    .catch(function(){ laneBackOff(); });
 }
 function laneSyncPush(){
-  if(!LANE_SYNC_URL||!laneDirty) return;
+  if(!LANE_SYNC_URL||!laneDirty||laneBlocked()) return;
+  var since=Date.now()-laneStamp("lane_lastPush");
+  if(since<(laneUrgent?LANE_PUSH_URGENT_MS:LANE_PUSH_MS)) return;
   var payload={lanes:{},tracks:{}}, any=false;
   Object.keys(laneStore).forEach(function(k){ payload.lanes[k]=laneStore[k].bins; any=true; });
   laneLegKeys().forEach(function(k){
@@ -1823,20 +1843,25 @@ function laneSyncPush(){
     if(list.length){ payload.tracks[k]=list; any=true; }
   });
   if(!any) return;
-  laneDirty=false;
+  laneDirty=false; laneUrgent=false;
+  lsSet("lane_lastPush",String(Date.now()));
   fetch(laneEndpoint(),{method:"POST",headers:{"Content-Type":"text/plain;charset=UTF-8"},body:JSON.stringify(payload)})
-    .then(function(r){return r.ok?r.json():null;})
+    .then(function(r){
+      if(!r.ok){ laneDirty=true; laneBackOff(); return null; }
+      return r.json();
+    })
     .then(function(d){ if(d){ laneMergeLanes(d); laneMergeTracks(d.tracks); } })
-    .catch(function(){ laneDirty=true; });
+    .catch(function(){ laneDirty=true; laneBackOff(); });
 }
 function startLaneSync(){
   if(!LANE_SYNC_URL) return;
   laneSyncPull();
+  /* One slow heartbeat; the two functions decide for themselves whether
+     enough time has passed to be worth a request. */
   setTimeout(function(){
     laneSyncPush();
-    setInterval(laneSyncPush,LANE_PUSH_MS);
-  }, 90000+Math.floor(Math.random()*60000));
-  setInterval(laneSyncPull,LANE_PULL_MS);
+    setInterval(function(){ laneSyncPull(); laneSyncPush(); },LANE_TICK_MS);
+  }, 180000+Math.floor(Math.random()*120000));
 }
 function norronaLanes(){
   var out={};
