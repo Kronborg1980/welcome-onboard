@@ -1161,6 +1161,10 @@ var CHART_LABELS=[
 ];
 
 var map=null, baseChart=null, baseSat=null, seamarks=null, seaOn=false, fitDone=false, chartOn=true;
+/* The coastlines in this file are simplified to about 2 km. Past this zoom a
+   harbour is swallowed by its own polygon and the ship looks like it is parked
+   inland, so the chart stops here and the satellite layer takes over. */
+var CHART_MAX_ZOOM=9, chartZoomHinted=false;
 
 var pinIcon=L.divIcon({className:"",iconSize:[22,22],iconAnchor:[11,22],
   html:'<svg viewBox="0 0 24 24" width="22" height="22" fill="#FF5A5A" stroke="#002836" stroke-width="1.5"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#002836" stroke="none"/></svg>'});
@@ -1198,6 +1202,13 @@ function initMap(){
     clearTimeout(map._ovT);
     map._ovT=setTimeout(loadOverlay,700);
   });
+  map.setMaxZoom(CHART_MAX_ZOOM);
+  map.on("zoomend",function(){
+    if(chartOn && map.getZoom()>=CHART_MAX_ZOOM && !chartZoomHinted){
+      chartZoomHinted=true;
+      toast("Chart detail ends here — switch to satellite for a close-up");
+    }
+  });
   map.on("zoomstart movestart",function(){ wxSuspend(); });
   map.on("zoomend moveend",function(){ wxResume(); });
 
@@ -1208,8 +1219,14 @@ function initMap(){
 function setBase(which){
   if(!map) return;
   chartOn = which!=="sat";
-  if(which==="sat"){ map.removeLayer(baseChart); baseSat.addTo(map); $("map").classList.add("sat"); }
-  else { map.removeLayer(baseSat); baseChart.addTo(map); $("map").classList.remove("sat"); }
+  if(which==="sat"){
+    map.removeLayer(baseChart); baseSat.addTo(map); $("map").classList.add("sat");
+    map.setMaxZoom(16);
+  } else {
+    map.removeLayer(baseSat); baseChart.addTo(map); $("map").classList.remove("sat");
+    map.setMaxZoom(CHART_MAX_ZOOM);
+    if(map.getZoom()>CHART_MAX_ZOOM) map.setZoom(CHART_MAX_ZOOM);
+  }
   if(seaOn) seamarks.bringToFront();
   /* The drifting weather only reads properly on the drawn chart, where the
      land is painted over it. On imagery it would run across the islands. */
@@ -1907,7 +1924,9 @@ function drawShipOnMap(s,dest){
 
     if(map._dest){ map.removeLayer(map._dest); map._dest=null; }
     $("vLaneNote").textContent="";
-    if(!fitDone){ map.setView(pos,10); fitDone=true; }
+    /* Zoom 8 shows the islands and puts the ship on its own coastline;
+       zoom 10 would place it in the middle of Tórshavn. */
+    if(!fitDone){ map.setView(pos,8); fitDone=true; }
     return;
   }
 
