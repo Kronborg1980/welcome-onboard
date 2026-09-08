@@ -1696,9 +1696,28 @@ function trailLoad(key){
   if(raw){ try{ var p=JSON.parse(raw); if(p&&p.length) trailPts=p; }catch(e){} }
   return trailPts;
 }
+/* A trail is cleared when the app sees the ship alongside - and an app on a
+   phone is almost never open at that moment. So the leftover track from the
+   last crossing is still there when the next one starts, and the new points
+   get stitched onto the end of the old ones. On the map that is a long hook
+   running back to wherever the app was last open: the U behind the ship.
+   Two tests catch it. A jump no ship could have made, and a gap in time that
+   means we simply were not watching. Either way, start a fresh track. */
+var TRAIL_MAX_JUMP_KM=60;   /* at 20 knots that is over an hour and a half unseen */
+var TRAIL_MAX_GAP_H=6;
+
 function trailRecord(key,lat,lon){
   trailLoad(key);
   var last=trailPts.length?trailPts[trailPts.length-1]:null;
+  if(last){
+    var lastAt=parseInt(lsGet(TRAIL_PREFIX+key+"_at")||"0",10);
+    var jumpKm=haversine(last[0],last[1],lat,lon);
+    var gapH=lastAt?(Date.now()-lastAt)/3600000:99;
+    if(jumpKm>TRAIL_MAX_JUMP_KM||gapH>TRAIL_MAX_GAP_H){
+      trailPts=[]; last=null;
+    }
+  }
+  lsSet(TRAIL_PREFIX+key+"_at",String(Date.now()));
   if(last&&haversine(last[0],last[1],lat,lon)<TRAIL_MIN_STEP_KM) return trailPts;
   trailPts.push([round4(lat),round4(lon)]);
   if(trailPts.length>TRAIL_MAX_POINTS){
@@ -1713,6 +1732,7 @@ function trailClear(key){
   if(!key) return;
   if(trailKey===key) trailPts=[];
   lsDel(TRAIL_PREFIX+key);
+  lsDel(TRAIL_PREFIX+key+"_at");
 }
 
 /* --- whole crossings, kept apart so an eastern and a western routing are
